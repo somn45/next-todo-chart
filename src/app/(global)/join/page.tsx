@@ -1,9 +1,10 @@
+import { join } from "@/actions/join";
 import Link from "next/link";
 
 export default function JoinPage() {
   return (
     <>
-      <form>
+      <form action={join}>
         <input type="text" placeholder="회원 아이디" name="userid" />
         <input type="password" placeholder="비밀번호" name="password" />
         <input

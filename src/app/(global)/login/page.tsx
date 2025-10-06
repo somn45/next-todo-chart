@@ -1,9 +1,10 @@
+import { login } from "@/actions/login";
 import Link from "next/link";
 
 export default function LoginPage() {
   return (
     <>
-      <form>
+      <form action={login}>
         <input type="text" placeholder="회원 아이디" name="userid" />
         <input type="password" placeholder="비밀번호" name="password" />
         <button type="submit">로그인</button>
