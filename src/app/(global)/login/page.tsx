@@ -2,18 +2,12 @@
 
 import { login } from "@/actions/login";
 import Link from "next/link";
-import { useActionState } from "react";
+import Form from "./Form";
 
 export default function LoginPage() {
-  const [state, formAction] = useActionState(login, { message: "" });
   return (
     <>
-      <form action={formAction}>
-        <input type="text" placeholder="회원 아이디" name="userid" />
-        <input type="password" placeholder="비밀번호" name="password" />
-        <button type="submit">로그인</button>
-        <span data-testid="validate-message">{state.message}</span>
-      </form>
+      <Form serverAction={login} initialState={{ message: "" }} />
       <nav>
         <ul>
           <li>
