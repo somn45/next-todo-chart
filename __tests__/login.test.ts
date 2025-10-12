@@ -22,6 +22,9 @@ jest.mock("next/navigation", () => {
     redirect: jest.fn(),
   };
 });
+jest.mock("bcrypt", () => ({
+  compare: jest.fn().mockResolvedValue(true),
+}));
 
 import { login } from "@/actions/login";
 import { validateUser } from "@/utils/validateUser";

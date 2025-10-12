@@ -3,6 +3,7 @@
 import { connectDB } from "@/libs/database";
 import { validateUser } from "@/utils/validateUser";
 import { redirect } from "next/navigation";
+import bcrypt from "bcrypt";
 
 interface LoginFormData {
   userid: string;
@@ -22,7 +23,6 @@ export const login = async (
     userid: formdata.get("userid"),
     password: formdata.get("password"),
   } as LoginFormData;
-
   const validateErrorMessage = validateUser(loginFormData);
   if (validateErrorMessage) {
     return { message: validateErrorMessage };
@@ -33,7 +33,12 @@ export const login = async (
   const loggedUser = await db
     .collection<User>("users")
     .findOne({ userid: loginFormData.userid });
-  if (!loggedUser || loggedUser.password !== loginFormData.password) {
+  const isMatchPassword = await bcrypt.compare(
+    loginFormData.password,
+    loggedUser?.password || "",
+  );
+  console.log(isMatchPassword);
+  if (!loggedUser || !isMatchPassword) {
     return { message: "아이디 또는 비밀번호가 일치하지 않습니다." };
   }
   redirect("/");

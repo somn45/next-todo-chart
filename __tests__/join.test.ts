@@ -24,6 +24,7 @@ jest.mock("next/navigation", () => {
     redirect: jest.fn(),
   };
 });
+jest.mock("bcrypt");
 
 import { join } from "@/actions/join";
 import { validateUser } from "@/utils/validateUser";
