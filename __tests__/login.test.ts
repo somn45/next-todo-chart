@@ -4,6 +4,7 @@ jest.mock("@/libs/database", () => {
       userid: "abc123",
       password: "password123",
     }),
+    findOneAndUpdate: jest.fn(),
   };
   const mockDb = {
     collection: jest.fn().mockReturnValue(mockCollection),
@@ -25,6 +26,15 @@ jest.mock("next/navigation", () => {
 jest.mock("bcrypt", () => ({
   compare: jest.fn().mockResolvedValue(true),
 }));
+jest.mock("@/utils/setCookies");
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () =>
+      Promise.resolve({
+        accessToken: "",
+      }),
+  }),
+) as jest.Mock;
 
 import { login } from "@/actions/login";
 import { validateUser } from "@/utils/validateUser";
@@ -38,6 +48,11 @@ describe("login 서버 액션", () => {
     formData.set("password", "password123");
     await login({ message: "" }, formData);
 
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith("http://localhost:3000/api/token", {
+      method: "POST",
+      body: JSON.stringify("abc123"),
+    });
     expect(redirect).toHaveBeenCalledTimes(1);
   });
   it("제출된 로그인 양식이 검증 실패 시 검증 실패 사유 메세지를 return한다.", async () => {

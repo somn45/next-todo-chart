@@ -4,7 +4,6 @@ import { connectDB } from "@/libs/database";
 import { validateUser } from "@/utils/validateUser";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
-import { createJwtToken } from "@/utils/createJwtToken";
 import { setCookies } from "@/utils/setCookies";
 
 interface LoginFormData {
