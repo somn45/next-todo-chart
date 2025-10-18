@@ -44,8 +44,13 @@ export const login = async (
   }
 
   // 추후 시크릿 키가 없을 때 에러 던지기 추가
-  const { accessToken, refreshToken } = createJwtToken(loggedUser.userid);
-  await setCookies(accessToken, 1000 * 60 * 60 * 24 * 30);
+  const { accessToken, refreshToken } = await (
+    await fetch("http://localhost:3000/api/token", {
+      method: "POST",
+      body: JSON.stringify(loggedUser.userid),
+    })
+  ).json();
+  await setCookies(accessToken, 1000 * 60 * 60);
   db.collection("users").findOneAndUpdate(
     { userid: loggedUser.userid },
     {

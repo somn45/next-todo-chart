@@ -1,6 +1,4 @@
-import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 interface Jwt {
   id: string; // userid
@@ -9,13 +7,12 @@ interface Jwt {
 
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.pathname;
-  const cookieStore = await cookies();
 
   if (url === "/login" || url === "/join") {
     return NextResponse.next();
   }
 
-  const accessToken = cookieStore.get("atk") as RequestCookie;
+  const accessToken = request.cookies.get("atk");
   // accessToken이 없다면 로그아웃 및 로그인 페이지로 리다이렉트
   if (!accessToken) {
     return NextResponse.redirect(new URL("/login", request.url));
