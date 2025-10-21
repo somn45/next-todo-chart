@@ -43,6 +43,10 @@ export async function middleware(request: NextRequest) {
 
     // refreshToken도 만료되었다면 로그아웃 및 페이지로 리다이렉트
     if (isExpiredRefreshToken) {
+      await fetch(`http://localhost:3000/api/token/refresh`, {
+        method: "DELETE",
+        body: JSON.stringify(userid),
+      });
       request.cookies.delete("atk");
       return NextResponse.redirect(new URL("/login", request.url));
     }
