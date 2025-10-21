@@ -40,6 +40,7 @@ export async function middleware(request: NextRequest) {
       atob(refreshToken.split(".")[1]),
     );
     const isExpiredRefreshToken = Date.now() > refreshTokenPayload.exp * 1000;
+
     // refreshToken도 만료되었다면 로그아웃 및 페이지로 리다이렉트
     if (isExpiredRefreshToken) {
       request.cookies.delete("atk");
@@ -60,8 +61,6 @@ export async function middleware(request: NextRequest) {
       httpOnly: true,
       maxAge: 60 * 60,
     });
-
-    return NextResponse.next();
   }
 
   return NextResponse.next();
