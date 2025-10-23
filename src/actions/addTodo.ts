@@ -8,14 +8,14 @@ interface AccessTokenPayload {
   sub: string;
 }
 
-interface TodoQuery {
+interface TodoDoc {
   userid: string;
-  content: string;
+  textField: string;
 }
 
-interface TodosQuery {
+interface TodosDoc {
   author: string;
-  todos: ObjectId[];
+  content: TodoDoc;
 }
 
 export const addTodo = async (
@@ -32,17 +32,15 @@ export const addTodo = async (
 
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todo = await db
-    .collection<TodoQuery>("todo")
-    .insertOne({ userid, content: newTodo });
-  console.log(todo);
+    .collection<TodoDoc>("todo")
+    .insertOne({ userid, textField: newTodo });
   if (!todo) return { newTodo: "" };
   await db
-    .collection<TodosQuery>("todos")
+    .collection<TodosDoc[]>("todos")
     .findOneAndUpdate(
       { author: userid },
-      { $push: { todos: todo.insertedId } },
+      { $push: { content: todo.insertedId } },
       { upsert: true },
     );
-  console.log(todo);
   return { newTodo: newTodo };
 };

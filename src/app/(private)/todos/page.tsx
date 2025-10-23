@@ -1,17 +1,16 @@
-"use client";
-
-import { addTodo } from "@/actions/addTodo";
-import { useActionState } from "react";
+import { getTodos } from "@/apis/getTodos";
 import TodosForm from "./Form";
 
-export default function Todos() {
-  const [state, formAction] = useActionState(addTodo, { newTodo: "" });
+export default async function Todos() {
+  const todos = await getTodos();
   return (
     <section>
       <h2>Todos 페이지</h2>
-      <TodosForm serverAction={formAction} initialState={state} />
+      <TodosForm />
       <ul>
-        <li>{state.newTodo}</li>
+        {todos.map(todo => (
+          <li key={todo.content._id.toString()}>{todo.content.textField}</li>
+        ))}
       </ul>
     </section>
   );

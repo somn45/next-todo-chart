@@ -1,15 +1,13 @@
-interface FormState {
-  newTodo: string;
-}
+"use client";
 
-interface FormProps {
-  serverAction: (payload: FormData) => void;
-  initialState: FormState;
-}
+import { addTodo } from "@/actions/addTodo";
+import { useActionState } from "react";
 
-export default function TodosForm({ serverAction }: FormProps) {
+export default function TodosForm() {
+  const [state, formAction] = useActionState(addTodo, { newTodo: "" });
+
   return (
-    <form action={serverAction}>
+    <form action={formAction}>
       <input
         type="text"
         placeholder="새 투두리스트 추가"
