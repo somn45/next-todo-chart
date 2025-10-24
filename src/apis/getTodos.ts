@@ -18,16 +18,7 @@ interface TodosDoc {
   content: TodoDoc;
 }
 
-export const getTodos = async () => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("atk");
-
-  // 에러 작업 예정
-  if (!accessToken) return [];
-  const { sub: userid }: AccessTokenPayload = JSON.parse(
-    atob(accessToken.value.split(".")[1]),
-  );
-
+export const getTodos = async (userid: string) => {
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todosDoc = (await db
     .collection("todos")
@@ -52,5 +43,6 @@ export const getTodos = async () => {
       },
     ])
     .toArray()) as TodosDoc[];
+
   return todosDoc;
 };

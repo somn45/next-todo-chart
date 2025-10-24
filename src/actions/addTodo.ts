@@ -1,8 +1,8 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { ObjectId } from "mongodb";
-import { cookies, headers } from "next/headers";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 interface AccessTokenPayload {
   sub: string;
@@ -19,16 +19,11 @@ interface TodosDoc {
 }
 
 export const addTodo = async (
+  userid: string,
   prevState: { newTodo: string },
   formData: FormData,
 ) => {
   const newTodo = formData.get("newTodo") as string;
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("atk");
-  if (!accessToken) return { newTodo: "" };
-  const { sub: userid }: AccessTokenPayload = JSON.parse(
-    atob(accessToken.value.split(".")[1]),
-  );
 
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todo = await db
@@ -42,5 +37,6 @@ export const addTodo = async (
       { $push: { content: todo.insertedId } },
       { upsert: true },
     );
+  revalidateTag("todos");
   return { newTodo: newTodo };
 };

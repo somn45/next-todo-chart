@@ -3,8 +3,11 @@
 import { addTodo } from "@/actions/addTodo";
 import { useActionState } from "react";
 
-export default function TodosForm() {
-  const [state, formAction] = useActionState(addTodo, { newTodo: "" });
+export default function TodosForm({ userid }: { userid: string }) {
+  const addTodoWithUserId = addTodo.bind(null, userid);
+  const [state, formAction] = useActionState(addTodoWithUserId, {
+    newTodo: "",
+  });
 
   return (
     <form action={formAction}>
