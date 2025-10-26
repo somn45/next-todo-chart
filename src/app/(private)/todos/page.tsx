@@ -2,6 +2,7 @@ import { getTodos } from "@/apis/getTodos";
 import TodosForm from "./Form";
 import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
+import TodoPage from "./Todo";
 
 interface AccessTokenPayload {
   sub: string;
@@ -32,10 +33,7 @@ export default async function Todos() {
       <TodosForm userid={userid} />
       <ul>
         {todos.map(todo => (
-          <div key={todo.content._id.toString()}>
-            <span>Todos</span>
-            <li key={todo.content._id.toString()}>{todo.content.textField}</li>
-          </div>
+          <TodoPage key={todo.content._id.toString()} {...todo.content} />
         ))}
       </ul>
     </section>
