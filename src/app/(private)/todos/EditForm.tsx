@@ -1,20 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { editTodo } from "@/actions/editTodo";
+import { ObjectId } from "mongodb";
+import { useActionState, useEffect, useState } from "react";
 
-export default function EditForm() {
+interface EditFormProps {
+  todoid: string;
+  userid: string;
+}
+
+export default function EditForm({ todoid, userid }: EditFormProps) {
   const [isEditMode, setIsEditMode] = useState(false);
+  const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
+    todoid,
+    userid,
+  });
+  const [state, editTodoAction] = useActionState(editTodoWithTodoIdAndUserId, {
+    message: "",
+  });
+
+  useEffect(() => {
+    if (state.message.length === 0) setIsEditMode(false);
+  }, [state]);
+
   if (!isEditMode)
     return <button onClick={() => setIsEditMode(true)}>수정</button>;
   return (
-    <form>
+    <form action={editTodoAction}>
       <input
         type="text"
         placeholder="투두리스트 작성"
         name="todo"
         aria-label="수정된 투두리스트"
       />
-      <button onClick={() => setIsEditMode(false)}>수정 완료</button>
+      <button type="submit">수정 완료</button>
+      <button type="button" onClick={() => setIsEditMode(false)}>
+        취소
+      </button>
     </form>
   );
 }
