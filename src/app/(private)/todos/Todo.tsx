@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import EditForm from "./EditForm";
 import { unstable_cache } from "next/cache";
 import { getTodo } from "@/apis/getTodo";
+import Deleteform from "./DeleteForm";
 
 interface TodoComponentProps {
   _id: ObjectId;
@@ -28,7 +29,7 @@ export default async function TodoPage({ _id, userid }: TodoComponentProps) {
       <span>{todo.userid}</span>
       <span>{todo.textField}</span>
       <EditForm todoid={todo._id.toString()} userid={todo.userid} />
-      <button>삭제</button>
+      <Deleteform todoid={todo._id.toString()} userid={todo.userid} />
     </li>
   );
 }

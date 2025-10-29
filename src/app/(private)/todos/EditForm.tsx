@@ -31,7 +31,7 @@ export default function EditForm({ todoid, userid }: EditFormProps) {
         type="text"
         placeholder="투두리스트 작성"
         name="todo"
-        aria-label="수정된 투두리스트"
+        aria-label="수정될 투두"
       />
       <button type="submit">수정 완료</button>
       <button type="button" onClick={() => setIsEditMode(false)}>
