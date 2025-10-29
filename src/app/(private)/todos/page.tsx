@@ -26,6 +26,7 @@ export default async function Todos() {
     { tags: ["todos"], revalidate: 3600 },
   );
   const todos = await getCachedTodos();
+  console.log(todos);
 
   return (
     <section>

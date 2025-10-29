@@ -1,16 +1,11 @@
 import { connectDB } from "@/libs/database";
-import { ObjectId } from "mongodb";
-
-interface TodoDoc {
-  _id: ObjectId;
-  userid: string;
-  textField: string;
-}
+import { ITodo } from "@/types/schema";
+import { ObjectId, WithId } from "mongodb";
 
 export const getTodo = async (userid: string, todoid: ObjectId) => {
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todoDoc = await db
-    .collection<TodoDoc>("todo")
+    .collection<WithId<ITodo>>("todo")
     .findOne({ _id: new ObjectId(todoid) });
   return todoDoc;
 };

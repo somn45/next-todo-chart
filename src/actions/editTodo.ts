@@ -1,7 +1,8 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { ObjectId } from "mongodb";
+import { type ITodo } from "@/types/schema";
+import { ObjectId, WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
 export const editTodo = async (
@@ -13,7 +14,7 @@ export const editTodo = async (
 
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todoDoc = await db
-    .collection("todo")
+    .collection<WithId<ITodo>>("todo")
     .findOne({ _id: new ObjectId(todoid) });
 
   // 추후에 에러 처리 과정 추가 예정

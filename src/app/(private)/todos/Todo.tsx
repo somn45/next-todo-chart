@@ -1,16 +1,11 @@
-import { ObjectId } from "mongodb";
+import { WithId } from "mongodb";
 import EditForm from "./EditForm";
 import { unstable_cache } from "next/cache";
 import { getTodo } from "@/apis/getTodo";
 import Deleteform from "./DeleteForm";
+import { ITodo } from "@/types/schema";
 
-interface TodoComponentProps {
-  _id: ObjectId;
-  userid: string;
-  textField: string;
-}
-
-export default async function TodoPage({ _id, userid }: TodoComponentProps) {
+export default async function TodoPage({ _id, userid }: WithId<ITodo>) {
   const getCachedTodo = unstable_cache(
     async () => {
       return await getTodo(userid, _id);

@@ -1,22 +1,9 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
-
-interface AccessTokenPayload {
-  sub: string;
-}
-
-interface TodoDoc {
-  userid: string;
-  textField: string;
-}
-
-interface TodosDoc {
-  author: string;
-  content: TodoDoc;
-}
+import { ITodo, ITodos } from "@/types/schema";
+import { WithId } from "mongodb";
+import { revalidateTag } from "next/cache";
 
 export const addTodo = async (
   userid: string,
@@ -27,11 +14,11 @@ export const addTodo = async (
 
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todo = await db
-    .collection<TodoDoc>("todo")
+    .collection<ITodo>("todo")
     .insertOne({ userid, textField: newTodo });
   if (!todo) return { newTodo: "" };
   await db
-    .collection<TodosDoc[]>("todos")
+    .collection<WithId<ITodos>>("todos")
     .findOneAndUpdate(
       { author: userid },
       { $push: { content: todo.insertedId } },

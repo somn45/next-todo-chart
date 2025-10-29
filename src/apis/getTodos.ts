@@ -1,21 +1,10 @@
 import { connectDB } from "@/libs/database";
-import { ObjectId } from "mongodb";
+import { LookupedTodo } from "@/types/schema";
+import { ObjectId, WithId } from "mongodb";
 import { cookies } from "next/headers";
 
 interface AccessTokenPayload {
   sub: string;
-}
-
-interface TodoDoc {
-  _id: ObjectId;
-  userid: string;
-  textField: string;
-}
-
-interface TodosDoc {
-  _id: ObjectId;
-  author: string;
-  content: TodoDoc;
 }
 
 export const getTodos = async (userid: string) => {
@@ -42,7 +31,7 @@ export const getTodos = async (userid: string) => {
         },
       },
     ])
-    .toArray()) as TodosDoc[];
+    .toArray()) as WithId<LookupedTodo>[];
 
   return todosDoc;
 };
