@@ -3,6 +3,7 @@ import TodosForm from "./Form";
 import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import TodoPage from "./Todo";
+import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 
 interface AccessTokenPayload {
   sub: string;
@@ -14,9 +15,8 @@ export default async function Todos() {
 
   // 에러 작업 예정
   if (!accessToken) return [];
-  const { sub: userid }: AccessTokenPayload = JSON.parse(
-    atob(accessToken.value.split(".")[1]),
-  );
+  const { sub: userid }: AccessTokenPayload =
+    decodeJwtTokenPayload(accessToken);
 
   const getCachedTodos = unstable_cache(
     async () => {

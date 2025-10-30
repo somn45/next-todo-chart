@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { decodeJwtTokenPayload } from "./utils/decodeJwtTokenPayload";
 
 interface Jwt {
   id: string; // userid
@@ -18,9 +19,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  const accessTokenPayload: Jwt = JSON.parse(
-    atob(accessToken.value.split(".")[1]),
-  );
+  const accessTokenPayload: Jwt = decodeJwtTokenPayload(accessToken);
   const userid = accessTokenPayload.id;
   const isExpiredAccessToken = Date.now() > accessTokenPayload.exp * 1000;
 
@@ -36,9 +35,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    const refreshTokenPayload: Jwt = JSON.parse(
-      atob(refreshToken.split(".")[1]),
-    );
+    const refreshTokenPayload: Jwt = decodeJwtTokenPayload(refreshToken);
     const isExpiredRefreshToken = Date.now() > refreshTokenPayload.exp * 1000;
 
     // refreshToken도 만료되었다면 로그아웃 및 페이지로 리다이렉트
