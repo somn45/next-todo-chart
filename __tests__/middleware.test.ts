@@ -133,7 +133,7 @@ describe("middleware", () => {
     };
     const refreshTokenPayload = {
       id: "abc123",
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
     const accessToken = `header.${btoa(
       JSON.stringify(accessTokenPayload),

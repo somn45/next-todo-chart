@@ -7,7 +7,7 @@ export const decodeJwtTokenPayload = (jwtToken: RequestCookie | string) => {
   } else {
     incodedJwtToken = jwtToken.value;
   }
-  const jwtTokenRegExp = /\w+\.\w+\.\w+/i;
+  const jwtTokenRegExp = /\w+\.(\w|\=)+\.\w+/i;
   if (!jwtTokenRegExp.test(incodedJwtToken))
     throw new Error("올바르지 않은 JWT 토큰 형식입니다.");
   return JSON.parse(atob(incodedJwtToken.split(".")[1]));
