@@ -18,15 +18,7 @@ export default async function Todos() {
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
 
-  const getCachedTodos = unstable_cache(
-    async () => {
-      return await getTodos(userid);
-    },
-    [`${userid}'s todos`],
-    { tags: ["todos"], revalidate: 3600 },
-  );
-  const todos = await getCachedTodos();
-  console.log(todos);
+  const todos = await getTodos(userid);
 
   return (
     <section>
@@ -34,7 +26,7 @@ export default async function Todos() {
       <TodosForm userid={userid} />
       <ul>
         {todos.map(todo => (
-          <TodoPage key={todo.content._id.toString()} {...todo.content} />
+          <TodoPage key={todo.content._id} {...todo.content} />
         ))}
       </ul>
     </section>

@@ -1,13 +1,10 @@
 import { connectDB } from "@/libs/database";
-import { LookupedTodo } from "@/types/schema";
-import { ObjectId, WithId } from "mongodb";
-import { cookies } from "next/headers";
-
-interface AccessTokenPayload {
-  sub: string;
-}
+import { LookupedTodo, WithStringifyId } from "@/types/schema";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export const getTodos = async (userid: string) => {
+  "use cache";
+  cacheTag("todos");
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todosDoc = (await db
     .collection("todos")
@@ -30,8 +27,13 @@ export const getTodos = async (userid: string) => {
           path: "$content",
         },
       },
+      {
+        $set: {
+          _id: { $toString: "$_id" },
+        },
+      },
     ])
-    .toArray()) as WithId<LookupedTodo>[];
+    .toArray()) as (LookupedTodo & WithStringifyId)[];
 
   return todosDoc;
 };

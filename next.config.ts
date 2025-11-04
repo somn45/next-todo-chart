@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       hmrRefreshes: true,
     },
   },
+  experimental: {
+    useCache: true,
+  },
 };
 
 export default nextConfig;

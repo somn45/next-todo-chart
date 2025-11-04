@@ -1,5 +1,9 @@
 import { ObjectId, WithId } from "mongodb";
 
+export type WithStringifyId = {
+  _id: string;
+};
+
 export interface ITodo {
   userid: string;
   textField: string;
@@ -7,7 +11,7 @@ export interface ITodo {
 
 export interface LookupedTodo {
   author: string;
-  content: WithId<ITodo>;
+  content: WithStringifyId & ITodo;
 }
 
 export interface ITodos {
