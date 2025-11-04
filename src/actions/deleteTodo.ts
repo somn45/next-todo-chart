@@ -12,7 +12,7 @@ export const deleteTodo = async (
   const todoid = formData.get("todoid") as string;
 
   const db = (await connectDB).db("next-todo-chart-cluster");
-  await db.collection("todo").deleteOne({ _id: new Object(todoid) });
+  await db.collection("todo").deleteOne({ _id: new ObjectId(todoid) });
   await db.collection("todos").updateOne(
     {
       author: userid,
