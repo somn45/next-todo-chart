@@ -1,26 +1,71 @@
+import { getTodos } from "@/apis/getTodos";
 import Todos from "@/app/(private)/todos/page";
-import { ITodo } from "@/types/schema";
-import { render } from "@testing-library/react";
-import { WithId } from "mongodb";
-import nextCache from "next/cache";
-
+import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
+import { render, screen } from "@testing-library/react";
+jest.mock("@/libs/database", () => ({
+  connectDB: jest.fn().mockResolvedValue({
+    db: jest.fn(),
+  }),
+}));
+jest.mock("@/apis/getTodos", () => ({
+  getTodos: jest.fn(),
+}));
 jest.mock("@/app/(private)/todos/Form", () => {
-  return function MockTodosForm({ userid }: { userid: string }) {
-    return <div>`${userid} Todos Form`</div>;
+  return function TodosForm() {
+    return <div>Todos Form</div>;
   };
 });
-
 jest.mock("@/app/(private)/todos/Todo", () => {
-  return function MockTodoPage({ _id, userid }: WithId<ITodo>) {
-    return <div>`Todo ${_id.toString()} Page`</div>;
+  return function TodoPage({ textField }: { textField: string }) {
+    return <li>{textField}</li>;
   };
 });
-
-const mock = jest.spyOn(nextCache, "unstable_cache");
+jest.mock("next/headers", () => {
+  const nextHeaders = jest.requireActual("next/headers");
+  return {
+    ...nextHeaders,
+    cookies: jest.fn(() => ({
+      get: jest.fn(() => ({
+        name: "",
+        value: "",
+      })),
+    })),
+  };
+});
+jest.mock("@/utils/decodeJwtTokenPayload");
 
 describe("<Todos />", () => {
-  it("Todos 페이지에 접속할 때 getTodos API를 통해 todos를 가져오고 페이지에 출력된다.", async () => {
-    const TodosServerComponent = await Todos();
-    render(TodosServerComponent);
+  it("Todos 페이지에 접속 시 로그인 중인 사용자의 투두리스트가 페이지에 출력된다.", async () => {
+    const mockTodos = [
+      {
+        _id: "1",
+        author: "mockuser",
+        content: {
+          _id: "1",
+          userid: "mockuser",
+          textField: "1번 투두리스트",
+        },
+      },
+      {
+        _id: "2",
+        author: "mockuser",
+        content: {
+          _id: "2",
+          userid: "mockuser",
+          textField: "2번 투두리스트",
+        },
+      },
+    ];
+
+    (getTodos as jest.Mock).mockResolvedValue(mockTodos);
+    (decodeJwtTokenPayload as jest.Mock).mockReturnValue({
+      sub: { userid: "mockuser" },
+    });
+    render(await Todos());
+    const todoItems = screen.getAllByRole("listitem");
+    todoItems.forEach((todoItem, index) => {
+      expect(todoItem).toBeInTheDocument();
+      expect(todoItem).toHaveTextContent(mockTodos[index].content.textField);
+    });
   });
 });
