@@ -17,10 +17,8 @@ describe("<TodosForm", () => {
     render(<TodosForm userid="mockuser" />);
     const newTodoInput = screen.getByRole("textbox", { name: /새 투두리스트/ });
     fireEvent.change(newTodoInput, "새 투두리스트");
-    const submitButton = screen.getByRole("button", {
-      name: /새 투두리스트 추가/,
-    });
-    fireEvent.submit(submitButton);
+    const form = screen.getByRole("form");
+    fireEvent.submit(form);
     waitFor(() => {
       expect(addTodo).toHaveBeenCalledTimes(1);
       expect(addTodo).toHaveBeenCalledWith("mockuser");

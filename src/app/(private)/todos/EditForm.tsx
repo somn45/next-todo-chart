@@ -1,7 +1,6 @@
 "use client";
 
 import { editTodo } from "@/actions/editTodo";
-import { ObjectId } from "mongodb";
 import { useActionState, useEffect, useState } from "react";
 
 interface EditFormProps {
@@ -26,7 +25,7 @@ export default function EditForm({ todoid, userid }: EditFormProps) {
   if (!isEditMode)
     return <button onClick={() => setIsEditMode(true)}>수정</button>;
   return (
-    <form action={editTodoAction}>
+    <form role="form" action={editTodoAction}>
       <input
         type="text"
         placeholder="투두리스트 작성"

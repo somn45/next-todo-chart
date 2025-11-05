@@ -15,13 +15,14 @@ export default function Deleteform({
     message: "",
   });
   return (
-    <form action={formAction}>
+    <form role="form" action={formAction}>
       <input
         type="text"
         name="todoid"
         value={todoid}
         onChange={() => {}}
         aria-label="삭제할 투두"
+        data-testid="delete-todo-form"
         hidden
       />
       <button type="submit">삭제</button>
