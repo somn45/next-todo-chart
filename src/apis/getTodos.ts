@@ -6,7 +6,7 @@ export const getTodos = async (userid: string) => {
   "use cache";
   cacheTag("todos");
   const db = (await connectDB).db("next-todo-chart-cluster");
-  const todosDoc = (await db
+  const todosDoc = await db
     .collection("todos")
     .aggregate([
       {
@@ -33,7 +33,8 @@ export const getTodos = async (userid: string) => {
         },
       },
     ])
-    .toArray()) as (LookupedTodo & WithStringifyId)[];
+    .toArray();
 
-  return todosDoc;
+  return JSON.parse(JSON.stringify(todosDoc)) as (LookupedTodo &
+    WithStringifyId)[];
 };
