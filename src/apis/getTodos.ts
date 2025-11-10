@@ -1,6 +1,6 @@
 import { connectDB } from "@/libs/database";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { unstable_cacheTag as cacheTag } from "next/cache";
 
 export const getTodos = async (userid: string) => {
   "use cache";
