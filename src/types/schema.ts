@@ -7,6 +7,7 @@ export type WithStringifyId = {
 export interface ITodo {
   userid: string;
   textField: string;
+  state: "할 일" | "진행 중" | "완료";
 }
 
 export interface LookupedTodo {
