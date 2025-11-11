@@ -5,6 +5,8 @@ import { ITodo } from "@/types/schema";
 import { ObjectId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
+const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
+
 export const updateTodoState = async (
   { todoid }: { todoid: string },
   prevState: { message: string },
@@ -23,6 +25,7 @@ export const updateTodoState = async (
     {
       $set: {
         state,
+        updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
       },
     },
   );

@@ -5,6 +5,8 @@ import { type ITodo } from "@/types/schema";
 import { ObjectId, WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
+const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
+
 export const editTodo = async (
   { todoid, userid }: { todoid: string; userid: string },
   prevState: { message: string },
@@ -24,7 +26,12 @@ export const editTodo = async (
     .collection("todo")
     .updateOne(
       { _id: new ObjectId(todoid) },
-      { $set: { textField: willEditTodo } },
+      {
+        $set: {
+          textField: willEditTodo,
+          updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
+        },
+      },
     );
   revalidateTag(`todo-${todoid}`);
   revalidateTag("todos");
