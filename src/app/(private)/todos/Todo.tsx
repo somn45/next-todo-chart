@@ -2,6 +2,7 @@ import EditForm from "./EditForm";
 import { getTodo } from "@/apis/getTodo";
 import Deleteform from "./DeleteForm";
 import { LookupedTodo } from "@/types/schema";
+import TodoStateForm from "./TodoStateForm";
 
 export default async function TodoPage({
   _id,
@@ -15,17 +16,7 @@ export default async function TodoPage({
     <li>
       <span data-testid="todo-textField">{todo.textField}</span>
       <span>현재 상태 {state}</span>
-      <ul>
-        <li>
-          <button>할 일</button>
-        </li>
-        <li>
-          <button>진행 중</button>
-        </li>
-        <li>
-          <button>완료</button>
-        </li>
-      </ul>
+      <TodoStateForm todoid={todo._id} todoState={todo.state} />
       <EditForm todoid={todo._id} userid={todo.userid} />
       <Deleteform todoid={todo._id} userid={todo.userid} />
     </li>
