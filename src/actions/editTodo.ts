@@ -15,13 +15,17 @@ export const editTodo = async (
   const willEditTodo = formData.get("todo") as string;
 
   try {
+    if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {
+      throw new Error(`Invalid ObjectId Type ${todoid}`);
+    }
+
     const db = (await connectDB).db("next-todo-chart-cluster");
     const todoDoc = await db
       .collection<WithId<ITodo>>("todo")
       .findOne({ _id: new ObjectId(todoid) });
 
     if (!todoDoc) {
-      return { message: "조회 결과 해당 투두가 없습니다." };
+      throw new Error("Todo not found");
     }
     if (willEditTodo === todoDoc.textField) {
       return { message: "이전에 작성한 내용과 동일합니다." };
@@ -40,6 +44,11 @@ export const editTodo = async (
     revalidateTag("todos");
     return { message: "" };
   } catch (error) {
+    if (error instanceof Error) {
+      return {
+        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+      };
+    }
     console.error(error);
     return { message: "" };
   }

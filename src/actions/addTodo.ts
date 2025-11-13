@@ -1,7 +1,7 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { ITodo, ITodos } from "@/types/schema";
+import { ITodos } from "@/types/schema";
 import { WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
@@ -27,7 +27,9 @@ export const addTodo = async (
       updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
     });
 
-    if (!todo) return { message: "" };
+    if (!todo) {
+      throw new Error("Todo not found");
+    }
     await db
       .collection<WithId<ITodos>>("todos")
       .findOneAndUpdate(
@@ -38,6 +40,11 @@ export const addTodo = async (
     revalidateTag("todos");
     return { message: "" };
   } catch (error) {
+    if (error instanceof Error) {
+      return {
+        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+      };
+    }
     console.error(error);
     return { message: "" };
   }

@@ -12,30 +12,44 @@ export const deleteTodo = async (
 ) => {
   const todoid = formData.get("todoid") as string;
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
-  const todoDoc = await db
-    .collection<WithId<ITodo>>("todo")
-    .findOne({ _id: new ObjectId(todoid) });
+  try {
+    if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {
+      throw new Error(`Invalid ObjectId Type ${todoid}`);
+    }
 
-  if (!todoDoc) {
-    return { message: "조회 결과 해당 투두가 없습니다." };
+    const db = (await connectDB).db("next-todo-chart-cluster");
+    const todoDoc = await db
+      .collection<WithId<ITodo>>("todo")
+      .findOne({ _id: new ObjectId(todoid) });
+
+    if (!todoDoc) {
+      throw new Error("Todo not found");
+    }
+    if (todoDoc.userid !== userid) {
+      return { message: "투두를 작성한 사용자만 투두를 삭제할 수 있습니다." };
+    }
+
+    await db.collection("todo").deleteOne({ _id: new ObjectId(todoid) });
+    await db.collection("todos").updateOne(
+      {
+        author: userid,
+      },
+      {
+        $pull: { content: new ObjectId(todoid) },
+      },
+    );
+
+    revalidateTag(`todo-${todoid}`);
+    revalidateTag("todos");
+
+    return { message: "" };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+      };
+    }
+    console.error(error);
+    return { message: "" };
   }
-  if (todoDoc.userid !== userid) {
-    return { message: "투두를 작성한 사용자만 투두를 삭제할 수 있습니다." };
-  }
-
-  await db.collection("todo").deleteOne({ _id: new ObjectId(todoid) });
-  await db.collection("todos").updateOne(
-    {
-      author: userid,
-    },
-    {
-      $pull: { content: new ObjectId(todoid) },
-    },
-  );
-
-  revalidateTag(`todo-${todoid}`);
-  revalidateTag("todos");
-
-  return { message: "" };
 };

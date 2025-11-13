@@ -14,25 +14,41 @@ export const updateTodoState = async (
 ) => {
   const state = formData.get("state");
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
-  const todoDoc = await db
-    .collection<ITodo>("todo")
-    .findOne({ _id: new ObjectId(todoid) });
+  try {
+    if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {
+      throw new Error(`Invalid ObjectId Type ${todoid}`);
+    }
 
-  if (!todoDoc) return { message: "조회 결과 해당 투두가 없습니다." };
-  if (todoDoc.state === state)
-    return { message: "할 일의 상태가 이전과 다르지 않습니다." };
-  db.collection("todo").updateOne(
-    { _id: new ObjectId(todoid) },
-    {
-      $set: {
-        state,
-        updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
+    const db = (await connectDB).db("next-todo-chart-cluster");
+    const todoDoc = await db
+      .collection<ITodo>("todo")
+      .findOne({ _id: new ObjectId(todoid) });
+
+    if (!todoDoc) {
+      throw new Error("Todo not found");
+    }
+    if (todoDoc.state === state)
+      return { message: "할 일의 상태가 이전과 다르지 않습니다." };
+    db.collection("todo").updateOne(
+      { _id: new ObjectId(todoid) },
+      {
+        $set: {
+          state,
+          updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
+        },
       },
-    },
-  );
+    );
 
-  revalidateTag(`todo-${todoid}`);
-  revalidateTag("todos");
-  return { message: "" };
+    revalidateTag(`todo-${todoid}`);
+    revalidateTag("todos");
+    return { message: "" };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+      };
+    }
+    console.error(error);
+    return { message: "" };
+  }
 };
