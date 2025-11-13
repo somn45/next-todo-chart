@@ -1,7 +1,7 @@
 import { getTodos } from "@/apis/getTodos";
 import TodosForm from "./Form";
 import { cookies } from "next/headers";
-import TodoPage from "./Todo";
+import TodoPage from "./(todo)/Todo";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 
 interface AccessTokenPayload {
@@ -19,6 +19,14 @@ export default async function Todos() {
 
   const todos = await getTodos(userid);
 
+  if (!todos)
+    return (
+      <section>
+        <span>
+          오늘 할 일이 아직 정해지지 않았어요. 어서 할 일을 생성해 봐요!
+        </span>
+      </section>
+    );
   return (
     <section>
       <h2>Todos 페이지</h2>

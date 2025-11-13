@@ -6,11 +6,12 @@ import { useActionState } from "react";
 export default function TodosForm({ userid }: { userid: string }) {
   const addTodoWithUserId = addTodo.bind(null, userid);
   const [state, formAction] = useActionState(addTodoWithUserId, {
-    newTodo: "",
+    message: "",
   });
 
   return (
     <form role="form" action={formAction}>
+      <span>{state.message}</span>
       <input
         type="text"
         placeholder="새 투두리스트 추가"

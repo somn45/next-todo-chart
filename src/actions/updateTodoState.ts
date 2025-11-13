@@ -15,11 +15,13 @@ export const updateTodoState = async (
   const state = formData.get("state");
 
   const db = (await connectDB).db("next-todo-chart-cluster");
-  const todo = await db
+  const todoDoc = await db
     .collection<ITodo>("todo")
     .findOne({ _id: new ObjectId(todoid) });
-  if (!todo) return { message: "" };
-  if (todo.state === state) return { message: "" };
+
+  if (!todoDoc) return { message: "조회 결과 해당 투두가 없습니다." };
+  if (todoDoc.state === state)
+    return { message: "할 일의 상태가 이전과 다르지 않습니다." };
   db.collection("todo").updateOne(
     { _id: new ObjectId(todoid) },
     {

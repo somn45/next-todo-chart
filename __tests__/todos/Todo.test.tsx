@@ -1,5 +1,5 @@
 import { getTodo } from "@/apis/getTodo";
-import TodoPage from "@/app/(private)/todos/Todo";
+import TodoPage from "@/app/(private)/todos/(todo)/Todo";
 import { render, screen } from "@testing-library/react";
 
 jest.mock("@/libs/database", () => ({

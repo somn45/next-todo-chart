@@ -1,5 +1,5 @@
 import { deleteTodo } from "@/actions/deleteTodo";
-import Deleteform from "@/app/(private)/todos/DeleteForm";
+import Deleteform from "@/app/(private)/todos/(todo)/DeleteForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("@/libs/database", () => ({

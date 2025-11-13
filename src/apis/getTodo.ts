@@ -7,22 +7,28 @@ export const getTodo = async (userid: string, todoid: string) => {
   "use cache";
   cacheTag(`todo-${todoid}`);
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
-  const todoDoc = await db
-    .collection("todo")
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(todoid),
+  try {
+    const db = (await connectDB).db("next-todo-chart-cluster");
+    const todoDoc = await db
+      .collection("todo")
+      .aggregate([
+        {
+          $match: {
+            userid,
+            _id: new ObjectId(todoid),
+          },
         },
-      },
-      {
-        $set: {
-          _id: { $toString: "$_id" },
+        {
+          $set: {
+            _id: { $toString: "$_id" },
+          },
         },
-      },
-    ])
-    .next();
+      ])
+      .next();
 
-  return JSON.parse(JSON.stringify(todoDoc)) as ITodo & WithStringifyId;
+    return JSON.parse(JSON.stringify(todoDoc)) as ITodo & WithStringifyId;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };

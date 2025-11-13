@@ -16,6 +16,7 @@ export default function Deleteform({
   });
   return (
     <form role="form" action={formAction}>
+      <span>{state.message}</span>
       <input
         type="text"
         name="todoid"

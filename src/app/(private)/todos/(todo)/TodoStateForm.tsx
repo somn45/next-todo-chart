@@ -1,7 +1,6 @@
 "use client";
 
 import { updateTodoState } from "@/actions/updateTodoState";
-import { LookupedTodo } from "@/types/schema";
 import { useActionState } from "react";
 
 interface TodoStateFormProps {
@@ -19,6 +18,7 @@ export default function TodoStateForm({
   });
   return (
     <ul>
+      <span>{actionState.message}</span>
       <li>
         <form action={formAction} hidden={todoState === "할 일"}>
           <input type="text" name="state" value="할 일" readOnly hidden />

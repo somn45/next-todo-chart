@@ -5,6 +5,8 @@ import { unstable_cacheTag as cacheTag } from "next/cache";
 export const getTodos = async (userid: string) => {
   "use cache";
   cacheTag("todos");
+
+  if (!userid) return null;
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todosDoc = await db
     .collection("todos")
