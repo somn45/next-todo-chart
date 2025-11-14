@@ -1,7 +1,7 @@
 import { getTodos } from "@/apis/getTodos";
 import TodosForm from "./Form";
 import { cookies } from "next/headers";
-import TodoPage from "../../../components/domain/Todo/Todo";
+import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 
 interface AccessTokenPayload {
@@ -33,7 +33,7 @@ export default async function Todos() {
       <TodosForm userid={userid} />
       <ul>
         {todos.map(todo => (
-          <TodoPage key={todo.content._id} {...todo.content} />
+          <TodoWrapper key={todo.content._id} todo={todo.content} />
         ))}
       </ul>
     </section>

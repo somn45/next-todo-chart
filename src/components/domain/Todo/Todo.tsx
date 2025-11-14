@@ -5,13 +5,12 @@ import Deleteform from "./DeleteForm";
 import { LookupedTodo } from "@/types/schema";
 import TodoStateForm from "./TodoStateForm";
 
-export default function TodoPage({
+export default function Todo({
   _id,
   userid,
   textField,
   state,
 }: LookupedTodo["content"]) {
-  if (state === "진행 중") throw new Error("Todo State Error");
   return (
     <li>
       <span data-testid="todo-textField">{textField}</span>
