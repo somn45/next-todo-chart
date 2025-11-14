@@ -11,7 +11,7 @@ export default function TodoPage({
   textField,
   state,
 }: LookupedTodo["content"]) {
-  // if (state === "진행 중") throw new Error("Todo State Error");
+  if (state === "진행 중") throw new Error("Todo State Error");
   return (
     <li>
       <span data-testid="todo-textField">{textField}</span>

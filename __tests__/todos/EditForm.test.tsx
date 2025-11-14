@@ -1,5 +1,5 @@
 import { editTodo } from "@/actions/editTodo";
-import EditForm from "@/app/(private)/todos/(todo)/EditForm";
+import EditForm from "@/components/domain/Todo/EditForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("@/libs/database", () => ({

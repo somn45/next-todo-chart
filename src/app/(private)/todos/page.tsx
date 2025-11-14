@@ -1,7 +1,7 @@
 import { getTodos } from "@/apis/getTodos";
 import TodosForm from "./Form";
 import { cookies } from "next/headers";
-import TodoPage from "./(todo)/Todo";
+import TodoPage from "../../../components/domain/Todo/Todo";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 
 interface AccessTokenPayload {
