@@ -3,6 +3,8 @@ import { connectDB } from "@/libs/database";
 import { revalidateTag } from "next/cache";
 import { mockTodo } from "../../__mocks__/todos";
 
+const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
+
 jest.mock("next/cache", () => ({
   revalidateTag: jest.fn(),
 }));
@@ -31,13 +33,23 @@ describe("addTodo 서버 액션", () => {
   it("addTodo 서버 액션이 실행되면 todo 추가 쿼리, 캐시 함수가 호출된다.", async () => {
     const formData = new FormData();
     formData.set("newTodo", "새 투두");
-    await addTodo("mockuser", { newTodo: "" }, formData);
+
+    jest.useFakeTimers();
+    const MOCK_TIME = new Date("2025-11-14T00:00:00.000Z");
+    jest.setSystemTime(MOCK_TIME);
+    const createdAt = new Date(MOCK_TIME.getTime() + AFTER_NINE_HOUR);
+    const updatedAt = new Date(MOCK_TIME.getTime() + AFTER_NINE_HOUR);
+
+    await addTodo("mockuser", { message: "" }, formData);
 
     const db = (await connectDB).db("next-todo-chart-cluster");
     expect(db.collection("todos").insertOne).toHaveBeenCalledTimes(1);
     expect(db.collection("todos").insertOne).toHaveBeenCalledWith({
       userid: "mockuser",
       textField: "새 투두",
+      state: "할 일",
+      createdAt,
+      updatedAt,
     });
     expect(db.collection("todos").findOneAndUpdate).toHaveBeenCalledTimes(1);
     expect(db.collection("todos").findOneAndUpdate).toHaveBeenCalledWith(

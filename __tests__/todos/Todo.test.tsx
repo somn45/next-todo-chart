@@ -7,12 +7,17 @@ jest.mock("@/libs/database", () => ({
     db: jest.fn(),
   }),
 }));
-jest.mock("@/app/(private)/todos/EditForm", () => {
+jest.mock("@/components/domain/Todo/TodoStateForm", () => {
+  return function MockTodoStateForm() {
+    return <div data-testid="todo-state-form">update todo state Form</div>;
+  };
+});
+jest.mock("@/components/domain/Todo/EditForm", () => {
   return function MockEditForm() {
     return <div data-testid="edit-form">Edit Form</div>;
   };
 });
-jest.mock("@/app/(private)/todos/DeleteForm", () => {
+jest.mock("@/components/domain/Todo/DeleteForm", () => {
   return function MockDeleteForm() {
     return <div data-testid="delete-form">Delete Form</div>;
   };
@@ -28,17 +33,21 @@ describe("<Todo />", () => {
       textField: "mock text",
     });
     render(
-      await TodoPage({
+      TodoPage({
         _id: "objectId",
         userid: "mockuser",
-        textField: "",
+        textField: "mock text",
+        state: "할 일",
+        updatedAt: "",
       }),
     );
 
     const textFieldSpan = screen.getByTestId("todo-textField");
+    const todoStateSpan = screen.getByTestId("todo-state");
     const editTodoForm = screen.getByTestId("edit-form");
     const deleteTodoForm = screen.getByTestId("delete-form");
     expect(textFieldSpan).toHaveTextContent("mock text");
+    expect(todoStateSpan).toHaveTextContent("할 일");
     expect(editTodoForm).toBeInTheDocument();
     expect(deleteTodoForm).toBeInTheDocument();
   });

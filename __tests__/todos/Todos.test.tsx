@@ -2,6 +2,7 @@ import { getTodos } from "@/apis/getTodos";
 import Todos from "@/app/(private)/todos/page";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { render, screen } from "@testing-library/react";
+
 jest.mock("@/libs/database", () => ({
   connectDB: jest.fn().mockResolvedValue({
     db: jest.fn(),
@@ -15,9 +16,9 @@ jest.mock("@/app/(private)/todos/Form", () => {
     return <div>Todos Form</div>;
   };
 });
-jest.mock("@/app/(private)/todos/Todo", () => {
-  return function TodoPage({ textField }: { textField: string }) {
-    return <li>{textField}</li>;
+jest.mock("@/components/domain/Todo/TodoWrapper", () => {
+  return function TodoPage({ todo }: { todo: { textField: string } }) {
+    return <li>{todo.textField}</li>;
   };
 });
 jest.mock("next/headers", () => {

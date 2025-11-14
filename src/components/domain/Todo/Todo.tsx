@@ -14,7 +14,7 @@ export default function Todo({
   return (
     <li>
       <span data-testid="todo-textField">{textField}</span>
-      <span>현재 상태 {state}</span>
+      <span data-testid="todo-state">현재 상태 {state}</span>
       <TodoStateForm todoid={_id} todoState={state} />
       <EditForm todoid={_id} userid={userid} />
       <Deleteform todoid={_id} userid={userid} />

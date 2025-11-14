@@ -30,7 +30,7 @@ export const deleteTodo = async (
     }
 
     await db.collection("todo").deleteOne({ _id: new ObjectId(todoid) });
-    await db.collection("todos").updateOne(
+    await db.collection<ITodo>("todos").updateOne(
       {
         author: userid,
       },

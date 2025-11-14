@@ -13,6 +13,11 @@ jest.mock("next/cache", () => ({
 }));
 jest.mock("@/libs/database", () => {
   const mockCollection = {
+    findOne: jest.fn().mockResolvedValue({
+      _id: "123456789012345678901234",
+      userid: "mockuser",
+      textField: "hello world!",
+    }),
     deleteOne: jest.fn(),
     updateOne: jest.fn(),
   };
