@@ -2,13 +2,17 @@ import { connectDB } from "@/libs/database";
 import { ITodo, WithStringifyId } from "@/types/schema";
 import { ObjectId } from "mongodb";
 import { unstable_cacheTag as cacheTag } from "next/cache";
+import { redirect } from "next/navigation";
 
-export const getTodo = async (userid: string, todoid: string) => {
+export const getTodo = async (
+  userid: string | null | undefined,
+  todoid: string,
+) => {
   "use cache";
   cacheTag(`todo-${todoid}`);
 
   if (!userid) {
-    throw new Error(`Logged user not found. Please sign in!`);
+    return redirect("/login");
   }
   if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {
     throw new Error(`Invalid ObjectId Type ${todoid}`);
