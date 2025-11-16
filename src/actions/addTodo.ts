@@ -8,10 +8,14 @@ import { revalidateTag } from "next/cache";
 const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
 
 export const addTodo = async (
-  userid: string,
+  userid: string | null | undefined,
   prevState: { message: string },
   formData: FormData,
 ) => {
+  if (!userid) {
+    return { message: "할 일을 추가하는 작업은 로그인이 필요합니다." };
+  }
+
   const newTodo = formData.get("newTodo") as string;
 
   if (!newTodo || newTodo.length === 0)

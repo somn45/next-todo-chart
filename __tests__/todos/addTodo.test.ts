@@ -30,6 +30,9 @@ jest.mock("@/libs/database", () => {
 });
 
 describe("addTodo 서버 액션", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it("addTodo 서버 액션이 실행되면 todo 추가 쿼리, 캐시 함수가 호출된다.", async () => {
     const formData = new FormData();
     formData.set("newTodo", "새 투두");
@@ -59,5 +62,57 @@ describe("addTodo 서버 액션", () => {
     );
     expect(revalidateTag).toHaveBeenCalledTimes(1);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
+  });
+
+  it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {
+    const formData = new FormData();
+    formData.set("newTodo", "mock text");
+    const addTodoActionState = await addTodo(null, { message: "" }, formData);
+
+    const db = (await connectDB).db("next-todo-chart-cluster");
+
+    expect(addTodoActionState.message).toEqual(
+      "할 일을 추가하는 작업은 로그인이 필요합니다.",
+    );
+    expect(db.collection("todo").insertOne).not.toHaveBeenCalled();
+    expect(db.collection("todo").findOneAndUpdate).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
+  });
+
+  it("formData로부터 받은 newTodo가 없거나 길이가 0일 경우 에러 메세지를 반환한다.", async () => {
+    const formData = new FormData();
+    const addTodoActionState = await addTodo(
+      "mockuser",
+      { message: "" },
+      formData,
+    );
+
+    const db = (await connectDB).db("next-todo-chart-cluster");
+
+    expect(addTodoActionState.message).toEqual(
+      "할 일에 내용이 작성되어 있지 않습니다.",
+    );
+    expect(db.collection("todo").insertOne).not.toHaveBeenCalled();
+    expect(db.collection("todo").findOneAndUpdate).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
+  });
+
+  it("투두 문서 삽입 결과가 undefined나 null일 때 Todo not found 에러를 던진다", async () => {
+    const db = (await connectDB).db("next-todo-chart-cluster");
+    (db.collection("todo").insertOne as jest.Mock).mockResolvedValue(null);
+
+    const formData = new FormData();
+    formData.set("newTodo", "mock text");
+    const addTodoActionState = await addTodo(
+      "mockuser",
+      { message: "" },
+      formData,
+    );
+
+    expect(addTodoActionState.message).toEqual(
+      `투두 추가 과정 중 에러가 발생했습니다. Todo not found`,
+    );
+    expect(db.collection("todo").findOneAndUpdate).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
   });
 });

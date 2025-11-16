@@ -8,11 +8,18 @@ import { revalidateTag } from "next/cache";
 const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
 
 export const editTodo = async (
-  { todoid, userid }: { todoid: string; userid: string },
+  { todoid, userid }: { todoid: string; userid: string | null | undefined },
   prevState: { message: string },
   formData: FormData,
 ) => {
+  if (!userid) {
+    return { message: "할 일을 수정하는 작업은 로그인이 필요합니다." };
+  }
+
   const willEditTodo = formData.get("todo") as string;
+
+  if (!willEditTodo || willEditTodo.length === 0)
+    return { message: "할 일에 내용이 작성되어 있지 않습니다." };
 
   try {
     if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {
@@ -46,7 +53,7 @@ export const editTodo = async (
   } catch (error) {
     if (error instanceof Error) {
       return {
-        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+        message: `투두 수정 과정 중 에러가 발생했습니다. ${error.message}`,
       };
     }
     console.error(error);

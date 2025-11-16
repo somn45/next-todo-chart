@@ -6,10 +6,14 @@ import { ObjectId, WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
 export const deleteTodo = async (
-  userid: string,
+  userid: string | null | undefined,
   prevState: { message: string },
   formData: FormData,
 ) => {
+  if (!userid) {
+    return { message: "할 일을 삭제하는 작업은 로그인이 필요합니다." };
+  }
+
   const todoid = formData.get("todoid") as string;
 
   try {
@@ -46,7 +50,7 @@ export const deleteTodo = async (
   } catch (error) {
     if (error instanceof Error) {
       return {
-        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+        message: `투두 삭제 과정 중 에러가 발생했습니다. ${error.message}`,
       };
     }
     console.error(error);
