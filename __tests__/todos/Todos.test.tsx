@@ -1,7 +1,7 @@
 import { getTodos } from "@/apis/getTodos";
 import Todos from "@/app/(private)/todos/page";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("@/libs/database", () => ({
   connectDB: jest.fn().mockResolvedValue({
@@ -63,10 +63,28 @@ describe("<Todos />", () => {
       sub: { userid: "mockuser" },
     });
     render(await Todos());
-    const todoItems = screen.getAllByRole("listitem");
-    todoItems.forEach((todoItem, index) => {
-      expect(todoItem).toBeInTheDocument();
-      expect(todoItem).toHaveTextContent(mockTodos[index].content.textField);
+
+    waitFor(() => {
+      const todoItems = screen.getAllByRole("listitem");
+      todoItems.forEach((todoItem, index) => {
+        expect(todoItem).toBeInTheDocument();
+        expect(todoItem).toHaveTextContent(mockTodos[index].content.textField);
+      });
+    });
+  });
+
+  it("getTodos API에서 가져오는 todos가 null이나 undefined인 경우 대체 UI를 렌더링한다.", async () => {
+    (getTodos as jest.Mock).mockResolvedValue(null);
+    (decodeJwtTokenPayload as jest.Mock).mockReturnValue({
+      sub: { userid: "mockuser" },
+    });
+
+    render(await Todos());
+
+    waitFor(() => {
+      const alternativeUISection = screen.getByTestId("todos-alternative-ui");
+
+      expect(alternativeUISection).toBeInTheDocument();
     });
   });
 });

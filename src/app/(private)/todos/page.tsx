@@ -22,7 +22,7 @@ export default async function Todos() {
   if (!todos)
     return (
       <section>
-        <span>
+        <span data-testid="todos-alternative-ui">
           오늘 할 일이 아직 정해지지 않았어요. 어서 할 일을 생성해 봐요!
         </span>
       </section>
