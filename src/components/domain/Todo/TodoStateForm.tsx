@@ -12,7 +12,7 @@ export default function TodoStateForm({
   todoid,
   todoState,
 }: TodoStateFormProps) {
-  const updateTodoStateWithTodoId = updateTodoState.bind(null, { todoid });
+  const updateTodoStateWithTodoId = updateTodoState.bind(null, todoid);
   const [actionState, formAction] = useActionState(updateTodoStateWithTodoId, {
     message: "",
   });

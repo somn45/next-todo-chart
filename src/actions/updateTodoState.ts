@@ -8,7 +8,7 @@ import { revalidateTag } from "next/cache";
 const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
 
 export const updateTodoState = async (
-  { todoid }: { todoid: string },
+  todoid: string,
   prevState: { message: string },
   formData: FormData,
 ) => {
@@ -45,7 +45,7 @@ export const updateTodoState = async (
   } catch (error) {
     if (error instanceof Error) {
       return {
-        message: `투두 추가 과정 중 에러가 발생했습니다. ${error.message}`,
+        message: `투두 상태 수정 과정 중 에러가 발생했습니다. ${error.message}`,
       };
     }
     console.error(error);
