@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
 const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
+const AFTER_TEN_MINUTES = 1000 * 60 * 10;
 
 export const updateTodoState = async (
   todoid: string,
@@ -34,10 +35,30 @@ export const updateTodoState = async (
       {
         $set: {
           state,
-          updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
+          updatedAt: new Date(Date.now()),
         },
       },
     );
+
+    if (state === "완료") {
+      db.collection("todo").updateOne(
+        { _id: new ObjectId(todoid) },
+        {
+          $set: {
+            completedAt: new Date(Date.now() + AFTER_TEN_MINUTES),
+          },
+        },
+      );
+    } else {
+      db.collection("todo").updateOne(
+        { _id: new ObjectId(todoid) },
+        {
+          $set: {
+            completedAt: null,
+          },
+        },
+      );
+    }
 
     revalidateTag(`todo-${todoid}`);
     revalidateTag("todos");

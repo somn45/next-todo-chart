@@ -43,7 +43,7 @@ export const editTodo = async (
       {
         $set: {
           textField: willEditTodo,
-          updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
+          updatedAt: new Date(Date.now()),
         },
       },
     );

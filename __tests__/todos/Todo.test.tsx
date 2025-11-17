@@ -38,7 +38,9 @@ describe("<Todo />", () => {
         userid: "mockuser",
         textField: "mock text",
         state: "할 일",
+        createdAt: "",
         updatedAt: "",
+        completedAt: "",
       }),
     );
 
