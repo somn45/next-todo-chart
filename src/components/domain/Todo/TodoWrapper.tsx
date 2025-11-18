@@ -12,7 +12,7 @@ export default function TodoWrapper({
 }) {
   return (
     <ErrorBoundary FallbackComponent={TodoFallback}>
-      <Todo {...todo} />
+      <Todo todo={todo} />
     </ErrorBoundary>
   );
 }
