@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 // 6시 20분 완료인데 6시 14분일 경우
 
 export default function Todo({ todo }: { todo: LookupedTodo["content"] }) {
+  console.log(todo);
   const { _id, userid, textField, state, completedAt } = todo;
 
   const [hasGracePeriod, setHasGracePeriod] = useState(true);

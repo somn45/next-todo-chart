@@ -3,8 +3,6 @@ import { connectDB } from "@/libs/database";
 import { revalidateTag } from "next/cache";
 import { mockTodo } from "../../__mocks__/todos";
 
-const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
-
 jest.mock("next/cache", () => ({
   revalidateTag: jest.fn(),
 }));
@@ -38,10 +36,11 @@ describe("addTodo 서버 액션", () => {
     formData.set("newTodo", "새 투두");
 
     jest.useFakeTimers();
-    const MOCK_TIME = new Date("2025-11-14T00:00:00.000Z");
-    jest.setSystemTime(MOCK_TIME);
-    const createdAt = new Date(MOCK_TIME.getTime() + AFTER_NINE_HOUR);
-    const updatedAt = new Date(MOCK_TIME.getTime() + AFTER_NINE_HOUR);
+    const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
+    jest.setSystemTime(MOCK_DATE);
+    const createdAt = MOCK_DATE;
+    const updatedAt = MOCK_DATE;
+    const completedAt = null;
 
     await addTodo("mockuser", { message: "" }, formData);
 
@@ -53,6 +52,7 @@ describe("addTodo 서버 액션", () => {
       state: "할 일",
       createdAt,
       updatedAt,
+      completedAt,
     });
     expect(db.collection("todos").findOneAndUpdate).toHaveBeenCalledTimes(1);
     expect(db.collection("todos").findOneAndUpdate).toHaveBeenCalledWith(

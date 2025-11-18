@@ -1,5 +1,6 @@
 import { getTodo } from "@/apis/getTodo";
 import TodoPage from "@/components/domain/Todo/Todo";
+import { LookupedTodo } from "@/types/schema";
 import { render, screen } from "@testing-library/react";
 
 jest.mock("@/libs/database", () => ({
@@ -25,6 +26,7 @@ jest.mock("@/components/domain/Todo/DeleteForm", () => {
 jest.mock("@/apis/getTodo", () => ({
   getTodo: jest.fn(),
 }));
+
 describe("<Todo />", () => {
   it("Todos 컴포넌트로부터 todo의 id와 userid를 받아 단일 todo를 가져온 후 페이지에 출력한다.", async () => {
     (getTodo as jest.Mock).mockResolvedValue({
@@ -32,17 +34,16 @@ describe("<Todo />", () => {
       userid: "mockuser",
       textField: "mock text",
     });
-    render(
-      TodoPage({
-        _id: "objectId",
-        userid: "mockuser",
-        textField: "mock text",
-        state: "할 일",
-        createdAt: "",
-        updatedAt: "",
-        completedAt: "",
-      }),
-    );
+    const mockTodo: LookupedTodo["content"] = {
+      _id: "objectId",
+      userid: "mockuser",
+      textField: "mock text",
+      state: "할 일",
+      createdAt: "",
+      updatedAt: "",
+      completedAt: new Date(),
+    };
+    render(<TodoPage todo={mockTodo} />);
 
     const textFieldSpan = screen.getByTestId("todo-textField");
     const todoStateSpan = screen.getByTestId("todo-state");

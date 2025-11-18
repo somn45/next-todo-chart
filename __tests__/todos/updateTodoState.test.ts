@@ -8,8 +8,6 @@ import { connectDB } from "@/libs/database";
 import { revalidateTag } from "next/cache";
 import { ObjectId } from "mongodb";
 
-const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
-
 jest.mock("next/cache", () => ({
   revalidateTag: jest.fn(),
 }));
@@ -45,7 +43,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     jest.useFakeTimers();
     const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
     jest.setSystemTime(MOCK_DATE);
-    const updatedAt = new Date(MOCK_DATE.getTime() + AFTER_NINE_HOUR);
+    const updatedAt = MOCK_DATE;
 
     await updateTodoState(mockTodo._id, { message: "" }, formData);
 
@@ -55,7 +53,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     expect(db.collection("todo").findOne).toHaveBeenCalledWith({
       _id: new ObjectId(mockTodo._id),
     });
-    expect(db.collection("todos").updateOne).toHaveBeenCalledTimes(1);
+    expect(db.collection("todos").updateOne).toHaveBeenCalledTimes(2);
     expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
       { _id: new ObjectId(mockTodo._id) },
       {

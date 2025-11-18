@@ -8,8 +8,6 @@ import { revalidateTag } from "next/cache";
 import { mockTodo } from "../../__mocks__/todos";
 import { ObjectId } from "mongodb";
 
-const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
-
 jest.mock("next/cache", () => ({
   revalidateTag: jest.fn(),
 }));
@@ -45,7 +43,7 @@ describe("editTodo 서버 액션", () => {
     jest.useFakeTimers();
     const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
     jest.setSystemTime(MOCK_DATE);
-    const updatedAt = new Date(MOCK_DATE.getTime() + AFTER_NINE_HOUR);
+    const updatedAt = MOCK_DATE;
 
     await editTodo(
       { todoid: "123456789012345678901234", userid: "mockuser" },
