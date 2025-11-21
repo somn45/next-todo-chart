@@ -17,7 +17,6 @@ export default function Todo({ todo }: { todo: LookupedTodo["content"] }) {
   const deleteCompletedTodoTimerId = useRef<NodeJS.Timeout | null>(null);
 
   const deleteTodo = () => {
-    console.log("디스플레이 차단");
     setHasGracePeriod(false);
     setMessage("");
   };

@@ -53,6 +53,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     expect(db.collection("todo").findOne).toHaveBeenCalledWith({
       _id: new ObjectId(mockTodo._id),
     });
+
     expect(db.collection("todos").updateOne).toHaveBeenCalledTimes(2);
     expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
       { _id: new ObjectId(mockTodo._id) },
@@ -63,6 +64,59 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
         },
       },
     );
+    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+      { _id: new ObjectId(mockTodo._id) },
+      {
+        $set: {
+          completedAt: null,
+        },
+      },
+    );
+
+    expect(revalidateTag).toHaveBeenCalledTimes(2);
+    expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
+    expect(revalidateTag).toHaveBeenCalledWith("todos");
+  });
+
+  it("만약 FormData에 완료 상태가 담겨있다면 completedAt 속성을 변경하는 쓰기 함수가 호출된다.", async () => {
+    const formData = new FormData();
+    formData.set("state", "완료");
+
+    const AFTER_TEN_MINUTES = 1000 * 60 * 10;
+
+    jest.useFakeTimers();
+    const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
+    jest.setSystemTime(MOCK_DATE);
+    const updatedAt = MOCK_DATE;
+
+    await updateTodoState(mockTodo._id, { message: "" }, formData);
+
+    const db = (await connectDB).db("next-todo-chart-cluster");
+
+    expect(db.collection("todo").findOne).toHaveBeenCalledTimes(1);
+    expect(db.collection("todo").findOne).toHaveBeenCalledWith({
+      _id: new ObjectId(mockTodo._id),
+    });
+
+    expect(db.collection("todos").updateOne).toHaveBeenCalledTimes(2);
+    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+      { _id: new ObjectId(mockTodo._id) },
+      {
+        $set: {
+          state: "완료",
+          updatedAt,
+        },
+      },
+    );
+    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+      { _id: new ObjectId(mockTodo._id) },
+      {
+        $set: {
+          completedAt: new Date(Date.now() + AFTER_TEN_MINUTES),
+        },
+      },
+    );
+
     expect(revalidateTag).toHaveBeenCalledTimes(2);
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
