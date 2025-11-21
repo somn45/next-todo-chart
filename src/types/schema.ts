@@ -8,7 +8,9 @@ export interface ITodo {
   userid: string;
   textField: string;
   state: "할 일" | "진행 중" | "완료";
+  createdAt: string;
   updatedAt: string;
+  completedAt: Date | null;
 }
 
 export interface LookupedTodo {

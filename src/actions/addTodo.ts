@@ -27,8 +27,9 @@ export const addTodo = async (
       userid,
       textField: newTodo,
       state: "할 일",
-      createdAt: new Date(Date.now() + AFTER_NINE_HOUR),
-      updatedAt: new Date(Date.now() + AFTER_NINE_HOUR),
+      createdAt: new Date(Date.now()),
+      updatedAt: new Date(Date.now()),
+      completedAt: null,
     });
 
     if (!todo) {

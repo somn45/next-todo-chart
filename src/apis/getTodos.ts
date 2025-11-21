@@ -12,6 +12,9 @@ export const getTodos = async (userid: string | undefined | null) => {
   }
 
   const db = (await connectDB).db("next-todo-chart-cluster");
+
+  const gracePeriod = new Date(Date.now());
+
   const todosDoc = await db
     .collection("todos")
     .aggregate([
@@ -31,6 +34,24 @@ export const getTodos = async (userid: string | undefined | null) => {
       {
         $unwind: {
           path: "$content",
+        },
+      },
+      {
+        $match: {
+          $or: [
+            {
+              $or: [
+                { "content.state": "할 일" },
+                { "content.state": "진행 중" },
+              ],
+            },
+            {
+              $and: [
+                { "content.state": "완료" },
+                { "content.completedAt": { $gte: gracePeriod } },
+              ],
+            },
+          ],
         },
       },
       {
