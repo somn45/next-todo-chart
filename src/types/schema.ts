@@ -10,7 +10,7 @@ export interface ITodo {
   state: "할 일" | "진행 중" | "완료";
   createdAt: string;
   updatedAt: string;
-  completedAt: Date;
+  completedAt: Date | null;
 }
 
 export interface LookupedTodo {

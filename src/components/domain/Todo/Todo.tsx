@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 // 6시 20분 완료인데 6시 14분일 경우
 
 export default function Todo({ todo }: { todo: LookupedTodo["content"] }) {
-  console.log(todo);
   const { _id, userid, textField, state, completedAt } = todo;
 
   const [hasGracePeriod, setHasGracePeriod] = useState(true);
@@ -18,11 +17,17 @@ export default function Todo({ todo }: { todo: LookupedTodo["content"] }) {
   const deleteCompletedTodoTimerId = useRef<NodeJS.Timeout | null>(null);
 
   const deleteTodo = () => {
+    console.log("디스플레이 차단");
     setHasGracePeriod(false);
     setMessage("");
   };
 
   useEffect(() => {
+    if (!completedAt) {
+      setHasGracePeriod(false);
+      setMessage("");
+      return;
+    }
     const completedDate = new Date(completedAt);
     const gracePeriod = completedDate.getTime() - Date.now();
 
