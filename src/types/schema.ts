@@ -9,7 +9,7 @@ export interface ITodo {
   textField: string;
   state: "할 일" | "진행 중" | "완료";
   createdAt: string;
-  updatedAt: string;
+  updatedAt: Date;
   completedAt: Date | null;
 }
 
@@ -18,7 +18,17 @@ export interface LookupedTodo {
   content: WithStringifyId & ITodo;
 }
 
+export interface LookupedTodoWithObjectId {
+  author: string;
+  content: WithStringifyId & { _id: ObjectId };
+}
+
 export interface ITodos {
   author: string;
   content: ObjectId[];
+}
+
+export interface TodoStats {
+  date: Date;
+  todos: (ITodo | WithStringifyId)[];
 }

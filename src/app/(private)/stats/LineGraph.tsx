@@ -56,7 +56,6 @@ export default function LineGraph() {
     d3.select("g").append("g").call(d3.axisLeft(y_scale));
 
     const groupedData = d3.group(data, d => String(d.state));
-    console.log(groupedData);
     const keys = groupedData.keys();
 
     const lineGenerator = d3

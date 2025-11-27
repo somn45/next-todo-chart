@@ -18,7 +18,6 @@ export default async function Todos() {
     decodeJwtTokenPayload(accessToken);
 
   const todos = await getTodos(userid);
-  console.log(todos);
 
   if (!todos)
     return (
