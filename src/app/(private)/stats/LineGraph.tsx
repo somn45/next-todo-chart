@@ -8,6 +8,8 @@ interface DataPoint {
   value: number;
 }
 
+interface LineGraphProps {}
+
 const data = [
   { date: new Date(2025, 0, 1), value: 632, state: 1 },
   { date: new Date(2025, 0, 1), value: 7591, state: 2 },

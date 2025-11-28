@@ -25,7 +25,7 @@ export const setTodoStats = async (userid: string | undefined | null) => {
   // createdAt이 11/27이라면 X
   // createdAt은 11/26:59보다 작아야 하고 completedAt은 11/26 0시보다 커야함
 
-  const prevDateeSharp = new Date(
+  const prevDateSharp = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
     new Date().getDate() - 1,
@@ -39,15 +39,9 @@ export const setTodoStats = async (userid: string | undefined | null) => {
     59,
   );
 
-  const currentDateSharp = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-  );
-
   const recordedTodoStats = await db
-    .collection<TodoStats>("stats")
-    .findOne({ date: currentDateSharp });
+    .collection<TodoStats>("stat")
+    .findOne({ date: prevDateSharp });
   if (recordedTodoStats) return recordedTodoStats;
 
   const todosDoc = (await db
@@ -69,7 +63,7 @@ export const setTodoStats = async (userid: string | undefined | null) => {
               $and: [
                 { "content.state": "완료" },
                 { "content.createdAt": { $lte: prevDateMidNight } },
-                { "content.completedAt": { $gt: prevDateeSharp } },
+                { "content.completedAt": { $gt: prevDateSharp } },
               ],
             },
           ],
@@ -79,18 +73,13 @@ export const setTodoStats = async (userid: string | undefined | null) => {
     ])
     .toArray()) as (LookupedTodoWithObjectId & WithStringifyId)[];
 
-  const todos = todosDoc.map(todoDoc => todoDoc.content);
+  const todoStats = todosDoc.map(todoDoc => ({
+    todo: todoDoc.content,
+    date: prevDateSharp,
+  }));
 
-  const stats: TodoStats = {
-    date: currentDateSharp,
-    todos,
-  };
-
-  const { insertedId } = await db.collection("stats").insertOne(stats);
-  return {
-    _id: insertedId,
-    stats,
-  };
+  await db.collection("stat").insertMany(todoStats);
+  return todoStats;
 };
 
 // 단일 투두 객체 검색 => stat 문서에 이미 해당 투두가 있으면 패스

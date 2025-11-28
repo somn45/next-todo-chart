@@ -3,6 +3,7 @@ import LineGraph from "./LineGraph";
 import { cookies } from "next/headers";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { setTodoStats } from "@/apis/setTodoStats";
+import { getTodoStats } from "@/apis/getTodoStats";
 
 interface AccessTokenPayload {
   sub: string;
@@ -19,6 +20,9 @@ export default async function Stats() {
 
   // const todos = await getGroupByDateTodos(userid);
   await setTodoStats(userid);
+  const todoStats = await getTodoStats(userid);
+
+  console.log(todoStats);
 
   return <LineGraph />;
 }
