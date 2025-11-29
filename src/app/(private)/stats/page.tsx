@@ -13,7 +13,6 @@ export default async function Stats() {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("atk");
 
-  // 에러 작업 예정
   if (!accessToken) return [];
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
@@ -21,8 +20,6 @@ export default async function Stats() {
   // const todos = await getGroupByDateTodos(userid);
   await setTodoStats(userid);
   const todoStats = await getTodoStats(userid);
-
-  console.log(todoStats);
 
   return <LineGraph />;
 }

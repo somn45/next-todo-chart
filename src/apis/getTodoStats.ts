@@ -2,6 +2,8 @@ import { connectDB } from "@/libs/database";
 import { TodoStats } from "@/types/schema";
 import { redirect } from "next/navigation";
 
+const ONE_DAY = 1000 * 60 * 60 * 24;
+
 export const getTodoStats = async (userid: string | undefined | null) => {
   if (!userid) {
     redirect("/login");
@@ -15,11 +17,28 @@ export const getTodoStats = async (userid: string | undefined | null) => {
     new Date().getDate() - 1,
   );
 
+  const nowDay = new Date().getDay();
+  const weeks = Array.from({ length: 7 }, (_, i) => i);
+  const dayOfWeeks = [];
+  for (const day of weeks) {
+    if (day <= nowDay) {
+      const subDay = nowDay - day;
+
+      const currentDateSharp = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate(),
+      );
+
+      dayOfWeeks.push(new Date(currentDateSharp.getTime() - ONE_DAY * subDay));
+    }
+  }
+
   const todoStatsDoc = await db
     .collection<TodoStats>("stat")
     .aggregate([
       {
-        $match: { date: prevDateeSharp },
+        $match: { date: { $in: dayOfWeeks } },
       },
       {
         $group: {
@@ -46,6 +65,8 @@ export const getTodoStats = async (userid: string | undefined | null) => {
       },
     ])
     .toArray();
+
+  console.log(todoStatsDoc);
 
   return todoStatsDoc;
 };
