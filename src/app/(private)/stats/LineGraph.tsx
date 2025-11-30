@@ -5,10 +5,14 @@ import * as d3 from "d3";
 
 interface DataPoint {
   date: Date;
-  value: number;
+  count: number;
 }
 
-interface LineGraphProps {}
+interface LineGraphData {
+  date: Date;
+  state: string;
+  count: number;
+}
 
 const data = [
   { date: new Date(2025, 0, 1), value: 632, state: 1 },
@@ -28,10 +32,13 @@ const data = [
   { date: new Date(2025, 0, 5), value: 3788, state: 3 },
 ];
 
-export default function LineGraph() {
+export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
   const lineChartRef = useRef(null);
 
   useEffect(() => {
+    const groupedStats = d3.group(stats, d => d.state);
+    console.log(groupedStats);
+
     // 차트를 그릴 컨테이너 생성
     const svg = d3
       .select(lineChartRef.current)
@@ -39,40 +46,39 @@ export default function LineGraph() {
       .attr("width", 500)
       .attr("height", 400)
       .append("g")
-      .attr("transform", `translate(60, 10)`);
+      .attr("transform", `translate(30, 10)`);
 
     // 스케일 작업 및 축 생성
     const x_scale = d3
       .scaleTime()
-      .domain(d3.extent(data, d => d.date) as [Date, Date])
-      .range([0, 470]);
+      .domain(d3.extent(stats, d => d.date) as [Date, Date])
+      .range([0, 450]);
     d3.select("g")
       .append("g")
       .attr("transform", "translate(0, 340)")
-      .call(d3.axisBottom(x_scale));
+      .call(d3.axisBottom(x_scale).ticks(7));
 
     const y_scale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, d => d.value)] as [number, number])
+      .domain([0, d3.max(stats, d => d.count)] as [number, number])
       .range([340, 0]);
     d3.select("g").append("g").call(d3.axisLeft(y_scale));
-
-    const groupedData = d3.group(data, d => String(d.state));
-    const keys = groupedData.keys();
 
     const lineGenerator = d3
       .line<DataPoint>()
       .x(d => x_scale(d.date))
-      .y(d => y_scale(d.value));
+      .y(d => y_scale(d.count));
+
+    const statsKeys = groupedStats.keys();
 
     const color = d3
       .scaleOrdinal<string>()
-      .domain(keys)
-      .range(["#e41a1c", "#377eb8", "#4daf4a"]);
+      .domain(statsKeys)
+      .range(["#000000", "#e41a1c", "#377eb8", "#4daf4a"]);
 
     svg
       .selectAll(".line")
-      .data(groupedData)
+      .data(groupedStats.entries())
       .enter()
       .append("path")
       .attr("fill", "none")

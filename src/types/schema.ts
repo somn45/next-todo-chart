@@ -32,3 +32,11 @@ export interface TodoStats {
   date: Date;
   todos: (ITodo | WithStringifyId)[];
 }
+
+export interface Stat {
+  doingStateCount: number;
+  doneStateCount: number;
+  todoStateCount: number;
+  totalCount: number;
+  _id: Date;
+}
