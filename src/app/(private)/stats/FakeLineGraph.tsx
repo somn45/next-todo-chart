@@ -5,13 +5,7 @@ import * as d3 from "d3";
 
 interface DataPoint {
   date: Date;
-  count: number;
-}
-
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
+  value: number;
 }
 
 const data = [
@@ -32,54 +26,53 @@ const data = [
   { date: new Date(2025, 0, 5), value: 3788, state: 3 },
 ];
 
-export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
-  const lineChartRef = useRef(null);
+export default function FakeLineGraph() {
+  const fakelineChartRef = useRef(null);
 
   useEffect(() => {
-    const groupedStats = d3.group(stats, d => d.state);
-
-    console.log(d3.active(lineChartRef.current));
+    const groupedData = d3.group(data, d => String(d.state));
 
     // 차트를 그릴 컨테이너 생성
-    const svg = d3
-      .select(lineChartRef.current)
+    const fakeSvg = d3
+      .select(fakelineChartRef.current)
       .append("svg")
       .attr("width", 500)
       .attr("height", 400)
       .append("g")
-      .attr("transform", `translate(30, 10)`);
+      .attr("class", "fake-line-graph")
+      .attr("transform", `translate(40, 10)`);
 
     // 스케일 작업 및 축 생성
     const x_scale = d3
       .scaleTime()
-      .domain(d3.extent(stats, d => d.date) as [Date, Date])
+      .domain(d3.extent(data, d => d.date) as [Date, Date])
       .range([0, 450]);
-    svg
+    fakeSvg
       .append("g")
       .attr("transform", "translate(0, 340)")
-      .call(d3.axisBottom(x_scale).ticks(7));
+      .call(d3.axisBottom(x_scale).ticks(5));
 
     const y_scale = d3
       .scaleLinear()
-      .domain([0, d3.max(stats, d => d.count)] as [number, number])
+      .domain([0, d3.max(data, d => d.value)] as [number, number])
       .range([340, 0]);
-    svg.append("g").call(d3.axisLeft(y_scale));
+    fakeSvg.append("g").call(d3.axisLeft(y_scale));
 
     const lineGenerator = d3
       .line<DataPoint>()
       .x(d => x_scale(d.date))
-      .y(d => y_scale(d.count));
+      .y(d => y_scale(d.value));
 
-    const statsKeys = groupedStats.keys();
+    const keys = groupedData.keys();
 
     const color = d3
       .scaleOrdinal<string>()
-      .domain(statsKeys)
-      .range(["#000000", "#e41a1c", "#377eb8", "#4daf4a"]);
+      .domain(keys)
+      .range(["#e41a1c", "#377eb8", "#4daf4a"]);
 
-    svg
+    fakeSvg
       .selectAll(".line")
-      .data(groupedStats.entries())
+      .data(groupedData.entries())
       .enter()
       .append("path")
       .attr("fill", "none")
@@ -88,5 +81,5 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .attr("d", d => lineGenerator(d[1]));
   }, []);
 
-  return <div ref={lineChartRef}></div>;
+  return <div ref={fakelineChartRef}></div>;
 }
