@@ -2,13 +2,7 @@ import LineGraph from "./LineGraph";
 import { setTodoStats } from "@/apis/setTodoStats";
 import { getTodoStats } from "@/apis/getTodoStats";
 
-const delay = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
-
 export default async function LineGraphWrapper({ userid }: { userid: string }) {
-  await delay(10000);
-
   await setTodoStats(userid);
   const todoStats = await getTodoStats(userid);
 

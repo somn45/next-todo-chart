@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import LineGraphWrapper from "./LineGraphWrapper";
-import FakeLineGraphWrapper from "./FakeLineGraphWrapper";
+import TimeLineWrapper from "./TimeLineWrapper";
 import { Suspense } from "react";
 import LoadingFallback from "./Fallback";
 
@@ -23,7 +23,7 @@ export default async function Stats() {
         <LineGraphWrapper userid={userid} />
       </Suspense>
       <Suspense fallback={<LoadingFallback />}>
-        <FakeLineGraphWrapper />
+        <TimeLineWrapper userid={userid} />
       </Suspense>
     </section>
   );
