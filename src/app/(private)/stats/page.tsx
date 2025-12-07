@@ -18,7 +18,7 @@ export default async function Stats() {
     decodeJwtTokenPayload(accessToken);
 
   return (
-    <section style={{ width: "1200px", display: "flex", gap: "20px" }}>
+    <section style={{ width: "1200px", display: "flex", gap: "60px" }}>
       <Suspense fallback={<LoadingFallback />}>
         <LineGraphWrapper userid={userid} />
       </Suspense>
