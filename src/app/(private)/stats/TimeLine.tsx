@@ -11,8 +11,8 @@ interface TimeLineProps {
 export default function TimeLine({ todos }: TimeLineProps) {
   const timelineRef = useRef(null);
   useEffect(() => {
-    const margin = { top: 10, left: 100, bottom: 40, right: 20 };
-    const width = 800 - margin.left - margin.right;
+    const margin = { top: 60, left: 100, bottom: 40, right: 20 };
+    const width = 600 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const svg = d3
@@ -22,6 +22,15 @@ export default function TimeLine({ todos }: TimeLineProps) {
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", -40)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold")
+      .text("금주 투두 진행 타임라인");
 
     const currentDay = new Date().getDay();
     const currentWeekArray = Array.from(

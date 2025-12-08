@@ -19,6 +19,10 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
   const toolTipRef = useRef(null);
 
   useEffect(() => {
+    const margin = { top: 60, left: 100, bottom: 40, right: 20 };
+    const width = 600 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
     const groupedStats = d3.group(stats, d => d.state);
     console.log(d3.active(lineChartRef.current));
 
@@ -27,25 +31,35 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     const svg = d3
       .select(lineChartRef.current)
       .append("svg")
-      .attr("width", 500)
-      .attr("height", 400)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("padding", "40px")
       .append("g")
-      .attr("transform", `translate(30, 10)`);
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", -40)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold")
+      .text("최근 1주간 등록된 투두 합계");
 
     // 스케일 작업 및 축 생성
     const x_scale = d3
       .scaleTime()
       .domain(d3.extent(stats, d => d.date) as [Date, Date])
-      .range([0, 450]);
+      .range([0, width]);
     svg
       .append("g")
-      .attr("transform", "translate(0, 340)")
+      .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x_scale).ticks(7));
 
     const y_scale = d3
       .scaleLinear()
       .domain([0, d3.max(stats, d => d.count)] as [number, number])
-      .range([340, 0]);
+      .range([height, 0]);
     svg.append("g").call(d3.axisLeft(y_scale));
 
     const focus = svg
@@ -113,8 +127,8 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
         .html(
           `${dateFormat} 일자에서<br/> ${target.state} 상태의 총합 : ${target.count}개`,
         )
-        .style("left", `${x_scale(target.date) + 20}px`)
-        .style("top", `${target.y_pixel + 30}px`);
+        .style("left", `${x_scale(target.date) - 20}px`)
+        .style("top", `${target.y_pixel - 30}px`);
     };
 
     const mouseleave = function () {
@@ -126,8 +140,9 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .append("rect")
       .attr("fill", "none")
       .style("pointer-events", "all")
-      .attr("width", 500)
-      .attr("height", 450)
+      .attr("width", width)
+      .attr("height", height)
+      .attr("padding-top", "30px")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
