@@ -66,7 +66,33 @@ export default function TimeLine({ todos }: TimeLineProps) {
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x_scale).ticks(7));
+      .call(
+        d3
+          .axisBottom(x_scale)
+          .ticks(8)
+          .tickFormat((d, _) => {
+            if (typeof d === "object") {
+              const xAxisDate = new Date(d.toString()).getDate();
+              const padDate = xAxisDate < 10 ? `0${xAxisDate}` : xAxisDate;
+              const todayPadDate =
+                new Date().getDate() < 10
+                  ? `0${new Date().getDate()}`
+                  : new Date().getDate();
+              const todayFormat = `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${todayPadDate}`;
+
+              const dateFormat = `${new Date(d.toString()).getFullYear()}-${
+                new Date(d.toString()).getMonth() + 1
+              }-${padDate}`;
+
+              return todayFormat === dateFormat
+                ? `${dateFormat}(오늘)`
+                : dateFormat;
+            }
+            return d.toString();
+          }),
+      );
 
     const y_scale = d3
       .scaleBand()
@@ -97,10 +123,11 @@ export default function TimeLine({ todos }: TimeLineProps) {
       .attr("y", d => y_scale(d.content.textField)!)
       .attr("width", d => {
         let bbb;
-        if (
-          !d.content.completedAt ||
+        if (!d.content.completedAt) {
+          bbb = x_scale(new Date(Date.now()));
+        } else if (
           currentWeekLastDay.getTime() <
-            new Date(d.content.completedAt).getTime()
+          new Date(d.content.completedAt).getTime()
         ) {
           bbb = x_scale(currentWeekLastDay);
         } else {
@@ -115,6 +142,7 @@ export default function TimeLine({ todos }: TimeLineProps) {
         } else {
           aaa = x_scale(new Date(d.content.createdAt));
         }
+        console.log(bbb, aaa);
         return bbb - aaa;
       })
       .attr("height", y_scale.bandwidth());

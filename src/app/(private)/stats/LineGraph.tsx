@@ -50,11 +50,28 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     const x_scale = d3
       .scaleTime()
       .domain(d3.extent(stats, d => d.date) as [Date, Date])
-      .range([0, width]);
+      .range([0, width - 40]);
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x_scale).ticks(7));
+      .call(
+        d3
+          .axisBottom(x_scale)
+          .ticks(7)
+          .tickFormat((d, _) => {
+            if (typeof d === "object") {
+              const xAxisDate = new Date(d.toString()).getDate();
+              const padDate = xAxisDate < 10 ? `0${xAxisDate}` : xAxisDate;
+
+              const dateFormat = `${new Date(d.toString()).getFullYear()}-${
+                new Date(d.toString()).getMonth() + 1
+              }-${padDate}`;
+
+              return dateFormat;
+            }
+            return d.toString();
+          }),
+      );
 
     const y_scale = d3
       .scaleLinear()
