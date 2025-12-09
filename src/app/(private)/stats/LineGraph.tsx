@@ -15,12 +15,13 @@ interface LineGraphData {
 }
 
 export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
-  const lineChartRef = useRef(null);
+  const lineChartRef = useRef<HTMLDivElement>(null);
   const toolTipRef = useRef(null);
 
   useEffect(() => {
-    const margin = { top: 80, left: 40, bottom: 40, right: 20 };
-    const width = 660 - margin.left - margin.right;
+    if (lineChartRef.current!.hasChildNodes()) return;
+    const margin = { top: 80, left: 40, bottom: 40, right: 40 };
+    const width = 700 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const groupedStats = d3.group(stats, d => d.state);
@@ -32,7 +33,6 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-      .attr("padding", "40px")
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -207,8 +207,8 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
         .html(
           `${dateFormat} 일자에서<br/> ${target.state} 상태의 총합 : ${target.count}개`,
         )
-        .style("left", `${x_scale(target.date) - 20}px`)
-        .style("top", `${target.y_pixel - 30}px`);
+        .style("left", `${x_scale(target.date) - 25}px`)
+        .style("top", `${target.y_pixel - 15}px`);
     };
 
     const mouseleave = function () {
@@ -239,6 +239,7 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
             padding: "10px",
             border: "1px solid #ccc",
             borderRadius: "5px",
+            fontSize: "14px",
             zIndex: 100,
             pointerEvents: "none",
           }}

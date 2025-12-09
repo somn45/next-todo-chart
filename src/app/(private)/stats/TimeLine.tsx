@@ -9,8 +9,10 @@ interface TimeLineProps {
 }
 
 export default function TimeLine({ todos }: TimeLineProps) {
-  const timelineRef = useRef(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (timelineRef.current!.hasChildNodes()) return;
+
     const margin = { top: 80, left: 100, bottom: 40, right: 20 };
     const width = 660 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
@@ -189,7 +191,6 @@ export default function TimeLine({ todos }: TimeLineProps) {
         } else {
           aaa = x_scale(new Date(d.content.createdAt));
         }
-        console.log(bbb, aaa);
         return bbb - aaa;
       })
       .attr("height", y_scale.bandwidth());

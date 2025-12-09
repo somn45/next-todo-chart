@@ -11,7 +11,7 @@ export const getTodoStats = async (userid: string | undefined | null) => {
 
   const db = (await connectDB).db("next-todo-chart-cluster");
 
-  const weeks = Array.from({ length: 7 }, (_, i) => i);
+  const weeks = Array.from({ length: 7 }, (_, i) => i - 1);
 
   const currentDateSharp = new Date(
     new Date().getFullYear(),
