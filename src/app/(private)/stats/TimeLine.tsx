@@ -11,8 +11,8 @@ interface TimeLineProps {
 export default function TimeLine({ todos }: TimeLineProps) {
   const timelineRef = useRef(null);
   useEffect(() => {
-    const margin = { top: 60, left: 100, bottom: 40, right: 20 };
-    const width = 600 - margin.left - margin.right;
+    const margin = { top: 80, left: 100, bottom: 40, right: 20 };
+    const width = 660 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const svg = d3
@@ -23,14 +23,61 @@ export default function TimeLine({ todos }: TimeLineProps) {
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+    // 그래프 타이틀 추가
     svg
       .append("text")
       .attr("x", width / 2)
-      .attr("y", -40)
+      .attr("y", -50)
       .attr("text-anchor", "middle")
       .attr("font-size", "20px")
       .attr("font-weight", "bold")
       .text("금주 투두 진행 타임라인");
+
+    // 범례 추가
+    const legend = svg
+      .append("g")
+      .attr("transform", `translate(${width - 50}, 0)`);
+
+    legend
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("fill", "#3498DB");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 12)
+      .attr("y", 4)
+      .text("할 일");
+
+    legend
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", 0)
+      .attr("cy", 25)
+      .attr("fill", "#FFA500");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 12)
+      .attr("y", 29)
+      .text("진행 중");
+
+    legend
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", 0)
+      .attr("cy", 50)
+      .attr("fill", "#2ECC71");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 12)
+      .attr("y", 54)
+      .text("완료");
+
+    // 17 / 2 = 8.5 - 5
 
     const currentDay = new Date().getDay();
     const currentWeekArray = Array.from(
@@ -61,7 +108,7 @@ export default function TimeLine({ todos }: TimeLineProps) {
     const x_scale = d3
       .scaleTime()
       .domain([currentWeekFirstDay, currentWeekLastDay])
-      .range([0, width]);
+      .range([0, width - 80]);
 
     svg
       .append("g")

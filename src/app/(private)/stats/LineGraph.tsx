@@ -19,15 +19,14 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
   const toolTipRef = useRef(null);
 
   useEffect(() => {
-    const margin = { top: 60, left: 100, bottom: 40, right: 20 };
-    const width = 600 - margin.left - margin.right;
+    const margin = { top: 80, left: 40, bottom: 40, right: 20 };
+    const width = 660 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const groupedStats = d3.group(stats, d => d.state);
-    console.log(d3.active(lineChartRef.current));
 
     const tooltip = d3.select(toolTipRef.current);
-    // 차트를 그릴 컨테이너 생성
+    // 그래프를 그릴 컨테이너 생성
     const svg = d3
       .select(lineChartRef.current)
       .append("svg")
@@ -37,20 +36,84 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+    // 그래프 타이틀 추가
     svg
       .append("text")
       .attr("x", width / 2)
-      .attr("y", -40)
+      .attr("y", -50)
       .attr("text-anchor", "middle")
       .attr("font-size", "20px")
       .attr("font-weight", "bold")
       .text("최근 1주간 등록된 투두 합계");
 
+    // 범례 추가
+    const legend = svg
+      .append("g")
+      .attr("transform", `translate(${width - 50}, 0)`);
+
+    legend
+      .append("rect")
+      .attr("width", 15)
+      .attr("height", 2)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("fill", "black");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 22)
+      .attr("y", 6)
+      .text("투두 총합");
+
+    legend
+      .append("rect")
+      .attr("width", 15)
+      .attr("height", 2)
+      .attr("x", 0)
+      .attr("y", 25)
+      .attr("fill", "#3498DB");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 22)
+      .attr("y", 31)
+      .text("할 일");
+
+    legend
+      .append("rect")
+      .attr("width", 15)
+      .attr("height", 2)
+      .attr("x", 0)
+      .attr("y", 50)
+      .attr("fill", "#FFA500");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 22)
+      .attr("y", 56)
+      .text("진행 중");
+
+    legend
+      .append("rect")
+      .attr("width", 15)
+      .attr("height", 2)
+      .attr("x", 0)
+      .attr("y", 75)
+      .attr("fill", "#2ECC71");
+    legend
+      .append("text")
+      .attr("font-size", "12px")
+      .attr("x", 22)
+      .attr("y", 81)
+      .text("완료");
+
+    // 17 / 2 = 8.5 - 2
+
     // 스케일 작업 및 축 생성
     const x_scale = d3
       .scaleTime()
       .domain(d3.extent(stats, d => d.date) as [Date, Date])
-      .range([0, width - 40]);
+      .range([0, width - 80]);
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
@@ -159,7 +222,6 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .style("pointer-events", "all")
       .attr("width", width)
       .attr("height", height)
-      .attr("padding-top", "30px")
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
