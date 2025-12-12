@@ -2,6 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import {
+  addTitle,
+  createLegend,
+  createSVGContainer,
+  setLegendItems,
+} from "@/utils/graph/graph";
 
 interface DataPoint {
   date: Date;
@@ -28,86 +34,28 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
 
     const tooltip = d3.select(toolTipRef.current);
     // 그래프를 그릴 컨테이너 생성
-    const svg = d3
-      .select(lineChartRef.current)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    const svg = createSVGContainer(
+      { width, height, margin },
+      lineChartRef.current,
+    );
 
-    // 그래프 타이틀 추가
-    svg
-      .append("text")
-      .attr("x", width / 2)
-      .attr("y", -50)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "20px")
-      .attr("font-weight", "bold")
-      .text("최근 1주간 등록된 투두 합계");
+    addTitle(svg, width / 2, -50, "최근 1주간 등록된 투두 합계");
 
-    // 범례 추가
-    const legend = svg
-      .append("g")
-      .attr("transform", `translate(${width - 50}, 0)`);
+    const legend = createLegend(svg, width - 50);
 
-    legend
-      .append("rect")
-      .attr("width", 15)
-      .attr("height", 2)
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("fill", "black");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 22)
-      .attr("y", 6)
-      .text("투두 총합");
+    const legendMarkerSize = { width: 15, height: 2 };
+    const legendInitCoord = { x: 0, y: 0, textX: 22, textY: 6 };
+    const legendColors = ["black", "#3498DB", "#FFA500", "#2ECC71"];
+    const legendTexts = ["투두 총합", "할 일", "진행 중", "완료"];
 
-    legend
-      .append("rect")
-      .attr("width", 15)
-      .attr("height", 2)
-      .attr("x", 0)
-      .attr("y", 25)
-      .attr("fill", "#3498DB");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 22)
-      .attr("y", 31)
-      .text("할 일");
-
-    legend
-      .append("rect")
-      .attr("width", 15)
-      .attr("height", 2)
-      .attr("x", 0)
-      .attr("y", 50)
-      .attr("fill", "#FFA500");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 22)
-      .attr("y", 56)
-      .text("진행 중");
-
-    legend
-      .append("rect")
-      .attr("width", 15)
-      .attr("height", 2)
-      .attr("x", 0)
-      .attr("y", 75)
-      .attr("fill", "#2ECC71");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 22)
-      .attr("y", 81)
-      .text("완료");
-
-    // 17 / 2 = 8.5 - 2
+    setLegendItems(
+      "rect",
+      legend,
+      legendMarkerSize,
+      legendInitCoord,
+      legendColors,
+      legendTexts,
+    );
 
     // 스케일 작업 및 축 생성
     const x_scale = d3
