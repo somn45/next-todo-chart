@@ -5,9 +5,14 @@ import * as d3 from "d3";
 import {
   addTitle,
   createLegend,
+  createLinearScale,
   createSVGContainer,
+  createTimeScale,
   setLegendItems,
+  setXAxis,
+  setYAxis,
 } from "@/utils/graph/graph";
+import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 
 interface DataPoint {
   date: Date;
@@ -58,37 +63,11 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     );
 
     // 스케일 작업 및 축 생성
-    const x_scale = d3
-      .scaleTime()
-      .domain(d3.extent(stats, d => d.date) as [Date, Date])
-      .range([0, width - 80]);
-    svg
-      .append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(
-        d3
-          .axisBottom(x_scale)
-          .ticks(7)
-          .tickFormat((d, _) => {
-            if (typeof d === "object") {
-              const xAxisDate = new Date(d.toString()).getDate();
-              const padDate = xAxisDate < 10 ? `0${xAxisDate}` : xAxisDate;
+    const x_scale = createTimeScale(stats, width - 80);
+    setXAxis(svg, x_scale, 7, height);
 
-              const dateFormat = `${new Date(d.toString()).getFullYear()}-${
-                new Date(d.toString()).getMonth() + 1
-              }-${padDate}`;
-
-              return dateFormat;
-            }
-            return d.toString();
-          }),
-      );
-
-    const y_scale = d3
-      .scaleLinear()
-      .domain([0, d3.max(stats, d => d.count)] as [number, number])
-      .range([height, 0]);
-    svg.append("g").call(d3.axisLeft(y_scale));
+    const y_scale = createLinearScale(stats, height);
+    setYAxis(svg, y_scale);
 
     const focus = svg
       .append("g")
