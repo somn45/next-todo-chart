@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import {
   addTitle,
+  createColorScale,
+  createFollowMouseFocus,
   createLegend,
   createLinearScale,
   createSVGContainer,
@@ -13,6 +15,11 @@ import {
   setYAxis,
 } from "@/utils/graph/graph";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
+import {
+  displayFollowElement,
+  hiddenFollowElement,
+} from "./_utils/lineGraphMouseEvent";
+import { getClosestYOffset } from "./_utils/getClosestYOffset";
 
 interface DataPoint {
   date: Date;
@@ -62,20 +69,13 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       legendTexts,
     );
 
-    // 스케일 작업 및 축 생성
     const x_scale = createTimeScale(stats, width - 80);
     setXAxis(svg, x_scale, 7, height);
 
     const y_scale = createLinearScale(stats, height);
     setYAxis(svg, y_scale);
 
-    const focus = svg
-      .append("g")
-      .append("circle")
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("r", 4)
-      .style("opacity", 0);
+    const focus = createFollowMouseFocus(svg, "circle", 4);
 
     const lineGenerator = d3
       .line<DataPoint>()
@@ -84,10 +84,12 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
 
     const statsKeys = groupedStats.keys();
 
-    const color = d3
-      .scaleOrdinal<string>()
-      .domain(statsKeys)
-      .range(["#000000", "#3498DB", "#FFA500", "#2ECC71"]);
+    const color = createColorScale(statsKeys, [
+      "#000000",
+      "#3498DB",
+      "#FFA500",
+      "#2ECC71",
+    ]);
 
     svg
       .selectAll(".line")
@@ -100,20 +102,29 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .attr("d", d => lineGenerator(d[1]));
 
     const mouseover = function () {
-      focus.style("opacity", 1);
-      tooltip.style("opacity", 1);
+      displayFollowElement([focus, tooltip]);
     };
 
     const mousemove = function (this: Element, event: MouseEvent) {
-      const mousePointer = d3.pointer(event, this);
-      const x0 = x_scale.invert(mousePointer[0]);
+      // 마우스가 가리키는 좌표 구하기([x, y])
+      const [mouseXCoord, mouseYCoord] = d3.pointer(event, this);
 
-      const aaa = Array.from(groupedStats)[0][1];
-      const dates = aaa.map(stat => stat.date);
-      const i = d3.bisectCenter(dates, x0);
+      const dateMatchedMouseXCoord = x_scale.invert(mouseXCoord);
+
+      const stats = Array.from(groupedStats)[0][1];
+      const xAxisKeys = stats.map(stat => stat.date);
+
+      // 마우스 포인터의 x 축과 가장 가까운 x축 키 찾기
+      const xAxisKeyClosestMouseXCoord = d3.bisectCenter(
+        xAxisKeys,
+        dateMatchedMouseXCoord,
+      );
+
       const statsByArray = Array.from(groupedStats);
-      const points = statsByArray.map(stats => {
-        const dataPoint = stats[1][i];
+
+      // bisect 메서드를 통해 마우스 포인터와 가장 가까운 데이터와 y축 좌표를 구한다.
+      const dataPoints = statsByArray.map(stats => {
+        const dataPoint = stats[1][xAxisKeyClosestMouseXCoord];
         return {
           date: dataPoint.date,
           count: dataPoint.count,
@@ -122,25 +133,21 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
         };
       });
 
-      const subYPixel = points.map(point =>
-        Math.abs(point.y_pixel - mousePointer[1]),
-      );
-      const index = subYPixel.indexOf(Math.min(...subYPixel));
-      const target = points[index];
-      const dateFormat = `${target.date.getFullYear()}-${target.date.getMonth()}-${target.date.getDate()}`;
+      const target = getClosestYOffset(dataPoints, mouseYCoord);
+
+      const dateISO8601Type = formatByISO8601(target.date);
 
       focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
       tooltip
         .html(
-          `${dateFormat} 일자에서<br/> ${target.state} 상태의 총합 : ${target.count}개`,
+          `${dateISO8601Type} 일자에서<br/> ${target.state} 상태의 총합 : ${target.count}개`,
         )
         .style("left", `${x_scale(target.date) - 25}px`)
         .style("top", `${target.y_pixel - 15}px`);
     };
 
     const mouseleave = function () {
-      focus.style("opacity", 0);
-      tooltip.style("opacity", 0);
+      hiddenFollowElement([focus, tooltip]);
     };
 
     svg

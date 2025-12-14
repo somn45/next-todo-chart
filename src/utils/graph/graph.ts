@@ -154,6 +154,7 @@ export const setXAxis = (
     );
 };
 
+// 정량 데이터 스케일 생성
 export const createLinearScale = <T extends { count: number }>(
   data: T[],
   rangeMax: number,
@@ -166,9 +167,33 @@ export const createLinearScale = <T extends { count: number }>(
   return linearScale;
 };
 
+// y 축을 svg 컨테이너에 set
 export const setYAxis = (
   svg: d3.Selection<SVGGElement, unknown, null, undefined>,
   scale: d3.ScaleLinear<number, number, never>,
 ) => {
   svg.append("g").call(d3.axisLeft(scale));
 };
+
+// 그래프에 마우스를 따라오는 포커스 생성
+export const createFollowMouseFocus = (
+  svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  focusType: "circle" | "rect",
+  radius: number,
+) => {
+  const focus = svg
+    .append("g")
+    .append("circle")
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("r", radius)
+    .style("opacity", 0);
+
+  return focus;
+};
+
+// 그래프의 라인과 색상 매치
+export const createColorScale = (
+  keys: MapIterator<string>,
+  colors: Array<string>,
+) => d3.scaleOrdinal<string>().domain(keys).range(colors);
