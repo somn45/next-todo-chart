@@ -10,11 +10,7 @@ import {
 } from "./_utils/lineGraphMouseEvent";
 import { getClosestYOffset } from "./_utils/getClosestYOffset";
 import useDrowLineGraph from "./_hooks/useDrowLineGraph";
-
-interface DataPoint {
-  date: Date;
-  count: number;
-}
+import { getDataPointClosetMousePointer } from "./_utils/getDataPointClosetMousePointer";
 
 interface LineGraphData {
   date: Date;
@@ -50,35 +46,13 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       displayFollowElement([focus, tooltip]);
     };
 
-    const mousemove = function (this: Element, event: MouseEvent) {
+    const mousemove = function () {
       // 마우스가 가리키는 좌표 구하기([x, y])
-      const [mouseXCoord, mouseYCoord] = d3.pointer(event, this);
 
-      const dateMatchedMouseXCoord = x_scale.invert(mouseXCoord);
-
-      const stats = Array.from(groupedStats)[0][1];
-      const xAxisKeys = stats.map(stat => stat.date);
-
-      // 마우스 포인터의 x 축과 가장 가까운 x축 키 찾기
-      const xAxisKeyClosestMouseXCoord = d3.bisectCenter(
-        xAxisKeys,
-        dateMatchedMouseXCoord,
-      );
-
-      const statsByArray = Array.from(groupedStats);
-
-      // bisect 메서드를 통해 마우스 포인터와 가장 가까운 데이터와 y축 좌표를 구한다.
-      const dataPoints = statsByArray.map(stats => {
-        const dataPoint = stats[1][xAxisKeyClosestMouseXCoord];
-        return {
-          date: dataPoint.date,
-          count: dataPoint.count,
-          state: dataPoint.state,
-          y_pixel: y_scale(dataPoint.count),
-        };
+      const target = getDataPointClosetMousePointer(groupedStats, {
+        x_scale,
+        y_scale,
       });
-
-      const target = getClosestYOffset(dataPoints, mouseYCoord);
 
       const dateISO8601Type = formatByISO8601(target.date);
 
