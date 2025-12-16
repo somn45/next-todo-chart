@@ -3,6 +3,18 @@
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
+import {
+  addTitle,
+  createBandScale,
+  createColorScale,
+  createLegend,
+  createSVGContainer,
+  createTimeScale,
+  setLegendItems,
+  setXAxis,
+} from "@/utils/graph/graph";
+import { formatByISO8601 } from "@/utils/date/formatByISO8601";
+import caculateBandLength from "./_utils/caculateBandLegnth";
 
 interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
@@ -17,69 +29,32 @@ export default function TimeLine({ todos }: TimeLineProps) {
     const width = 660 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
-    const svg = d3
-      .select(timelineRef.current)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    const svg = createSVGContainer(
+      { width, height, margin },
+      timelineRef.current,
+    );
 
-    // 그래프 타이틀 추가
-    svg
-      .append("text")
-      .attr("x", width / 2)
-      .attr("y", -50)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "20px")
-      .attr("font-weight", "bold")
-      .text("금주 투두 진행 타임라인");
+    addTitle(svg, width / 2, -50, "금주 투두 진행 타임라인");
 
-    // 범례 추가
-    const legend = svg
-      .append("g")
-      .attr("transform", `translate(${width - 50}, 0)`);
+    const legend = createLegend(svg, width - 50);
 
-    legend
-      .append("circle")
-      .attr("r", 5)
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("fill", "#3498DB");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 12)
-      .attr("y", 4)
-      .text("할 일");
+    const colors = ["#3498DB", "#FFA500", "#2ECC71"];
+    const texts = ["할 일", "진행 중", "완료"];
+    const legendInitCoord = {
+      x: 0,
+      y: 0,
+      textX: 12,
+      textY: 4,
+    };
 
-    legend
-      .append("circle")
-      .attr("r", 5)
-      .attr("cx", 0)
-      .attr("cy", 25)
-      .attr("fill", "#FFA500");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 12)
-      .attr("y", 29)
-      .text("진행 중");
-
-    legend
-      .append("circle")
-      .attr("r", 5)
-      .attr("cx", 0)
-      .attr("cy", 50)
-      .attr("fill", "#2ECC71");
-    legend
-      .append("text")
-      .attr("font-size", "12px")
-      .attr("x", 12)
-      .attr("y", 54)
-      .text("완료");
-
-    // 17 / 2 = 8.5 - 5
+    setLegendItems(
+      "circle",
+      legend,
+      { radius: 5 },
+      legendInitCoord,
+      colors,
+      texts,
+    );
 
     const currentDay = new Date().getDay();
     const currentWeekArray = Array.from(
@@ -107,53 +82,20 @@ export default function TimeLine({ todos }: TimeLineProps) {
       59,
     );
 
-    const x_scale = d3
-      .scaleTime()
-      .domain([currentWeekFirstDay, currentWeekLastDay])
-      .range([0, width - 80]);
+    const x_scale = createTimeScale({
+      rangeMax: width - 80,
+      timeScaleDomain: [currentWeekFirstDay, currentWeekLastDay],
+    });
+    setXAxis(svg, x_scale, 8, height);
 
-    svg
-      .append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(
-        d3
-          .axisBottom(x_scale)
-          .ticks(8)
-          .tickFormat((d, _) => {
-            if (typeof d === "object") {
-              const xAxisDate = new Date(d.toString()).getDate();
-              const padDate = xAxisDate < 10 ? `0${xAxisDate}` : xAxisDate;
-              const todayPadDate =
-                new Date().getDate() < 10
-                  ? `0${new Date().getDate()}`
-                  : new Date().getDate();
-              const todayFormat = `${new Date().getFullYear()}-${
-                new Date().getMonth() + 1
-              }-${todayPadDate}`;
-
-              const dateFormat = `${new Date(d.toString()).getFullYear()}-${
-                new Date(d.toString()).getMonth() + 1
-              }-${padDate}`;
-
-              return todayFormat === dateFormat
-                ? `${dateFormat}(오늘)`
-                : dateFormat;
-            }
-            return d.toString();
-          }),
-      );
-
-    const y_scale = d3
-      .scaleBand()
-      .domain(todos.map(todo => todo.content.textField))
-      .range([0, height])
-      .padding(0.2);
+    const y_scale = createBandScale(
+      todos.map(todo => ({ text: todo.content.textField })),
+      height,
+      0.2,
+    );
     svg.append("g").call(d3.axisLeft(y_scale));
 
-    const color_scale = d3
-      .scaleOrdinal<string>()
-      .domain(["할 일", "진행 중", "완료"])
-      .range(["#3498DB", "#FFA500", "#2ECC71"]);
+    const color_scale = createColorScale(texts, colors);
 
     svg
       .selectAll("rect")
@@ -170,29 +112,13 @@ export default function TimeLine({ todos }: TimeLineProps) {
         return x_scale(new Date(d.content.createdAt));
       })
       .attr("y", d => y_scale(d.content.textField)!)
-      .attr("width", d => {
-        let bbb;
-        if (!d.content.completedAt) {
-          bbb = x_scale(new Date(Date.now()));
-        } else if (
-          currentWeekLastDay.getTime() <
-          new Date(d.content.completedAt).getTime()
-        ) {
-          bbb = x_scale(currentWeekLastDay);
-        } else {
-          bbb = x_scale(new Date(d.content.completedAt));
-        }
-        let aaa;
-        if (
-          currentWeekFirstDay.getTime() >
-          new Date(d.content.createdAt).getTime()
-        ) {
-          aaa = x_scale(currentWeekFirstDay);
-        } else {
-          aaa = x_scale(new Date(d.content.createdAt));
-        }
-        return bbb - aaa;
-      })
+      .attr("width", d =>
+        caculateBandLength(
+          d.content,
+          { x_scale },
+          { domainStart: currentWeekFirstDay, domainEnd: currentWeekLastDay },
+        ),
+      )
       .attr("height", y_scale.bandwidth());
   }, []);
   return <div ref={timelineRef}></div>;

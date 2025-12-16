@@ -12,6 +12,10 @@ interface D3Layout {
   };
 }
 
+interface legendAttr extends D3Layout {
+  radius: number;
+}
+
 interface D3Coord {
   x: number;
   y: number;
@@ -67,11 +71,15 @@ export const createLegend = (
 export const setLegendItems = (
   markerType: D3MarkerType,
   legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-  layout: Omit<D3Layout, "margin">,
+  layout: Partial<Omit<legendAttr, "margin">>,
   initCoord: D3Coord,
   colors: string[],
   texts: string[],
 ) => {
+  const width = layout.width ?? 0;
+  const height = layout.height ?? 0;
+  const radius = layout.radius ?? 0;
+
   const legendContents = colors.map((color, i) => [color, texts[i]]);
   legendContents.forEach((content, i) => {
     const [color, text] = content;
@@ -85,27 +93,47 @@ export const setLegendItems = (
       x: textX,
       y: textY + 25 * i,
     };
-    setLegendMarker(markerType, legend, layout, coord, color);
+    markerType === "rect"
+      ? setLegendRectMarker(markerType, legend, { width, height }, coord, color)
+      : setLegendCircleMarker(markerType, legend, radius, coord, color);
     setLegendText(legend, textCoord, text);
   });
 };
 
 // 범례 마커 추가
-export const setLegendMarker = (
+export const setLegendRectMarker = (
   markerType: D3MarkerType,
   legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-  layout: Omit<D3Layout, "margin">,
+  layout: Omit<D3Layout, "margin" | "radius">,
   coord: Pick<D3Coord, "x" | "y">,
   color: string,
 ) => {
   const { width, height } = layout;
   const { x, y } = coord;
+
   legend
     .append(markerType)
     .attr("width", width)
     .attr("height", height)
     .attr("x", x)
     .attr("y", y)
+    .attr("fill", color);
+};
+
+export const setLegendCircleMarker = (
+  markerType: D3MarkerType,
+  legend: d3.Selection<SVGGElement, unknown, null, undefined>,
+  radius: number,
+  coord: Pick<D3Coord, "x" | "y">,
+  color: string,
+) => {
+  const { x, y } = coord;
+
+  legend
+    .append(markerType)
+    .attr("r", radius)
+    .attr("cx", x)
+    .attr("cy", y)
     .attr("fill", color);
 };
 
@@ -124,16 +152,39 @@ export const setLegendText = (
     .text(text);
 };
 
-// 시간 스케일 생성
-export const createTimeScale = <T extends { date: Date }>(
+// 밴드 스케일 생성
+export const createBandScale = <T extends { text: string }>(
   data: T[],
   rangeMax: number,
-) => {
-  const timeScale = d3
-    .scaleTime()
-    .domain(d3.extent(data, d => d.date) as [Date, Date])
-    .range([0, rangeMax]);
-  return timeScale;
+  padding: number,
+) =>
+  d3
+    .scaleBand()
+    .domain(data.map(content => content.text))
+    .range([0, rangeMax])
+    .padding(padding);
+
+interface createTimeScaleParams<T extends { date: Date }> {
+  rangeMax: number;
+  timeScaleDomain?: [Date, Date];
+  data?: T[];
+}
+
+// 시간 스케일 생성
+export const createTimeScale = <T extends { date: Date }>({
+  rangeMax,
+  timeScaleDomain,
+  data,
+}: createTimeScaleParams<T>) => {
+  if (data) {
+    return d3
+      .scaleTime()
+      .domain(d3.extent(data, d => d.date) as [Date, Date])
+      .range([0, rangeMax]);
+  } else if (timeScaleDomain) {
+    return d3.scaleTime().domain(timeScaleDomain).range([0, rangeMax]);
+  }
+  return d3.scaleTime().domain([]).range([0, rangeMax]);
 };
 
 // x 축을 svg 컨테이너에 set
@@ -194,6 +245,6 @@ export const createFollowMouseFocus = (
 
 // 그래프의 라인과 색상 매치
 export const createColorScale = (
-  keys: MapIterator<string>,
+  keys: Iterable<string>,
   colors: Array<string>,
 ) => d3.scaleOrdinal<string>().domain(keys).range(colors);

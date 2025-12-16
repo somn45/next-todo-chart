@@ -90,7 +90,7 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
       legendTexts,
     );
 
-    const x_scale = createTimeScale(data, width - 80);
+    const x_scale = createTimeScale({ rangeMax: width - 80, data });
     setXAxis(svg, x_scale, 7, height);
 
     const y_scale = createLinearScale(data, height);
