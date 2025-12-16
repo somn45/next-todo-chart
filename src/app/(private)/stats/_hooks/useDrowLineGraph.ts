@@ -8,7 +8,7 @@ import {
   setLegendItems,
   setXAxis,
   setYAxis,
-} from "@/utils/graph/graph";
+} from "@/utils/graph";
 import * as d3 from "d3";
 import { RefObject, useEffect, useState } from "react";
 

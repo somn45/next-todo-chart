@@ -2,13 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { createFollowMouseFocus } from "@/utils/graph/graph";
+import { createFollowMouseFocus } from "@/utils/graph";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import {
   displayFollowElement,
   hiddenFollowElement,
 } from "./_utils/lineGraphMouseEvent";
-import { getClosestYOffset } from "./_utils/getClosestYOffset";
 import useDrowLineGraph from "./_hooks/useDrowLineGraph";
 import { getDataPointClosetMousePointer } from "./_utils/getDataPointClosetMousePointer";
 
@@ -47,8 +46,6 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     };
 
     const mousemove = function () {
-      // 마우스가 가리키는 좌표 구하기([x, y])
-
       const target = getDataPointClosetMousePointer(groupedStats, {
         x_scale,
         y_scale,

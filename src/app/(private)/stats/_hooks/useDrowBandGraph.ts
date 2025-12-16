@@ -9,7 +9,7 @@ import {
   createTimeScale,
   setLegendItems,
   setXAxis,
-} from "@/utils/graph/graph";
+} from "@/utils/graph";
 import { RefObject, useEffect, useState } from "react";
 import caculateBandLength from "../_utils/caculateBandLegnth";
 
@@ -33,14 +33,14 @@ type GraphConfig = {
   graphRef: RefObject<HTMLDivElement | null>;
 };
 
-type useDrowBandGraph = (
+type useDrowBandGraphType = (
   graphConfig: GraphConfig,
 ) => [
   d3.Selection<SVGGElement, unknown, null, undefined> | null,
   TimeBasedBandScale,
 ];
 
-const useDrowBandGraph: useDrowBandGraph = graphConfig => {
+const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
   const [svgContainer, setSvgContainer] = useState<d3.Selection<
     SVGGElement,
     unknown,
