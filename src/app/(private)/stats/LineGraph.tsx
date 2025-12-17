@@ -3,14 +3,12 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { createFollowMouseFocus } from "@/utils/graph";
-import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import {
   displayFollowElement,
   hiddenFollowElement,
   setCoordFocusAndToolTip,
 } from "./_utils/lineGraphMouseEvent";
 import useDrowLineGraph from "./_hooks/useDrowLineGraph";
-import { getDataPointClosetMousePointer } from "./_utils/getDataPointClosetMousePointer";
 
 interface LineGraphData {
   date: Date;
