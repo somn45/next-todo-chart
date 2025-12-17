@@ -7,6 +7,7 @@ import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import {
   displayFollowElement,
   hiddenFollowElement,
+  setCoordFocusAndToolTip,
 } from "./_utils/lineGraphMouseEvent";
 import useDrowLineGraph from "./_hooks/useDrowLineGraph";
 import { getDataPointClosetMousePointer } from "./_utils/getDataPointClosetMousePointer";
@@ -41,40 +42,21 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     const focus = createFollowMouseFocus(svg, "circle", 4);
     const tooltip = d3.select(toolTipRef.current);
 
-    const mouseover = function () {
-      displayFollowElement([focus, tooltip]);
-    };
-
-    const mousemove = function () {
-      const target = getDataPointClosetMousePointer(groupedStats, {
-        x_scale,
-        y_scale,
-      });
-
-      const dateISO8601Type = formatByISO8601(target.date);
-
-      focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
-      tooltip
-        .html(
-          `${dateISO8601Type} 일자에서<br/> ${target.state} 상태의 총합 : ${target.count}개`,
-        )
-        .style("left", `${x_scale(target.date) - 25}px`)
-        .style("top", `${target.y_pixel - 15}px`);
-    };
-
-    const mouseleave = function () {
-      hiddenFollowElement([focus, tooltip]);
-    };
-
     svg
       .append("rect")
       .attr("fill", "none")
       .style("pointer-events", "all")
       .attr("width", width)
       .attr("height", height)
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+      .on("mouseover", () => displayFollowElement([focus, tooltip]))
+      .on("mousemove", () =>
+        setCoordFocusAndToolTip(
+          groupedStats,
+          { x_scale, y_scale },
+          { focus, tooltip },
+        ),
+      )
+      .on("mouseleave", () => hiddenFollowElement([focus, tooltip]));
   }, [svg]);
 
   return (
