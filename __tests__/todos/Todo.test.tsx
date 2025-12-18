@@ -84,9 +84,6 @@ describe("<Todo />", () => {
     });
 
     const listItemAfterTenMinutes = screen.queryByRole("listitem");
-    if (listItemAfterTenMinutes) {
-      screen.debug(listItemAfterTenMinutes);
-    }
 
     expect(listItemAfterTenMinutes).not.toBeInTheDocument();
   });

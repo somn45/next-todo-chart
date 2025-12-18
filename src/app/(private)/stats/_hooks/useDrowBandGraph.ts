@@ -36,13 +36,13 @@ type GraphConfig = {
 type useDrowBandGraphType = (
   graphConfig: GraphConfig,
 ) => [
-  d3.Selection<SVGGElement, unknown, null, undefined> | null,
+  d3.Selection<SVGSVGElement, unknown, null, undefined> | null,
   TimeBasedBandScale,
 ];
 
 const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
   const [svgContainer, setSvgContainer] = useState<d3.Selection<
-    SVGGElement,
+    SVGSVGElement,
     unknown,
     null,
     undefined

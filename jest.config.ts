@@ -11,6 +11,7 @@ const config: Config = {
   testEnvironment: "jsdom",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js",
   },
 };
 export default createJestConfig(config);

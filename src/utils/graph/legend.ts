@@ -24,9 +24,13 @@ type D3MarkerType = "circle" | "rect";
 
 // 범례를 추가할 위치 조정
 export const createLegend = (
-  svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   width: number,
-) => svg.append("g").attr("transform", `translate(${width}, 0)`);
+) =>
+  svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width}, 0)`);
 
 // 범례 목록 추가를 위한 준비
 export const setLegendItems = (
@@ -74,6 +78,7 @@ export const setLegendRectMarker = (
 
   legend
     .append(markerType)
+    .attr("class", "legendCategory")
     .attr("width", width)
     .attr("height", height)
     .attr("x", x)
@@ -92,6 +97,7 @@ export const setLegendCircleMarker = (
 
   legend
     .append(markerType)
+    .attr("class", "legendCategory")
     .attr("r", radius)
     .attr("cx", x)
     .attr("cy", y)
@@ -107,6 +113,7 @@ export const setLegendText = (
   const { x, y } = coord;
   legend
     .append("text")
+    .attr("class", "legendText")
     .attr("font-size", "12px")
     .attr("x", x)
     .attr("y", y)
