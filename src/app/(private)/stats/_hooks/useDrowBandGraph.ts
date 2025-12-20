@@ -11,7 +11,7 @@ import {
   setXAxis,
 } from "@/utils/graph";
 import { RefObject, useEffect, useState } from "react";
-import caculateBandLength from "../_utils/caculateBandLegnth";
+import caculateBandLength from "../_utils/caculateBandLength";
 
 interface ChartMargin {
   top: number;

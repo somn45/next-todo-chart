@@ -15,6 +15,7 @@ interface TimeBasedLinearScale {
 export const getDataPointClosetMousePointer = (
   groupedData: d3.InternMap<string, LineGraphData[]>,
   graphScale: TimeBasedLinearScale,
+  event: MouseEvent,
 ) => {
   const { x_scale, y_scale } = graphScale;
 

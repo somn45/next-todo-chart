@@ -22,7 +22,7 @@ const height = 400 - margin.top - margin.bottom;
 
 export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
   const lineGraphRef = useRef(null);
-  const toolTipRef = useRef(null);
+  const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   const [svg, { x_scale, y_scale }] = useDrowLineGraph({
     width,
@@ -38,7 +38,12 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     const groupedStats = d3.group(stats, d => d.state);
 
     const focus = createFollowMouseFocus(svg, "circle", 4);
-    const tooltip = d3.select(toolTipRef.current);
+    const tooltip = d3.select(toolTipRef.current) as d3.Selection<
+      HTMLDivElement,
+      unknown,
+      null,
+      undefined
+    >;
 
     svg
       .append("rect")
@@ -47,11 +52,12 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .attr("width", width)
       .attr("height", height)
       .on("mouseover", () => displayFollowElement([focus, tooltip]))
-      .on("mousemove", () =>
+      .on("mousemove", (event: MouseEvent) =>
         setCoordFocusAndToolTip(
           groupedStats,
           { x_scale, y_scale },
           { focus, tooltip },
+          event,
         ),
       )
       .on("mouseleave", () => hiddenFollowElement([focus, tooltip]));
@@ -62,6 +68,7 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       <div style={{ position: "relative" }}>
         <div
           ref={toolTipRef}
+          className="tooltip"
           style={{
             position: "absolute",
             opacity: 0,

@@ -7,6 +7,7 @@ export const createFollowMouseFocus = (
   const focus = svg
     .append("g")
     .append("circle")
+    .attr("class", "focus")
     .attr("fill", "none")
     .attr("stroke", "black")
     .attr("r", radius)

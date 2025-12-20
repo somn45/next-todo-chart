@@ -18,13 +18,16 @@ const caculateBandLength = (
   const { x_scale } = graphScale;
   const { domainStart, domainEnd } = graphDomain;
   let bandEndPoint;
-  if (!data.completedAt) {
+  if (!data.completedAt && domainEnd.getTime() < Date.now()) {
+    bandEndPoint = x_scale(domainEnd);
+  } else if (!data.completedAt) {
     bandEndPoint = x_scale(new Date(Date.now()));
   } else if (domainEnd.getTime() < new Date(data.completedAt).getTime()) {
     bandEndPoint = x_scale(domainEnd);
   } else {
     bandEndPoint = x_scale(new Date(data.completedAt));
   }
+  // date.now()가 completedAt보다 클 경우를 고려하기
   let bandStartPoint;
   if (domainStart.getTime() > new Date(data.createdAt).getTime()) {
     bandStartPoint = x_scale(domainStart);

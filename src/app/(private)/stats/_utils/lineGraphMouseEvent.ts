@@ -18,7 +18,7 @@ interface TimeBasedLinearScale {
 
 interface Elements {
   focus: d3.Selection<SVGCircleElement, unknown, null, undefined>;
-  tooltip: d3.Selection<null, unknown, null, undefined>;
+  tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>;
 }
 
 export const displayFollowElement = (followElements: FollowElements[]) => {
@@ -29,14 +29,19 @@ export const setCoordFocusAndToolTip = (
   groupedData: d3.InternMap<string, LineGraphData[]>,
   graphScale: TimeBasedLinearScale,
   followElements: Elements,
+  event: MouseEvent,
 ) => {
   const { x_scale, y_scale } = graphScale;
   const { focus, tooltip } = followElements;
 
-  const target = getDataPointClosetMousePointer(groupedData, {
-    x_scale,
-    y_scale,
-  });
+  const target = getDataPointClosetMousePointer(
+    groupedData,
+    {
+      x_scale,
+      y_scale,
+    },
+    event,
+  );
   const dateISO8601Type = formatByISO8601(target.date);
 
   focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
