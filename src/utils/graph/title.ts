@@ -1,6 +1,6 @@
 // 그래프 타이틀 추가
 export const addTitle = (
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  svg: d3.Selection<SVGGElement, unknown, null, undefined>,
   x: number,
   y: number,
   title: string,

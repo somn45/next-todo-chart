@@ -46,13 +46,13 @@ interface TimeBasedLinearScale {
 type useDrowLineGraphType = (
   GraphConfig: GraphConfig,
 ) => [
-  d3.Selection<SVGSVGElement, unknown, null, undefined> | null,
+  d3.Selection<SVGGElement, unknown, null, undefined> | null,
   TimeBasedLinearScale,
 ];
 
 const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
   const [svgContainer, setSvgContainer] = useState<d3.Selection<
-    SVGSVGElement,
+    SVGGElement,
     unknown,
     null,
     undefined

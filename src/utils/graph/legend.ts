@@ -24,7 +24,7 @@ type D3MarkerType = "circle" | "rect";
 
 // 범례를 추가할 위치 조정
 export const createLegend = (
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  svg: d3.Selection<SVGGElement, unknown, null, undefined>,
   width: number,
 ) =>
   svg

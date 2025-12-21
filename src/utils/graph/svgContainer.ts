@@ -23,9 +23,10 @@ export const createSVGContainer = (
   const svg = d3
     .select(divElement)
     .append("svg")
+    .attr("data-testid", "svg container")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
-
-  svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
   return svg;
 };

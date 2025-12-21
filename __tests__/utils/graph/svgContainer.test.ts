@@ -1,6 +1,5 @@
-import * as d3 from "d3";
-
 import { createSVGContainer } from "@/utils/graph";
+import { screen, within } from "@testing-library/react";
 
 describe("createSVGContainer", () => {
   const margin = { top: 20, left: 40, bottom: 20, right: 80 };
@@ -10,7 +9,9 @@ describe("createSVGContainer", () => {
 
   it("그래프를 그릴 svg 컨테이너와 그래프 관련 요소를 묶는 g 요소를 반환한다.", () => {
     const graphWrapper: HTMLDivElement | null = document.createElement("div");
-    const svg = createSVGContainer(layout, graphWrapper).node();
+    const graphArea = createSVGContainer(layout, graphWrapper).node();
+
+    const svg = within(graphWrapper).getByTestId("svg container");
 
     expect(svg).not.toBeNull();
     if (svg) {
@@ -23,9 +24,8 @@ describe("createSVGContainer", () => {
         String(height + margin.top + margin.bottom),
       );
 
-      const g = svg.children.item(0);
-      expect(g).not.toBeNull();
-      expect(g).toHaveAttribute(
+      expect(graphArea).not.toBeNull();
+      expect(graphArea).toHaveAttribute(
         "transform",
         `translate(${margin.left}, ${margin.top})`,
       );
