@@ -11,6 +11,7 @@ export const setXAxis = (
   svg
     .append("g")
     .attr("class", "xAxis")
+    .attr("data-testid", "x axis")
     .attr("transform", `translate(0, ${height})`)
     .call(
       d3
@@ -25,5 +26,9 @@ export const setYAxis = (
   svg: d3.Selection<SVGGElement, unknown, null, undefined>,
   scale: d3.ScaleLinear<number, number, never>,
 ) => {
-  svg.append("g").attr("class", "yAxis").call(d3.axisLeft(scale));
+  svg
+    .append("g")
+    .attr("class", "yAxis")
+    .attr("data-testid", "y axis")
+    .call(d3.axisLeft(scale));
 };

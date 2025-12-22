@@ -7,6 +7,7 @@ export const addTitle = (
 ) => {
   svg
     .append("text")
+    .attr("aria-label", "graph title")
     .attr("x", x)
     .attr("y", y)
     .attr("text-anchor", "middle")

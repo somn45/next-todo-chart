@@ -10,7 +10,7 @@ import {
   setLegendItems,
   setXAxis,
 } from "@/utils/graph";
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import caculateBandLength from "../_utils/caculateBandLength";
 
 interface ChartMargin {
@@ -30,19 +30,19 @@ type GraphConfig = {
   height: number;
   margin: ChartMargin;
   data: (LookupedTodo & WithStringifyId)[];
-  graphRef: RefObject<HTMLDivElement | null>;
 };
 
 type useDrowBandGraphType = (
   graphConfig: GraphConfig,
 ) => [
-  d3.Selection<SVGSVGElement, unknown, null, undefined> | null,
+  d3.Selection<SVGGElement, unknown, null, undefined> | null,
   TimeBasedBandScale,
+  RefObject<HTMLDivElement | null>,
 ];
 
 const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
   const [svgContainer, setSvgContainer] = useState<d3.Selection<
-    SVGSVGElement,
+    SVGGElement,
     unknown,
     null,
     undefined
@@ -51,13 +51,17 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     x_scale: null,
     y_scale: null,
   });
+  const bandGraphWrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const { width, height, margin, data, graphRef } = graphConfig;
+    const { width, height, margin, data } = graphConfig;
 
-    if (graphRef.current!.hasChildNodes()) return;
+    d3.select(bandGraphWrapperRef.current).selectAll("*").remove();
 
-    const svg = createSVGContainer({ width, height, margin }, graphRef.current);
+    const svg = createSVGContainer(
+      { width, height, margin },
+      bandGraphWrapperRef.current,
+    );
 
     addTitle(svg, width / 2, -50, "금주 투두 진행 타임라인");
 
@@ -118,7 +122,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       height,
       0.2,
     );
-    svg.append("g").call(d3.axisLeft(y_scale));
+    svg.append("g").attr("data-testid", "y axis").call(d3.axisLeft(y_scale));
 
     const color_scale = createColorScale(texts, colors);
 
@@ -126,6 +130,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       .selectAll("rect")
       .data(data)
       .join("rect")
+      .attr("data-testid", "band")
       .attr("fill", d => color_scale(d.content.state))
       .attr("x", d => {
         if (
@@ -150,7 +155,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     setGraphScale({ x_scale, y_scale });
   }, []);
 
-  return [svgContainer, graphScale];
+  return [svgContainer, graphScale, bandGraphWrapperRef];
 };
 
 export default useDrowBandGraph;

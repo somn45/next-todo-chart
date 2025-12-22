@@ -27,6 +27,7 @@ export const createSVGContainer = (
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
+    .attr("data-testid", "graph area")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
   return svg;
 };

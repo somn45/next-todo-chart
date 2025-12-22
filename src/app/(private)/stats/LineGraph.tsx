@@ -21,15 +21,13 @@ const width = 700 - margin.left - margin.right;
 const height = 400 - margin.top - margin.bottom;
 
 export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
-  const lineGraphRef = useRef(null);
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
-  const [svg, { x_scale, y_scale }] = useDrowLineGraph({
+  const [svg, { x_scale, y_scale }, lineGraphWrapperRef] = useDrowLineGraph({
     width,
     height,
     margin,
     data: stats,
-    graphRef: lineGraphRef,
   });
 
   useEffect(() => {
@@ -81,7 +79,7 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
             pointerEvents: "none",
           }}
         ></div>
-        <div ref={lineGraphRef}></div>
+        <div ref={lineGraphWrapperRef}></div>
       </div>
     </>
   );

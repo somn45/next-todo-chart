@@ -10,14 +10,13 @@ import {
   setYAxis,
 } from "@/utils/graph";
 import * as d3 from "d3";
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 
 type GraphConfig = {
   width: number;
   height: number;
   margin: ChartMargin;
   data: LineGraphData[];
-  graphRef: RefObject<HTMLDivElement | null>;
 };
 
 interface ChartMargin {
@@ -48,6 +47,7 @@ type useDrowLineGraphType = (
 ) => [
   d3.Selection<SVGGElement, unknown, null, undefined> | null,
   TimeBasedLinearScale,
+  RefObject<HTMLDivElement | null>,
 ];
 
 const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
@@ -61,16 +61,17 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
     x_scale: null,
     y_scale: null,
   });
+  const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const { width, height, margin, data, graphRef } = graphConfig;
-
-    if (graphRef.current!.hasChildNodes()) return;
+    const { width, height, margin, data } = graphConfig;
 
     const groupedStats = d3.group(data, d => d.state);
 
-    // 그래프를 그릴 컨테이너 생성
-    const svg = createSVGContainer({ width, height, margin }, graphRef.current);
+    const svg = createSVGContainer(
+      { width, height, margin },
+      lineGraphWrapperRef.current,
+    );
 
     addTitle(svg, width / 2, -50, "최근 1주간 등록된 투두 합계");
 
@@ -115,6 +116,7 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
       .data(groupedStats.entries())
       .enter()
       .append("path")
+      .attr("data-testid", "line")
       .attr("fill", "none")
       .attr("stroke", d => color(d[0]))
       .attr("stroke-width", 2.5)
@@ -124,7 +126,7 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
     setGraphScale({ x_scale, y_scale });
   }, []);
 
-  return [svgContainer, graphScale];
+  return [svgContainer, graphScale, lineGraphWrapperRef];
 };
 
 export default useDrowLineGraph;

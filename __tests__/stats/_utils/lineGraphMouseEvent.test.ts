@@ -89,8 +89,6 @@ describe("lineGraphMouseEvent", () => {
 
       displayFollowElement([focus, tooltip]);
 
-      screen.debug(graphWrapper);
-
       expect(graphWrapper.querySelector(".focus")).toHaveStyle("opacity: 1");
       expect(graphWrapper.querySelector(".tooltip")).toHaveStyle("opacity: 1");
     }
@@ -110,8 +108,6 @@ describe("lineGraphMouseEvent", () => {
       graphWrapper.append(tooltipElement);
 
       hiddenFollowElement([focus, tooltip]);
-
-      screen.debug(graphWrapper);
 
       expect(graphWrapper.querySelector(".focus")).toHaveStyle("opacity: 0");
       expect(graphWrapper.querySelector(".tooltip")).toHaveStyle("opacity: 0");

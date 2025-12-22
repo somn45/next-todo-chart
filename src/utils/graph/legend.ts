@@ -29,6 +29,7 @@ export const createLegend = (
 ) =>
   svg
     .append("g")
+    .attr("data-testid", "legend list")
     .attr("class", "legend")
     .attr("transform", `translate(${width}, 0)`);
 
@@ -79,6 +80,7 @@ export const setLegendRectMarker = (
   legend
     .append(markerType)
     .attr("class", "legendCategory")
+    .attr("data-testid", "legend category")
     .attr("width", width)
     .attr("height", height)
     .attr("x", x)
@@ -98,6 +100,7 @@ export const setLegendCircleMarker = (
   legend
     .append(markerType)
     .attr("class", "legendCategory")
+    .attr("data-testid", "legend category")
     .attr("r", radius)
     .attr("cx", x)
     .attr("cy", y)
@@ -114,6 +117,7 @@ export const setLegendText = (
   legend
     .append("text")
     .attr("class", "legendText")
+    .attr("data-testid", "legend text")
     .attr("font-size", "12px")
     .attr("x", x)
     .attr("y", y)

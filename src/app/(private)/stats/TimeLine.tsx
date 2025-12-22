@@ -13,14 +13,12 @@ const width = 660 - margin.left - margin.right;
 const height = 400 - margin.top - margin.bottom;
 
 export default function TimeLine({ todos }: TimeLineProps) {
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const [] = useDrowBandGraph({
+  const [svg, scale, graphWrapperRef] = useDrowBandGraph({
     width,
     height,
     margin,
     data: todos,
-    graphRef: timelineRef,
   });
 
-  return <div ref={timelineRef}></div>;
+  return <div ref={graphWrapperRef}></div>;
 }
