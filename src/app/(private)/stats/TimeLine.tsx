@@ -1,7 +1,6 @@
 "use client";
 
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
-import { useRef } from "react";
 import useDrowBandGraph from "./_hooks/useDrowBandGraph";
 
 interface TimeLineProps {

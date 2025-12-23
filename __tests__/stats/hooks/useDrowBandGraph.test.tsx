@@ -63,7 +63,6 @@ const TestBandGraph = () => {
 describe("useDrowBandGraph 커스텀 훅", () => {
   it("useDrowBandGraph 커스텀 훅에서 모든 그래프 요소를 이용하여 최종적인 타임라인 그래프를 그리는 역할을 수행한다.", async () => {
     render(<TestBandGraph />);
-    screen.debug();
 
     await act(async () => {
       const svgContainer = screen.getByTestId("svg container");
