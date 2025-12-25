@@ -6,7 +6,7 @@ const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const getTodoStats = async (userid: string | undefined | null) => {
   if (!userid) {
-    redirect("/login");
+    return redirect("/login");
   }
 
   const db = (await connectDB).db("next-todo-chart-cluster");

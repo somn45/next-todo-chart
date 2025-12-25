@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export const getAllTodos = async (userid: string | undefined | null) => {
   if (!userid) {
-    redirect("/login");
+    return redirect("/login");
   }
 
   const db = (await connectDB).db("next-todo-chart-cluster");
