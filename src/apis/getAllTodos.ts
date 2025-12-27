@@ -1,5 +1,9 @@
 import { connectDB } from "@/libs/database";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
+import {
+  getCurrentWeekEndDate,
+  getCurrentWeekStartDate,
+} from "@/utils/date/getDateInCurrentDate";
 import { redirect } from "next/navigation";
 
 export const getAllTodos = async (userid: string | undefined | null) => {
@@ -21,28 +25,8 @@ export const getAllTodos = async (userid: string | undefined | null) => {
   // createdAt <= 금주 일요일
   // completedAt >= 금주 월요일
 
-  const currentDay = new Date().getDay();
-  const currentWeekArray = Array.from({ length: 7 }, (_, i) => i - currentDay);
-  const currentWeek = currentWeekArray.map(ele => {
-    const ONE_DAY = 1000 * 60 * 60 * 24;
-    return new Date(Date.now() + ONE_DAY * ele);
-  });
-
-  const currentWeekStartDate = new Date(
-    currentWeek[0].getFullYear(),
-    currentWeek[0].getMonth(),
-    currentWeek[0].getDate(),
-    0,
-    0,
-  );
-
-  const currentWeekEndDate = new Date(
-    currentWeek[currentWeek.length - 1].getFullYear(),
-    currentWeek[currentWeek.length - 1].getMonth(),
-    currentWeek[currentWeek.length - 1].getDate(),
-    23,
-    59,
-  );
+  const currentWeekStartDate = getCurrentWeekStartDate();
+  const currentWeekEndDate = getCurrentWeekEndDate();
 
   const todosDoc = await db
     .collection("todos")

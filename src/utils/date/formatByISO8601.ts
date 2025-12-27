@@ -1,5 +1,4 @@
 // ISO8601 포맷 - yyyy-mm-dd
-
 export const formatByISO8601 = (dateObject: Date | d3.NumberValue) => {
   if (typeof dateObject === "object") {
     const dayOfMonth = new Date(dateObject.toString()).getDate().toString();

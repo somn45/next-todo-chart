@@ -12,6 +12,10 @@ import {
 } from "@/utils/graph";
 import { RefObject, useEffect, useRef, useState } from "react";
 import caculateBandLength from "../_utils/caculateBandLength";
+import {
+  getCurrentWeekEndDate,
+  getCurrentWeekStartDate,
+} from "@/utils/date/getDateInCurrentDate";
 
 interface ChartMargin {
   top: number;
@@ -85,35 +89,12 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       texts,
     );
 
-    const currentDay = new Date().getDay();
-    const currentWeekArray = Array.from(
-      { length: 7 },
-      (_, i) => i - currentDay,
-    );
-    const currentWeek = currentWeekArray.map(ele => {
-      const ONE_DAY = 1000 * 60 * 60 * 24;
-      return new Date(Date.now() + ONE_DAY * ele);
-    });
-
-    const currentWeekFirstDay = new Date(
-      currentWeek[0].getFullYear(),
-      currentWeek[0].getMonth(),
-      currentWeek[0].getDate(),
-      0,
-      0,
-    );
-
-    const currentWeekLastDay = new Date(
-      currentWeek[currentWeek.length - 1].getFullYear(),
-      currentWeek[currentWeek.length - 1].getMonth(),
-      currentWeek[currentWeek.length - 1].getDate(),
-      23,
-      59,
-    );
+    const currentWeekStartDate = getCurrentWeekStartDate();
+    const currentWeekEndDate = getCurrentWeekEndDate();
 
     const x_scale = createTimeScale({
       rangeMax: width - 80,
-      timeScaleDomain: [currentWeekFirstDay, currentWeekLastDay],
+      timeScaleDomain: [currentWeekStartDate, currentWeekEndDate],
     });
     setXAxis(svg, x_scale, 8, height);
 
@@ -134,10 +115,10 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       .attr("fill", d => color_scale(d.content.state))
       .attr("x", d => {
         if (
-          currentWeekFirstDay.getTime() >
+          currentWeekStartDate.getTime() >
           new Date(d.content.createdAt).getTime()
         ) {
-          return x_scale(currentWeekFirstDay);
+          return x_scale(currentWeekStartDate);
         }
         return x_scale(new Date(d.content.createdAt));
       })
@@ -146,7 +127,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
         caculateBandLength(
           d.content,
           { x_scale },
-          { domainStart: currentWeekFirstDay, domainEnd: currentWeekLastDay },
+          { domainStart: currentWeekStartDate, domainEnd: currentWeekEndDate },
         ),
       )
       .attr("height", y_scale.bandwidth());

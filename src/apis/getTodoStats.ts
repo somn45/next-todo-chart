@@ -1,8 +1,7 @@
 import { connectDB } from "@/libs/database";
 import { Stat, TodoStats } from "@/types/schema";
+import { createDatesLastlyWeek } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
-
-const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const getTodoStats = async (userid: string | undefined | null) => {
   if (!userid) {
@@ -11,25 +10,16 @@ export const getTodoStats = async (userid: string | undefined | null) => {
 
   const db = (await connectDB).db("next-todo-chart-cluster");
 
-  const weeks = Array.from({ length: 7 }, (_, i) => i - 1);
+  const dateListLastlyWeek = createDatesLastlyWeek();
 
-  const currentDateSharp = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-  );
-
+  // 현재 날짜의 00:00시 가져오기
   const todoStatsDoc = await Promise.all(
-    weeks.map(async day => {
-      const targetDate = new Date(
-        currentDateSharp.getTime() - (weeks.length - 1 - day) * ONE_DAY,
-      );
-
+    dateListLastlyWeek.map(async dateInLastWeek => {
       const todoStatsDoc = (await db
         .collection<TodoStats>("stat")
         .aggregate([
           {
-            $match: { date: targetDate },
+            $match: { date: dateInLastWeek },
           },
           {
             $group: {
@@ -60,7 +50,7 @@ export const getTodoStats = async (userid: string | undefined | null) => {
       return todoStatsDoc
         ? todoStatsDoc
         : {
-            _id: targetDate,
+            _id: dateInLastWeek,
             totalCount: 0,
             todoStateCount: 0,
             doingStateCount: 0,
