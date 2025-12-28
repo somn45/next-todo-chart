@@ -7,15 +7,13 @@ interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
 }
 
-const margin = { top: 80, left: 100, bottom: 20, right: 100 };
-const graphInnerWidth = 700 - margin.left - margin.right;
-const graphInnerHeight = 400 - margin.top - margin.bottom;
+const GRAPH_WIDTH = 700;
+const GRAPH_HEIGHT = 400;
 
 export default function TimeLine({ todos }: TimeLineProps) {
   const [svg, scale, graphWrapperRef] = useDrowBandGraph({
-    width: graphInnerWidth,
-    height: graphInnerHeight,
-    margin,
+    outerWidth: GRAPH_WIDTH,
+    outerHeight: GRAPH_HEIGHT,
     data: todos,
   });
 

@@ -16,13 +16,7 @@ import {
   getCurrentWeekEndDate,
   getCurrentWeekStartDate,
 } from "@/utils/date/getDateInCurrentDate";
-
-interface ChartMargin {
-  top: number;
-  left: number;
-  bottom: number;
-  right: number;
-}
+import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
 
 interface TimeBasedBandScale {
   x_scale: d3.ScaleTime<number, number, never> | null;
@@ -30,9 +24,8 @@ interface TimeBasedBandScale {
 }
 
 type GraphConfig = {
-  width: number;
-  height: number;
-  margin: ChartMargin;
+  outerWidth: number;
+  outerHeight: number;
   data: (LookupedTodo & WithStringifyId)[];
 };
 
@@ -61,20 +54,18 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     const container = bandGraphWrapperRef.current;
     if (!container) return;
 
-    const { width, height, margin, data } = graphConfig;
-
-    const graphOuterWidth = width + margin.left + margin.right;
-    const graphOuterHeight = height + margin.top + margin.bottom;
+    const { outerWidth, outerHeight, data } = graphConfig;
+    const graphMargin = { top: 80, left: 100, bottom: 20, right: 100 };
+    const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
+      caculateGraphLayout(outerWidth, outerHeight, graphMargin);
 
     const svg = createSVGContainer(
-      { width: graphOuterWidth, height: graphOuterHeight, margin },
+      { width: outerWidth, height: outerHeight, margin: graphMargin },
       container,
     );
 
-    const titleStartOffset = graphOuterWidth - margin.left;
     addTitle(svg, titleStartOffset, -50, "금주 투두 진행 타임라인");
 
-    const legendStartOffset = width + margin.right / 4;
     const legend = createLegend(svg, legendStartOffset);
 
     const colors = ["#3498DB", "#FFA500", "#2ECC71"];
@@ -99,14 +90,14 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     const currentWeekEndDate = getCurrentWeekEndDate();
 
     const x_scale = createTimeScale({
-      rangeMax: width,
+      rangeMax: innerWidth,
       timeScaleDomain: [currentWeekStartDate, currentWeekEndDate],
     });
-    setXAxis(svg, x_scale, 8, height);
+    setXAxis(svg, x_scale, 8, innerHeight);
 
     const y_scale = createBandScale(
       data.map(todo => ({ text: todo.content.textField })),
-      height,
+      innerHeight,
       0.2,
     );
     svg.append("g").attr("data-testid", "y axis").call(d3.axisLeft(y_scale));

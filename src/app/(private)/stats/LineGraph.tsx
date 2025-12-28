@@ -9,6 +9,7 @@ import {
   setCoordFocusAndToolTip,
 } from "./_utils/lineGraphMouseEvent";
 import useDrowLineGraph from "./_hooks/useDrowLineGraph";
+import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
 
 interface LineGraphData {
   date: Date;
@@ -16,17 +17,16 @@ interface LineGraphData {
   count: number;
 }
 
-const margin = { top: 80, left: 30, bottom: 20, right: 100 };
-const graphInnerWidth = 700 - margin.left - margin.right;
-const graphInnerHeight = 400 - margin.top - margin.bottom;
+const GRAPH_WIDTH = 700;
+const GRAPH_HEIGHT = 400;
+const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
 
 export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   const [svg, { x_scale, y_scale }, lineGraphWrapperRef] = useDrowLineGraph({
-    width: graphInnerWidth,
-    height: graphInnerHeight,
-    margin,
+    outerWidth: GRAPH_WIDTH,
+    outerHeight: GRAPH_HEIGHT,
     data: stats,
   });
 
@@ -34,6 +34,11 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
     if (svg === null || x_scale === null || y_scale === null) return;
 
     const groupedStats = d3.group(stats, d => d.state);
+    const { innerWidth, innerHeight } = caculateGraphLayout(
+      GRAPH_WIDTH,
+      GRAPH_HEIGHT,
+      graphMargin,
+    );
 
     const focus = createFollowMouseFocus(svg, "circle", 4);
     const tooltip = d3.select(toolTipRef.current) as d3.Selection<
@@ -47,8 +52,8 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .append("rect")
       .attr("fill", "none")
       .style("pointer-events", "all")
-      .attr("width", graphInnerHeight)
-      .attr("height", graphInnerHeight)
+      .attr("width", innerWidth)
+      .attr("height", innerHeight)
       .on("mouseover", () => displayFollowElement([focus, tooltip]))
       .on("mousemove", (event: MouseEvent) =>
         setCoordFocusAndToolTip(

@@ -9,13 +9,13 @@ import {
   setXAxis,
   setYAxis,
 } from "@/utils/graph";
+import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
 import * as d3 from "d3";
 import { RefObject, useEffect, useRef, useState } from "react";
 
 type GraphConfig = {
-  width: number;
-  height: number;
-  margin: ChartMargin;
+  outerWidth: number;
+  outerHeight: number;
   data: LineGraphData[];
 };
 
@@ -67,21 +67,20 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
     const container = lineGraphWrapperRef.current;
     if (!container) return;
 
-    const { width, height, margin, data } = graphConfig;
+    const { outerWidth, outerHeight, data } = graphConfig;
+    const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
+    const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
+      caculateGraphLayout(outerWidth, outerHeight, graphMargin);
+
     const groupedStats = d3.group(data, d => d.state);
 
-    const graphOuterWidth = width + margin.left + margin.right;
-    const graphOuterHeight = height + margin.top + margin.bottom;
-
     const svg = createSVGContainer(
-      { width: graphOuterWidth, height: graphOuterHeight, margin },
+      { width: outerWidth, height: outerHeight, margin: graphMargin },
       container,
     );
 
-    const titleStartOffset = graphOuterWidth - margin.left;
     addTitle(svg, titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
 
-    const legendStartOffset = width + margin.right / 4;
     const legend = createLegend(svg, legendStartOffset);
 
     const legendMarkerSize = { width: 15, height: 2 };
@@ -98,10 +97,10 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
       legendTexts,
     );
 
-    const x_scale = createTimeScale({ rangeMax: width, data });
-    setXAxis(svg, x_scale, 7, height);
+    const x_scale = createTimeScale({ rangeMax: innerWidth, data });
+    setXAxis(svg, x_scale, 7, innerHeight);
 
-    const y_scale = createLinearScale(data, height);
+    const y_scale = createLinearScale(data, innerHeight);
     setYAxis(svg, y_scale);
 
     const lineGenerator = d3
