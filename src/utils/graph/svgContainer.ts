@@ -24,8 +24,8 @@ export const createSVGContainer = (
     .select(divElement)
     .append("svg")
     .attr("data-testid", "svg container")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width)
+    .attr("height", height)
     .append("g")
     .attr("data-testid", "graph area")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);

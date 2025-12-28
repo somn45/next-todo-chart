@@ -1,14 +1,14 @@
 // 그래프 타이틀 추가
 export const addTitle = (
   svg: d3.Selection<SVGGElement, unknown, null, undefined>,
-  x: number,
+  width: number,
   y: number,
   title: string,
 ) => {
   svg
     .append("text")
     .attr("aria-label", "graph title")
-    .attr("x", x)
+    .attr("x", width / 2)
     .attr("y", y)
     .attr("text-anchor", "middle")
     .attr("font-size", "20px")

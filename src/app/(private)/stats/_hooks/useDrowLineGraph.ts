@@ -64,18 +64,25 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
   const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const { width, height, margin, data } = graphConfig;
+    const container = lineGraphWrapperRef.current;
+    if (!container) return;
 
+    const { width, height, margin, data } = graphConfig;
     const groupedStats = d3.group(data, d => d.state);
 
+    const graphOuterWidth = width + margin.left + margin.right;
+    const graphOuterHeight = height + margin.top + margin.bottom;
+
     const svg = createSVGContainer(
-      { width, height, margin },
-      lineGraphWrapperRef.current,
+      { width: graphOuterWidth, height: graphOuterHeight, margin },
+      container,
     );
 
-    addTitle(svg, width / 2, -50, "최근 1주간 등록된 투두 합계");
+    const titleStartOffset = graphOuterWidth - margin.left;
+    addTitle(svg, titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
 
-    const legend = createLegend(svg, width - 50);
+    const legendStartOffset = width + margin.right / 4;
+    const legend = createLegend(svg, legendStartOffset);
 
     const legendMarkerSize = { width: 15, height: 2 };
     const legendInitCoord = { x: 0, y: 0, textX: 22, textY: 6 };
@@ -91,7 +98,7 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
       legendTexts,
     );
 
-    const x_scale = createTimeScale({ rangeMax: width - 80, data });
+    const x_scale = createTimeScale({ rangeMax: width, data });
     setXAxis(svg, x_scale, 7, height);
 
     const y_scale = createLinearScale(data, height);

@@ -16,16 +16,16 @@ interface LineGraphData {
   count: number;
 }
 
-const margin = { top: 80, left: 40, bottom: 40, right: 40 };
-const width = 700 - margin.left - margin.right;
-const height = 400 - margin.top - margin.bottom;
+const margin = { top: 80, left: 30, bottom: 20, right: 100 };
+const graphInnerWidth = 700 - margin.left - margin.right;
+const graphInnerHeight = 400 - margin.top - margin.bottom;
 
 export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   const [svg, { x_scale, y_scale }, lineGraphWrapperRef] = useDrowLineGraph({
-    width,
-    height,
+    width: graphInnerWidth,
+    height: graphInnerHeight,
     margin,
     data: stats,
   });
@@ -47,8 +47,8 @@ export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
       .append("rect")
       .attr("fill", "none")
       .style("pointer-events", "all")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", graphInnerHeight)
+      .attr("height", graphInnerHeight)
       .on("mouseover", () => displayFollowElement([focus, tooltip]))
       .on("mousemove", (event: MouseEvent) =>
         setCoordFocusAndToolTip(

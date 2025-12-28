@@ -58,18 +58,24 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
   const bandGraphWrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const container = bandGraphWrapperRef.current;
+    if (!container) return;
+
     const { width, height, margin, data } = graphConfig;
 
-    d3.select(bandGraphWrapperRef.current).selectAll("*").remove();
+    const graphOuterWidth = width + margin.left + margin.right;
+    const graphOuterHeight = height + margin.top + margin.bottom;
 
     const svg = createSVGContainer(
-      { width, height, margin },
-      bandGraphWrapperRef.current,
+      { width: graphOuterWidth, height: graphOuterHeight, margin },
+      container,
     );
 
-    addTitle(svg, width / 2, -50, "금주 투두 진행 타임라인");
+    const titleStartOffset = graphOuterWidth - margin.left;
+    addTitle(svg, titleStartOffset, -50, "금주 투두 진행 타임라인");
 
-    const legend = createLegend(svg, width - 50);
+    const legendStartOffset = width + margin.right / 4;
+    const legend = createLegend(svg, legendStartOffset);
 
     const colors = ["#3498DB", "#FFA500", "#2ECC71"];
     const texts = ["할 일", "진행 중", "완료"];
@@ -93,7 +99,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     const currentWeekEndDate = getCurrentWeekEndDate();
 
     const x_scale = createTimeScale({
-      rangeMax: width - 80,
+      rangeMax: width,
       timeScaleDomain: [currentWeekStartDate, currentWeekEndDate],
     });
     setXAxis(svg, x_scale, 8, height);
