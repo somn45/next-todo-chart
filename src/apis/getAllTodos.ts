@@ -28,6 +28,9 @@ export const getAllTodos = async (userid: string | undefined | null) => {
   const currentWeekStartDate = getCurrentWeekStartDate();
   const currentWeekEndDate = getCurrentWeekEndDate();
 
+  // 투두의 생성일이 금주의 종료 날짜보다 뒤쳐져있고
+  // 투두의 완료일이 아직 정해지지 않았거나
+  // 금주의 시작 날짜보다 앞서있는 투두 목록 가져오기
   const todosDoc = await db
     .collection("todos")
     .aggregate([
@@ -69,6 +72,8 @@ export const getAllTodos = async (userid: string | undefined | null) => {
       },
     ])
     .toArray();
+
+  console.log("getAlllTodos", todosDoc);
 
   return JSON.parse(JSON.stringify(todosDoc)) as (LookupedTodo &
     WithStringifyId)[];

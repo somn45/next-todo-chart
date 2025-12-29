@@ -59,5 +59,7 @@ export const getTodoStats = async (userid: string | undefined | null) => {
     }),
   );
 
+  console.log("getTodoStats", todoStatsDoc);
+
   return todoStatsDoc;
 };
