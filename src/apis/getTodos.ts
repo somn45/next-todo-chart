@@ -62,8 +62,6 @@ export const getTodos = async (userid: string | undefined | null) => {
     ])
     .toArray();
 
-  console.log("getTodos", todosDoc);
-
   return JSON.parse(JSON.stringify(todosDoc)) as (LookupedTodo &
     WithStringifyId)[];
 };

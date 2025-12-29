@@ -9,7 +9,7 @@ export default function ProtectedLayout({
         <nav>
           <ul>
             <li>
-              <Link href="/">메인으로</Link>
+              <Link href="/dashboard">메인으로</Link>
             </li>
             <li>
               <Link href="/todos">투두리스트</Link>
@@ -23,7 +23,10 @@ export default function ProtectedLayout({
           </ul>
         </nav>
       </header>
-      <main>{children}</main>
+      <main>
+        <div></div>
+        {children}
+      </main>
     </>
   );
 }
