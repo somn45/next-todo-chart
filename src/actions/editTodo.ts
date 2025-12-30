@@ -49,6 +49,8 @@ export const editTodo = async (
     );
     revalidateTag(`todo-${todoid}`);
     revalidateTag("todos");
+    revalidateTag("dashboard");
+
     return { message: "" };
   } catch (error) {
     if (error instanceof Error) {

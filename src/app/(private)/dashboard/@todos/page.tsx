@@ -1,6 +1,8 @@
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
+import TodosForm from "../../todos/Form";
+import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 
 interface AccessTokenPayload {
   sub: string;
@@ -17,5 +19,16 @@ export default async function DashBoardTodos() {
 
   const { activeTodos } = await getIntegratedTodos(userid);
 
-  return <div>투두 리스트</div>;
+  return (
+    <div>
+      <TodosForm userid={userid} />
+      {activeTodos.map(todo => (
+        <TodoWrapper
+          key={todo.content._id}
+          todo={todo.content}
+          showDeleteSection={false}
+        />
+      ))}
+    </div>
+  );
 }

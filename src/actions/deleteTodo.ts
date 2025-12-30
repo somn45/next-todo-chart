@@ -45,6 +45,7 @@ export const deleteTodo = async (
 
     revalidateTag(`todo-${todoid}`);
     revalidateTag("todos");
+    revalidateTag("dashboard");
 
     return { message: "" };
   } catch (error) {

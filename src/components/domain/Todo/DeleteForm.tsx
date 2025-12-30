@@ -6,14 +6,17 @@ import { useActionState } from "react";
 export default function Deleteform({
   todoid,
   userid,
+  showDeleteSection = true,
 }: {
   todoid: string;
   userid: string;
+  showDeleteSection?: boolean;
 }) {
   const deleteTodoWithUserId = deleteTodo.bind(null, userid);
   const [state, formAction] = useActionState(deleteTodoWithUserId, {
     message: "",
   });
+  if (!showDeleteSection) return null;
   return (
     <form role="form" action={formAction}>
       <span>{state.message}</span>

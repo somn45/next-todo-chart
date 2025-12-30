@@ -8,7 +8,13 @@ import { useEffect, useRef, useState } from "react";
 
 // 6시 20분 완료인데 6시 14분일 경우
 
-export default function Todo({ todo }: { todo: LookupedTodo["content"] }) {
+export default function Todo({
+  todo,
+  showDeleteSection,
+}: {
+  todo: LookupedTodo["content"];
+  showDeleteSection?: boolean;
+}) {
   const { _id, userid, textField, state, completedAt } = todo;
 
   const [hasGracePeriod, setHasGracePeriod] = useState(true);
@@ -60,7 +66,11 @@ export default function Todo({ todo }: { todo: LookupedTodo["content"] }) {
       <span data-testid="todo-state">현재 상태 {state}</span>
       <TodoStateForm todoid={_id} todoState={state} />
       <EditForm todoid={_id} userid={userid} />
-      <Deleteform todoid={_id} userid={userid} />
+      <Deleteform
+        todoid={_id}
+        userid={userid}
+        showDeleteSection={showDeleteSection}
+      />
     </li>
   );
 }
