@@ -1,24 +1,25 @@
-import Link from "next/link";
+/**
+ * 그래프 분류
+ * 최근 1주일의 일별 투두 통계 : 라인 그래프
+ * 완료된 투두 통계 : 라인 그래프
+ * 투두의 타임라인(일별, 주별, 월별) : 병렬 라우팅을 이용한 밴드 그래프
+ * 투두 생성부터 완료까지 걸린 시간 : 밴드 그래프
+ */
 
-export default function StatsLayout({
+export default async function StatsLayout({
+  timeline,
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  dailyActive,
+}: Readonly<{
+  timeline: React.ReactNode;
+  dailyActive: React.ReactNode;
+  children: React.ReactNode;
+}>) {
   return (
     <>
-      <section>
-        <nav>
-          <ul>
-            <li>
-              <Link href="/stats">통계 개요</Link>
-            </li>
-            <li>
-              <Link href="/stats/todos">완료된 투두 통계</Link>
-            </li>
-            <li>
-              <Link href="/stats/calendar">투두리스트 캘린더</Link>
-            </li>
-          </ul>
-        </nav>
+      <section style={{ display: "flex", gap: "50px" }}>
+        {dailyActive}
+        {timeline}
       </section>
       <section>{children}</section>
     </>

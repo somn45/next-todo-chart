@@ -2,6 +2,7 @@
 
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import useDrowBandGraph from "./_hooks/useDrowBandGraph";
+import Link from "next/link";
 
 interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
@@ -17,5 +18,9 @@ export default function TimeLine({ todos }: TimeLineProps) {
     data: todos,
   });
 
-  return <div ref={graphWrapperRef}></div>;
+  return (
+    <>
+      <div ref={graphWrapperRef}></div>
+    </>
+  );
 }
