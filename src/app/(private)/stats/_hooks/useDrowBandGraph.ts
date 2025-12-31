@@ -132,6 +132,9 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
 
     setSvgContainer(svg);
     setGraphScale({ x_scale, y_scale });
+    return () => {
+      d3.select(container).selectAll("*").remove();
+    };
   }, []);
 
   return [svgContainer, graphScale, bandGraphWrapperRef];
