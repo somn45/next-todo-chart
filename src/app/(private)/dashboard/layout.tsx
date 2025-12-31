@@ -5,14 +5,6 @@
  * 3. 투두의 라이프 사이클을 표현한 타임라인 (getAllTodos)
  */
 
-interface AccessTokenPayload {
-  sub: string;
-}
-
-import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
-import { getTodoStats } from "@/apis/getTodoStats";
-import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
-import { cookies } from "next/headers";
 import React from "react";
 
 export default async function Dashboard({
@@ -27,13 +19,35 @@ export default async function Dashboard({
   timeline: React.ReactNode;
 }) {
   return (
-    <div>
-      Home 페이지
-      <div>{todos}</div>
-      <div>{lineGraph}</div>
-      <div>{timeline}</div>
+    <section
+      style={{
+        display: "flex",
+      }}
+    >
+      <section
+        style={{
+          width: "50%",
+          marginLeft: "100px",
+          alignSelf: "stretch",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {todos}
+      </section>
+      <section
+        style={{
+          width: "50%",
+          alignSelf: "stretch",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div style={{ marginBottom: "50px" }}>{lineGraph}</div>
+        <div>{timeline}</div>
+      </section>
       <div>{children}</div>
-    </div>
+    </section>
   );
 }
 

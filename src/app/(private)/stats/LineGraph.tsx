@@ -10,18 +10,13 @@ import {
 } from "./_utils/lineGraphMouseEvent";
 import useDrowLineGraph from "./_hooks/useDrowLineGraph";
 import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
-
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
+import { ILineGraphData } from "@/types/schema";
 
 const GRAPH_WIDTH = 700;
 const GRAPH_HEIGHT = 400;
 const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
 
-export default function LineGraph({ stats }: { stats: LineGraphData[] }) {
+export default function LineGraph({ stats }: { stats: ILineGraphData[] }) {
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   const [svg, { x_scale, y_scale }, lineGraphWrapperRef] = useDrowLineGraph({

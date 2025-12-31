@@ -10,16 +10,9 @@ import {
   hiddenFollowElement,
   setCoordFocusAndToolTip,
 } from "@/app/(private)/stats/_utils/lineGraphMouseEvent";
-import { screen } from "@testing-library/react";
-import { getDataPointClosetMousePointer } from "@/app/(private)/stats/_utils/getDataPointClosetMousePointer";
+import { ILineGraphData } from "@/types/schema";
 
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
-
-const mockTodos: LineGraphData[] = [
+const mockTodos: ILineGraphData[] = [
   {
     date: new Date(2025, 6, 1),
     state: "할 일",

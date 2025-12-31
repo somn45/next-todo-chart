@@ -1,10 +1,10 @@
 import { getTodoStats } from "@/apis/getTodoStats";
 import { setTodoStats } from "@/apis/setTodoStats";
-import LineGraph from "@/app/(private)/stats/LineGraph";
 import LineGraphWrapper from "@/app/(private)/stats/LineGraphWrapper";
-import { render, screen, waitFor } from "@testing-library/react";
+import { ILineGraphData } from "@/types/schema";
+import { render, waitFor } from "@testing-library/react";
 
-const lineGraphDatas: { date: Date; state: string; count: number }[] = [
+const lineGraphDatas: ILineGraphData[] = [
   {
     date: new Date(2025, 6, 1),
     state: "총합",

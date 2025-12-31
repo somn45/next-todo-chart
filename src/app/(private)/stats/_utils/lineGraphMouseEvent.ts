@@ -1,15 +1,10 @@
 import * as d3 from "d3";
 import { getDataPointClosetMousePointer } from "./getDataPointClosetMousePointer";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
+import { ILineGraphData } from "@/types/schema";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FollowElements = d3.Selection<any, unknown, any, unknown>;
-
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
 
 interface TimeBasedLinearScale {
   x_scale: d3.ScaleTime<number, number, never>;
@@ -26,7 +21,7 @@ export const displayFollowElement = (followElements: FollowElements[]) => {
 };
 
 export const setCoordFocusAndToolTip = (
-  groupedData: d3.InternMap<string, LineGraphData[]>,
+  groupedData: d3.InternMap<string, ILineGraphData[]>,
   graphScale: TimeBasedLinearScale,
   followElements: Elements,
   event: MouseEvent,

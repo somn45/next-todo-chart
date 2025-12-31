@@ -64,6 +64,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       container,
     );
 
+    console.log(titleStartOffset);
     addTitle(svg, titleStartOffset, -50, "금주 투두 진행 타임라인");
 
     const legend = createLegend(svg, legendStartOffset);

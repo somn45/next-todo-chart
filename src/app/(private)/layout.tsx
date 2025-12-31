@@ -7,7 +7,7 @@ export default function ProtectedLayout({
     <>
       <header>
         <nav>
-          <ul>
+          <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
             <li>
               <Link href="/dashboard">메인으로</Link>
             </li>

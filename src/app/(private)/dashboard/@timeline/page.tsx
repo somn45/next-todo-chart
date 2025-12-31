@@ -1,6 +1,7 @@
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
+import TimeLine from "../../stats/TimeLine";
 
 interface AccessTokenPayload {
   sub: string;
@@ -17,5 +18,9 @@ export default async function DashBoardTimeline() {
 
   const { todosIncludeThisWeek } = await getIntegratedTodos(userid);
 
-  return <div>타임 라인</div>;
+  return (
+    <div>
+      <TimeLine todos={todosIncludeThisWeek} />
+    </div>
+  );
 }

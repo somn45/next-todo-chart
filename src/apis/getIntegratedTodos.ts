@@ -1,5 +1,11 @@
 import { connectDB } from "@/libs/database";
-import { LookupedTodo, Stat, TodoStats, WithStringifyId } from "@/types/schema";
+import {
+  LookupedTodo,
+  Stat,
+  StatStringifyId,
+  TodoStats,
+  WithStringifyId,
+} from "@/types/schema";
 import { createDatesLastlyWeek } from "@/utils/date/createDatesLastlyWeek";
 import {
   getCurrentWeekEndDate,
@@ -11,7 +17,7 @@ import { redirect } from "next/navigation";
 interface IIntegratedTodos {
   activeTodos: (LookupedTodo & WithStringifyId)[];
   todosIncludeThisWeek: (LookupedTodo & WithStringifyId)[];
-  todoStats: Stat[];
+  todoStats: StatStringifyId[];
 }
 
 export const getIntegratedTodos = async (userid: string | undefined | null) => {

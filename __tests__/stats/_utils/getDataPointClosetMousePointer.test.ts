@@ -1,20 +1,9 @@
 import * as d3 from "d3";
-import {
-  createFollowMouseFocus,
-  createLinearScale,
-  createSVGContainer,
-  createTimeScale,
-} from "@/utils/graph";
+import { createLinearScale, createTimeScale } from "@/utils/graph";
 import { getDataPointClosetMousePointer } from "@/app/(private)/stats/_utils/getDataPointClosetMousePointer";
-import { getClosestYOffset } from "@/app/(private)/stats/_utils/getClosestYOffset";
+import { ILineGraphData } from "@/types/schema";
 
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
-
-const mockTodos: LineGraphData[] = [
+const mockTodos: ILineGraphData[] = [
   {
     date: new Date(2025, 6, 1),
     state: "할 일",

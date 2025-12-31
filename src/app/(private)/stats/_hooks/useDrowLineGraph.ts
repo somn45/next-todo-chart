@@ -1,3 +1,4 @@
+import { ILineGraphData } from "@/types/schema";
 import {
   addTitle,
   createColorScale,
@@ -16,21 +17,8 @@ import { RefObject, useEffect, useRef, useState } from "react";
 type GraphConfig = {
   outerWidth: number;
   outerHeight: number;
-  data: LineGraphData[];
+  data: ILineGraphData[];
 };
-
-interface ChartMargin {
-  top: number;
-  left: number;
-  bottom: number;
-  right: number;
-}
-
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
 
 interface DataPoint {
   date: Date;

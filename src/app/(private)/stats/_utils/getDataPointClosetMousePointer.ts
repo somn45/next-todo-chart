@@ -1,11 +1,6 @@
 import * as d3 from "d3";
 import { getClosestYOffset } from "./getClosestYOffset";
-
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
+import { ILineGraphData } from "@/types/schema";
 
 interface TimeBasedLinearScale {
   x_scale: d3.ScaleTime<number, number, never>;
@@ -13,7 +8,7 @@ interface TimeBasedLinearScale {
 }
 
 export const getDataPointClosetMousePointer = (
-  groupedData: d3.InternMap<string, LineGraphData[]>,
+  groupedData: d3.InternMap<string, ILineGraphData[]>,
   graphScale: TimeBasedLinearScale,
   event: MouseEvent,
 ) => {

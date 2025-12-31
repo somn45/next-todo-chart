@@ -1,5 +1,5 @@
 import { connectDB } from "@/libs/database";
-import { Stat, TodoStats } from "@/types/schema";
+import { Stat, StatStringifyId, TodoStats } from "@/types/schema";
 import { createDatesLastlyWeek } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
@@ -59,5 +59,5 @@ export const getTodoStats = async (userid: string | undefined | null) => {
     }),
   );
 
-  return todoStatsDoc;
+  return JSON.parse(JSON.stringify(todoStatsDoc)) as StatStringifyId[];
 };

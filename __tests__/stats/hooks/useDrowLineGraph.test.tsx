@@ -1,18 +1,12 @@
-import * as d3 from "d3";
 import useDrowLineGraph from "@/app/(private)/stats/_hooks/useDrowLineGraph";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { act } from "react";
-
-interface LineGraphData {
-  date: Date;
-  state: string;
-  count: number;
-}
+import { ILineGraphData } from "@/types/schema";
 
 const margin = { top: 20, right: 20, bottom: 20, left: 20 };
 const width = 600;
 const height = 400;
-const mockTodos: LineGraphData[] = [
+const mockTodos: ILineGraphData[] = [
   {
     date: new Date(2025, 6, 1),
     state: "할 일",

@@ -40,3 +40,17 @@ export interface Stat {
   totalCount: number;
   _id: Date;
 }
+
+export interface StatStringifyId {
+  doingStateCount: number;
+  doneStateCount: number;
+  todoStateCount: number;
+  totalCount: number;
+  _id: string;
+}
+
+export interface ILineGraphData {
+  date: Date;
+  state: string;
+  count: number;
+}
