@@ -1,12 +1,28 @@
 import { connectDB } from "@/libs/database";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import {
-  getCurrentWeekEndDate,
-  getCurrentWeekStartDate,
+  getEndOfPeriod,
+  getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
+import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const getAllTodos = async (userid: string | undefined | null) => {
+interface AccessTokenPayload {
+  sub: string;
+}
+
+export const getAllTodos = async (
+  userid: string | undefined | null,
+  searchRange: "week" | "month" | "year" = "week",
+) => {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("atk");
+
+  // 에러 작업 예정
+  if (!accessToken) return [];
+  const { sub: user }: AccessTokenPayload = decodeJwtTokenPayload(accessToken);
+
   if (!userid) {
     return redirect("/login");
   }
@@ -25,8 +41,8 @@ export const getAllTodos = async (userid: string | undefined | null) => {
   // createdAt <= 금주 일요일
   // completedAt >= 금주 월요일
 
-  const currentWeekStartDate = getCurrentWeekStartDate();
-  const currentWeekEndDate = getCurrentWeekEndDate();
+  const startOfPeriod = getStartOfPeriod(searchRange);
+  const endOfPeriod = getEndOfPeriod(searchRange);
 
   // 투두의 생성일이 금주의 종료 날짜보다 뒤쳐져있고
   // 투두의 완료일이 아직 정해지지 않았거나
@@ -36,7 +52,7 @@ export const getAllTodos = async (userid: string | undefined | null) => {
     .aggregate([
       {
         $match: {
-          author: userid,
+          author: user,
         },
       },
       {
@@ -55,10 +71,10 @@ export const getAllTodos = async (userid: string | undefined | null) => {
       {
         $match: {
           $and: [
-            { "content.createdAt": { $lte: currentWeekEndDate } },
+            { "content.createdAt": { $lte: endOfPeriod } },
             {
               $or: [
-                { "content.completedAt": { $gte: currentWeekStartDate } },
+                { "content.completedAt": { $gte: startOfPeriod } },
                 { "content.completedAt": null },
               ],
             },
