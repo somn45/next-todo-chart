@@ -2,6 +2,7 @@ import { getAllTodos } from "@/apis/getAllTodos";
 import { createDatesOfCurrentYear } from "@/utils/date/createDatesOfCurrentWeek";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
+import TimeLine from "../../../TimeLine";
 
 interface AccessTokenPayload {
   sub: string;
@@ -17,5 +18,5 @@ export default async function TimelineWeekly() {
     decodeJwtTokenPayload(accessToken);
 
   const todos = await getAllTodos(userid, "week");
-  return <div>1 주 간의 타임라인</div>;
+  return <TimeLine todos={todos} dateDomainBase="week" />;
 }

@@ -1,6 +1,7 @@
 import { getAllTodos } from "@/apis/getAllTodos";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
+import TimeLine from "../../../TimeLine";
 
 interface AccessTokenPayload {
   sub: string;
@@ -16,6 +17,6 @@ export default async function TimelineMonthly() {
     decodeJwtTokenPayload(accessToken);
 
   const todos = await getAllTodos(userid, "month");
-  console.log(todos);
-  return <div>1 주 간의 타임라인</div>;
+
+  return <TimeLine todos={todos} dateDomainBase="month" />;
 }

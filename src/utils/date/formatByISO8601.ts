@@ -2,11 +2,14 @@
 export const formatByISO8601 = (dateObject: Date | d3.NumberValue) => {
   if (typeof dateObject === "object") {
     const dayOfMonth = new Date(dateObject.toString()).getDate().toString();
+    const padMonth = (new Date(dateObject.toString()).getMonth() + 1)
+      .toString()
+      .padStart(2, "0");
     const padDate = dayOfMonth.padStart(2, "0");
 
-    const dateISO8601Type = `${new Date(dateObject.toString()).getFullYear()}-${
-      new Date(dateObject.toString()).getMonth() + 1
-    }-${padDate}`;
+    const dateISO8601Type = `${new Date(
+      dateObject.toString(),
+    ).getFullYear()}-${padMonth}-${padDate}`;
 
     return dateISO8601Type;
   }

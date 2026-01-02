@@ -15,6 +15,8 @@ import caculateBandLength from "../_utils/caculateBandLength";
 import {
   getCurrentWeekEndDate,
   getCurrentWeekStartDate,
+  getEndOfPeriod,
+  getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
 
@@ -27,6 +29,7 @@ type GraphConfig = {
   outerWidth: number;
   outerHeight: number;
   data: (LookupedTodo & WithStringifyId)[];
+  dateDomainBase?: "week" | "month" | "year";
 };
 
 type useDrowBandGraphType = (
@@ -37,6 +40,7 @@ type useDrowBandGraphType = (
   RefObject<HTMLDivElement | null>,
 ];
 
+// range search 매개변수의 props drilling 해결
 const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
   const [svgContainer, setSvgContainer] = useState<d3.Selection<
     SVGGElement,
@@ -54,7 +58,8 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     const container = bandGraphWrapperRef.current;
     if (!container) return;
 
-    const { outerWidth, outerHeight, data } = graphConfig;
+    const { outerWidth, outerHeight, data, dateDomainBase } = graphConfig;
+
     const graphMargin = { top: 80, left: 100, bottom: 20, right: 100 };
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
       caculateGraphLayout(outerWidth, outerHeight, graphMargin);
@@ -64,7 +69,6 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       container,
     );
 
-    console.log(titleStartOffset);
     addTitle(svg, titleStartOffset, -50, "금주 투두 진행 타임라인");
 
     const legend = createLegend(svg, legendStartOffset);
@@ -87,12 +91,12 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       texts,
     );
 
-    const currentWeekStartDate = getCurrentWeekStartDate();
-    const currentWeekEndDate = getCurrentWeekEndDate();
+    const startOfPeriod = getStartOfPeriod(dateDomainBase || "week");
+    const endOfPeriod = getEndOfPeriod(dateDomainBase || "week");
 
     const x_scale = createTimeScale({
       rangeMax: innerWidth,
-      timeScaleDomain: [currentWeekStartDate, currentWeekEndDate],
+      timeScaleDomain: [startOfPeriod, endOfPeriod],
     });
     setXAxis(svg, x_scale, 8, innerHeight);
 
@@ -112,11 +116,8 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       .attr("data-testid", "band")
       .attr("fill", d => color_scale(d.content.state))
       .attr("x", d => {
-        if (
-          currentWeekStartDate.getTime() >
-          new Date(d.content.createdAt).getTime()
-        ) {
-          return x_scale(currentWeekStartDate);
+        if (startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()) {
+          return x_scale(startOfPeriod);
         }
         return x_scale(new Date(d.content.createdAt));
       })
@@ -125,7 +126,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
         caculateBandLength(
           d.content,
           { x_scale },
-          { domainStart: currentWeekStartDate, domainEnd: currentWeekEndDate },
+          { domainStart: startOfPeriod, domainEnd: endOfPeriod },
         ),
       )
       .attr("height", y_scale.bandwidth());
