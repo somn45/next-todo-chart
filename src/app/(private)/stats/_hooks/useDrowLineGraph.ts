@@ -18,6 +18,7 @@ type GraphConfig = {
   outerWidth: number;
   outerHeight: number;
   data: ILineGraphData[];
+  dateDomainBase?: "week" | "month" | "year";
 };
 
 interface DataPoint {
@@ -121,7 +122,7 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
     return () => {
       d3.select(container).selectAll("*").remove();
     };
-  }, []);
+  }, [graphConfig.dateDomainBase]);
 
   return [svgContainer, graphScale, lineGraphWrapperRef];
 };

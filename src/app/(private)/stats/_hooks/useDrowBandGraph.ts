@@ -136,7 +136,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
     return () => {
       d3.select(container).selectAll("*").remove();
     };
-  }, []);
+  }, [graphConfig.dateDomainBase]);
 
   return [svgContainer, graphScale, bandGraphWrapperRef];
 };

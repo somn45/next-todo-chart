@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TabMenu from "./TabMenu";
 
 export default function TimeLineLayout({
   children,
@@ -7,11 +8,7 @@ export default function TimeLineLayout({
 }) {
   return (
     <div>
-      <nav>
-        <Link href="/stats/timeline/weekly">1 주</Link>
-        <Link href="/stats/timeline/monthly">1 달</Link>
-        <Link href="/stats/timeline/yearly">1 년</Link>
-      </nav>
+      <TabMenu />
       {children}
     </div>
   );

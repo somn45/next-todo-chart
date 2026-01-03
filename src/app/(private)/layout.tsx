@@ -15,7 +15,7 @@ export default function ProtectedLayout({
               <Link href="/todos">투두리스트</Link>
             </li>
             <li>
-              <Link href="/stats">통계</Link>
+              <Link href="/stats?tl=week&da=week">통계</Link>
             </li>
             <li>
               <Link href="/login">로그인</Link>

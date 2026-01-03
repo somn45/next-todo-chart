@@ -16,13 +16,20 @@ const GRAPH_WIDTH = 700;
 const GRAPH_HEIGHT = 400;
 const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
 
-export default function LineGraph({ stats }: { stats: ILineGraphData[] }) {
+export default function LineGraph({
+  stats,
+  dateDomainBase = "week",
+}: {
+  stats: ILineGraphData[];
+  dateDomainBase?: "week" | "month" | "year";
+}) {
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   const [svg, { x_scale, y_scale }, lineGraphWrapperRef] = useDrowLineGraph({
     outerWidth: GRAPH_WIDTH,
     outerHeight: GRAPH_HEIGHT,
     data: stats,
+    dateDomainBase,
   });
 
   useEffect(() => {
