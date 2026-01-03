@@ -1,9 +1,15 @@
 import { connectDB } from "@/libs/database";
 import { Stat, StatStringifyId, TodoStats } from "@/types/schema";
-import { createDatesLastlyWeek } from "@/utils/date/createDatesLastlyWeek";
+import {
+  createDatesLastlyWeek,
+  getDatesLastlyPeriod,
+} from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
-export const getTodoStats = async (userid: string | undefined | null) => {
+export const getTodoStats = async (
+  userid: string | undefined | null,
+  searchRange: "week" | "month" | "year" = "week",
+) => {
   if (!userid) {
     return redirect("/login");
   }
@@ -12,14 +18,16 @@ export const getTodoStats = async (userid: string | undefined | null) => {
 
   const dateListLastlyWeek = createDatesLastlyWeek();
 
+  const datesLastlyPeriod = getDatesLastlyPeriod(searchRange);
+
   // 현재 날짜의 00:00시 가져오기
   const todoStatsDoc = await Promise.all(
-    dateListLastlyWeek.map(async dateInLastWeek => {
+    datesLastlyPeriod.map(async dateInLastPeriod => {
       const todoStatsDoc = (await db
         .collection<TodoStats>("stat")
         .aggregate([
           {
-            $match: { date: dateInLastWeek },
+            $match: { date: dateInLastPeriod },
           },
           {
             $group: {
@@ -50,7 +58,7 @@ export const getTodoStats = async (userid: string | undefined | null) => {
       return todoStatsDoc
         ? todoStatsDoc
         : {
-            _id: dateInLastWeek,
+            _id: dateInLastPeriod,
             totalCount: 0,
             todoStateCount: 0,
             doingStateCount: 0,
