@@ -11,10 +11,10 @@ interface AccessTokenPayload {
 export default async function DailyActive({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     tl: "week" | "month" | "year";
     da: "week" | "month" | "year";
-  };
+  }>;
 }) {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("atk");
@@ -24,9 +24,11 @@ export default async function DailyActive({
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
 
-  const todoStats = await getTodoStats(userid, searchParams.da || "week");
+  const { da } = await searchParams;
+
+  const todoStats = await getTodoStats(userid, da || "week");
 
   // [date, state, count]
   const lineGraphData = distributeByDate(todoStats);
-  return <LineGraph stats={lineGraphData} dateDomainBase={searchParams.da} />;
+  return <LineGraph stats={lineGraphData} dateDomainBase={da} />;
 }

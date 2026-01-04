@@ -10,10 +10,10 @@ interface AccessTokenPayload {
 export default async function Timeline({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     tl: "week" | "month" | "year";
     da: "week" | "month" | "year";
-  };
+  }>;
 }) {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("atk");
@@ -23,7 +23,9 @@ export default async function Timeline({
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
 
-  const todos = await getAllTodos(userid, searchParams.tl || "week");
+  const { tl } = await searchParams;
 
-  return <TimeLine todos={todos} dateDomainBase={searchParams.tl} />;
+  const todos = await getAllTodos(userid, tl || "week");
+
+  return <TimeLine todos={todos} dateDomainBase={tl} />;
 }
