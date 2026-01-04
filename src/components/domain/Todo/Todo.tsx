@@ -59,7 +59,10 @@ export default function Todo({
 
   return (
     <li
-      style={{ display: hasGracePeriod || state !== "완료" ? "block" : "none" }}
+      style={{
+        display: hasGracePeriod || state !== "완료" ? "flex" : "none",
+        flexDirection: "column",
+      }}
     >
       <p>{message}</p>
       <span data-testid="todo-textField">{textField}</span>

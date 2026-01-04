@@ -23,7 +23,17 @@ export default function EditForm({ todoid, userid }: EditFormProps) {
   }, [state]);
 
   if (!isEditMode)
-    return <button onClick={() => setIsEditMode(true)}>수정</button>;
+    return (
+      <button
+        onClick={() => setIsEditMode(true)}
+        style={{
+          width: "80px",
+          height: "26px",
+        }}
+      >
+        수정
+      </button>
+    );
   return (
     <form role="form" action={editTodoAction}>
       <span>{state.message}</span>

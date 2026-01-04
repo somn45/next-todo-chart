@@ -1,13 +1,14 @@
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
-import TimeLine from "../../stats/TimeLine";
+import TodosForm from "../../todos/Form";
+import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 
 interface AccessTokenPayload {
   sub: string;
 }
 
-export default async function DashBoardTimeline() {
+export default async function DashBoardTodos() {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("atk");
 
@@ -16,11 +17,18 @@ export default async function DashBoardTimeline() {
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
 
-  const { todosIncludeThisWeek } = await getIntegratedTodos(userid);
+  const { activeTodos } = await getIntegratedTodos(userid);
 
   return (
     <div>
-      <TimeLine todos={todosIncludeThisWeek} />
+      <TodosForm userid={userid} />
+      {activeTodos.slice(0, 3).map(todo => (
+        <TodoWrapper
+          key={todo.content._id}
+          todo={todo.content}
+          showDeleteSection={false}
+        />
+      ))}
     </div>
   );
 }

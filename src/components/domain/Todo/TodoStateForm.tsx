@@ -17,7 +17,7 @@ export default function TodoStateForm({
     message: "",
   });
   return (
-    <ul>
+    <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
       <span>{actionState.message}</span>
       <li>
         <form

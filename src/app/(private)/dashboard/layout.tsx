@@ -10,13 +10,11 @@ import React from "react";
 export default async function Dashboard({
   children,
   todos,
-  lineGraph,
-  timeline,
+  graph,
 }: {
   children: React.ReactNode;
   todos: React.ReactNode;
-  lineGraph: React.ReactNode;
-  timeline: React.ReactNode;
+  graph: React.ReactNode;
 }) {
   return (
     <section
@@ -43,8 +41,7 @@ export default async function Dashboard({
           flexDirection: "column",
         }}
       >
-        <div style={{ marginBottom: "50px" }}>{lineGraph}</div>
-        <div>{timeline}</div>
+        {graph}
       </section>
       <div>{children}</div>
     </section>
