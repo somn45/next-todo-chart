@@ -3,10 +3,9 @@ import {
   LookupedTodo,
   Stat,
   StatStringifyId,
-  TodoStats,
   WithStringifyId,
 } from "@/types/schema";
-import { createDatesLastlyWeek } from "@/utils/date/createDatesLastlyWeek";
+import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
   getCurrentWeekEndDate,
   getCurrentWeekStartDate,
@@ -107,57 +106,58 @@ export const getIntegratedTodos = async (userid: string | undefined | null) => {
     ])
     .next();
 
-  const dateListLastlyWeek = createDatesLastlyWeek();
+  const dateListLastlyWeek = getDatesLastlyPeriod("week");
+  const dateListLastlyMonth = getDatesLastlyPeriod("month");
+  const dateListLastlyYear = getDatesLastlyPeriod("year");
 
-  const todoStatsDoc = await Promise.all(
-    dateListLastlyWeek.map(async dateInLastWeek => {
-      const todoStatsDoc = (await db
-        .collection<Stat>("stat")
-        .aggregate([
-          {
-            $match: { date: dateInLastWeek },
+  const statsDoc = (await db
+    .collection("stat")
+    .aggregate([
+      {
+        $match: { date: { $in: dateListLastlyWeek } },
+      },
+      {
+        $group: {
+          _id: "$date",
+          totalCount: {
+            $sum: 1,
           },
-          {
-            $group: {
-              _id: "$date",
-              totalCount: {
-                $sum: 1,
-              },
-              todoStateCount: {
-                $sum: {
-                  $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
-                },
-              },
-              doingStateCount: {
-                $sum: {
-                  $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
-                },
-              },
-              doneStateCount: {
-                $sum: {
-                  $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
-                },
-              },
+          todoStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
             },
           },
-        ])
-        .next()) as Stat;
+          doingStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
+            },
+          },
+          doneStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
+            },
+          },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ])
+    .toArray()) as Stat[];
 
-      return todoStatsDoc
-        ? todoStatsDoc
-        : {
-            _id: dateInLastWeek,
-            totalCount: 0,
-            todoStateCount: 0,
-            doingStateCount: 0,
-            doneStateCount: 0,
-          };
-    }),
+  const statsMap = new Map(statsDoc.map(d => [d._id.getTime(), d]));
+  const stats = dateListLastlyWeek.map(
+    date =>
+      statsMap.get(date.getTime()) || {
+        _id: date,
+        totalCount: 0,
+        todoStateCount: 0,
+        doingStateCount: 0,
+        doneStateCount: 0,
+      },
   );
 
   const dashboardDataList = {
     ...integratedTodos,
-    todoStats: todoStatsDoc,
+    todoStats: stats,
   };
 
   return JSON.parse(JSON.stringify(dashboardDataList)) as IIntegratedTodos;

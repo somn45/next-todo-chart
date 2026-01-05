@@ -77,6 +77,7 @@ const useDrowLineGraphSparkline: useDrowLineGraphType = graphConfig => {
 
     const lineGenerator = d3
       .line<DataPoint>()
+      .defined(d => d.count !== null)
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
 

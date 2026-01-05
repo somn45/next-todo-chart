@@ -20,5 +20,11 @@ export default async function DashboardTimeline() {
   await setTodoStats(userid);
   const todos = await getAllTodos(userid);
 
-  return <TimeLineSparkline todos={todos} dateDomainBase="week" />;
+  return (
+    <section>
+      <TimeLineSparkline todos={todos} />
+      <TimeLineSparkline todos={todos} dateDomainBase="month" />
+      <TimeLineSparkline todos={todos} dateDomainBase="year" />
+    </section>
+  );
 }

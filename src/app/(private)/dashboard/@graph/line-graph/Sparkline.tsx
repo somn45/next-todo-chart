@@ -5,7 +5,7 @@ import useDrowLineGraphSparkline from "../../hooks/useDrowLineGraphSparkline";
 
 interface LineGraphSparklineProps {
   stats: ILineGraphData[];
-  dateDomainBase: "week" | "month" | "year";
+  dateDomainBase?: "week" | "month" | "year";
 }
 
 const GRAPH_WIDTH = 400;
@@ -13,7 +13,7 @@ const GRAPH_HEIGHT = 300;
 
 export default function LineGraphSparkline({
   stats,
-  dateDomainBase,
+  dateDomainBase = "week",
 }: LineGraphSparklineProps) {
   const [, , lineGraphSparklineRef] = useDrowLineGraphSparkline({
     outerWidth: GRAPH_WIDTH,

@@ -3,6 +3,7 @@ import { distributeByDate } from "@/app/(private)/stats/_utils/distributeByDate"
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
 import LineGraphSparkline from "./Sparkline";
+import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 
 interface AccessTokenPayload {
   sub: string;
@@ -17,9 +18,15 @@ export default async function DashboardDailyActive() {
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
 
-  const todoStats = await getTodoStats(userid);
+  const { todoStats } = await getIntegratedTodos(userid);
 
   // [date, state, count]
   const lineGraphData = distributeByDate(todoStats);
-  return <LineGraphSparkline stats={lineGraphData} dateDomainBase="week" />;
+  return (
+    <section>
+      <LineGraphSparkline stats={lineGraphData} />
+      <LineGraphSparkline stats={lineGraphData} dateDomainBase="month" />
+      <LineGraphSparkline stats={lineGraphData} dateDomainBase="year" />
+    </section>
+  );
 }
