@@ -9,7 +9,6 @@ import {
   createColorScale,
   createSVGContainer,
   createTimeScale,
-  setXAxis,
 } from "@/utils/graph";
 import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
 import { RefObject, useEffect, useRef, useState } from "react";
@@ -78,7 +77,7 @@ const useDrowTimelineSparkline: useDrowTimelineSparklineType = graphConfig => {
       rangeMax: innerWidth,
       timeScaleDomain: [startOfPeriod, endOfPeriod],
     });
-    setSparklineXAxis(svg, x_scale, 8, innerHeight);
+    setSparklineXAxis(svg, x_scale, 8, innerHeight, dateDomainBase);
 
     const y_scale = createBandScale(
       data.map(todo => ({ text: todo.content.textField })),

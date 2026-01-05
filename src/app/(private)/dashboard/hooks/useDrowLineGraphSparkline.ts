@@ -4,7 +4,6 @@ import {
   createLinearScale,
   createSVGContainer,
   createTimeScale,
-  setXAxis,
   setYAxis,
 } from "@/utils/graph";
 import { setSparklineXAxis } from "@/utils/graph/axis";
@@ -54,7 +53,7 @@ const useDrowLineGraphSparkline: useDrowLineGraphType = graphConfig => {
     const container = lineGraphSparklineRef.current;
     if (!container) return;
 
-    const { outerWidth, outerHeight, data } = graphConfig;
+    const { outerWidth, outerHeight, data, dateDomainBase } = graphConfig;
     const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
     const { innerWidth, innerHeight } = caculateGraphLayout(
       outerWidth,
@@ -70,7 +69,7 @@ const useDrowLineGraphSparkline: useDrowLineGraphType = graphConfig => {
     );
 
     const x_scale = createTimeScale({ rangeMax: innerWidth, data });
-    setSparklineXAxis(svg, x_scale, 7, innerHeight);
+    setSparklineXAxis(svg, x_scale, 7, innerHeight, dateDomainBase);
 
     const y_scale = createLinearScale(data, innerHeight);
     setYAxis(svg, y_scale);

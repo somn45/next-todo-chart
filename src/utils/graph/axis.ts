@@ -7,6 +7,7 @@ export const setXAxis = (
   scale: d3.ScaleTime<number, number, never>,
   tickCount: number,
   height: number,
+  dateDomainBase: "week" | "month" | "year" = "week",
 ) => {
   svg
     .append("g")
@@ -17,7 +18,11 @@ export const setXAxis = (
       d3
         .axisBottom(scale)
         .ticks(tickCount)
-        .tickFormat((d, _) => formatByISO8601(d)),
+        .tickFormat((d, _) =>
+          dateDomainBase === "year"
+            ? (new Date(d.toString()).getMonth() + 1).toString()
+            : formatByISO8601(d),
+        ),
     );
 };
 
@@ -26,6 +31,7 @@ export const setSparklineXAxis = (
   scale: d3.ScaleTime<number, number, never>,
   tickCount: number,
   height: number,
+  dateDomainBase: "week" | "month" | "year" = "week",
 ) => {
   svg
     .append("g")
@@ -36,7 +42,11 @@ export const setSparklineXAxis = (
       d3
         .axisBottom(scale)
         .ticks(tickCount)
-        .tickFormat((d, _) => new Date(d.toString()).getDate().toString()),
+        .tickFormat((d, _) =>
+          dateDomainBase === "year"
+            ? (new Date(d.toString()).getMonth() + 1).toString()
+            : new Date(d.toString()).getDate().toString(),
+        ),
     );
 };
 

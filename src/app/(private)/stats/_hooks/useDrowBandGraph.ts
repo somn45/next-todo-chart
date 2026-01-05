@@ -98,7 +98,7 @@ const useDrowBandGraph: useDrowBandGraphType = graphConfig => {
       rangeMax: innerWidth,
       timeScaleDomain: [startOfPeriod, endOfPeriod],
     });
-    setXAxis(svg, x_scale, 8, innerHeight);
+    setXAxis(svg, x_scale, 8, innerHeight, dateDomainBase);
 
     const y_scale = createBandScale(
       data.map(todo => ({ text: todo.content.textField })),

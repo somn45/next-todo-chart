@@ -1,9 +1,6 @@
-import { getTodoStats } from "@/apis/getTodoStats";
-import { distributeByDate } from "@/app/(private)/stats/_utils/distributeByDate";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
-import LineGraphSparkline from "./Sparkline";
-import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
+import LineGraphContainer from "./LineGraphContainer";
 
 interface AccessTokenPayload {
   sub: string;
@@ -17,16 +14,11 @@ export default async function DashboardDailyActive() {
   if (!accessToken) return [];
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
-
-  const { todoStats } = await getIntegratedTodos(userid);
-
-  // [date, state, count]
-  const lineGraphData = distributeByDate(todoStats);
   return (
     <section>
-      <LineGraphSparkline stats={lineGraphData} />
-      <LineGraphSparkline stats={lineGraphData} dateDomainBase="month" />
-      <LineGraphSparkline stats={lineGraphData} dateDomainBase="year" />
+      <LineGraphContainer userid={userid} />
+      <LineGraphContainer userid={userid} searchRange="month" />
+      <LineGraphContainer userid={userid} searchRange="year" />
     </section>
   );
 }

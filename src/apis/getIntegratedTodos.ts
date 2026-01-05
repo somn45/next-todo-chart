@@ -9,6 +9,8 @@ import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
   getCurrentWeekEndDate,
   getCurrentWeekStartDate,
+  getEndOfPeriod,
+  getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import { unstable_cacheTag as cacheTag } from "next/cache";
 import { redirect } from "next/navigation";
@@ -19,7 +21,10 @@ interface IIntegratedTodos {
   todoStats: StatStringifyId[];
 }
 
-export const getIntegratedTodos = async (userid: string | undefined | null) => {
+export const getIntegratedTodos = async (
+  userid: string | undefined | null,
+  searchRange: "week" | "month" | "year" = "week",
+) => {
   "use cache";
   cacheTag("dashboard");
 
@@ -30,8 +35,8 @@ export const getIntegratedTodos = async (userid: string | undefined | null) => {
   const db = (await connectDB).db("next-todo-chart-cluster");
 
   const gracePeriod = new Date(Date.now());
-  const currentWeekStartDate = getCurrentWeekStartDate();
-  const currentWeekEndDate = getCurrentWeekEndDate();
+  const startOfPeriod = getStartOfPeriod(searchRange);
+  const endOfPeriod = getEndOfPeriod(searchRange);
 
   const integratedTodos = await db
     .collection("todos")
@@ -85,10 +90,10 @@ export const getIntegratedTodos = async (userid: string | undefined | null) => {
             {
               $match: {
                 $and: [
-                  { "content.createdAt": { $lte: currentWeekEndDate } },
+                  { "content.createdAt": { $lte: endOfPeriod } },
                   {
                     $or: [
-                      { "content.completedAt": { $gte: currentWeekStartDate } },
+                      { "content.completedAt": { $gte: startOfPeriod } },
                       { "content.completedAt": null },
                     ],
                   },
@@ -106,15 +111,13 @@ export const getIntegratedTodos = async (userid: string | undefined | null) => {
     ])
     .next();
 
-  const dateListLastlyWeek = getDatesLastlyPeriod("week");
-  const dateListLastlyMonth = getDatesLastlyPeriod("month");
-  const dateListLastlyYear = getDatesLastlyPeriod("year");
+  const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);
 
   const statsDoc = (await db
     .collection("stat")
     .aggregate([
       {
-        $match: { date: { $in: dateListLastlyWeek } },
+        $match: { date: { $in: dateListLastlyPeriod } },
       },
       {
         $group: {
@@ -144,7 +147,7 @@ export const getIntegratedTodos = async (userid: string | undefined | null) => {
     .toArray()) as Stat[];
 
   const statsMap = new Map(statsDoc.map(d => [d._id.getTime(), d]));
-  const stats = dateListLastlyWeek.map(
+  const stats = dateListLastlyPeriod.map(
     date =>
       statsMap.get(date.getTime()) || {
         _id: date,

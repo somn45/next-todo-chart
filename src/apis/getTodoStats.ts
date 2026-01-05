@@ -1,9 +1,6 @@
 import { connectDB } from "@/libs/database";
 import { Stat, StatStringifyId, TodoStats } from "@/types/schema";
-import {
-  createDatesLastlyWeek,
-  getDatesLastlyPeriod,
-} from "@/utils/date/createDatesLastlyWeek";
+import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
 export const getTodoStats = async (
@@ -15,8 +12,6 @@ export const getTodoStats = async (
   }
 
   const db = (await connectDB).db("next-todo-chart-cluster");
-
-  const dateListLastlyWeek = createDatesLastlyWeek();
 
   const datesLastlyPeriod = getDatesLastlyPeriod(searchRange);
 

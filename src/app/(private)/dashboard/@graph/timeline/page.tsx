@@ -1,8 +1,7 @@
-import { getAllTodos } from "@/apis/getAllTodos";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
-import TimeLineSparkline from "./Sparkline";
 import { setTodoStats } from "@/apis/setTodoStats";
+import TimelineContainer from "./TimelineContainer";
 
 interface AccessTokenPayload {
   sub: string;
@@ -18,13 +17,12 @@ export default async function DashboardTimeline() {
     decodeJwtTokenPayload(accessToken);
 
   await setTodoStats(userid);
-  const todos = await getAllTodos(userid);
 
   return (
     <section>
-      <TimeLineSparkline todos={todos} />
-      <TimeLineSparkline todos={todos} dateDomainBase="month" />
-      <TimeLineSparkline todos={todos} dateDomainBase="year" />
+      <TimelineContainer userid={userid} />
+      <TimelineContainer userid={userid} searchRange="month" />
+      <TimelineContainer userid={userid} searchRange="year" />
     </section>
   );
 }
