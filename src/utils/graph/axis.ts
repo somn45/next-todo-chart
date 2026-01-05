@@ -21,6 +21,25 @@ export const setXAxis = (
     );
 };
 
+export const setSparklineXAxis = (
+  svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+  scale: d3.ScaleTime<number, number, never>,
+  tickCount: number,
+  height: number,
+) => {
+  svg
+    .append("g")
+    .attr("class", "xAxis")
+    .attr("data-testid", "x axis")
+    .attr("transform", `translate(0, ${height})`)
+    .call(
+      d3
+        .axisBottom(scale)
+        .ticks(tickCount)
+        .tickFormat((d, _) => new Date(d.toString()).getDate().toString()),
+    );
+};
+
 // y 축을 svg 컨테이너에 set
 export const setYAxis = (
   svg: d3.Selection<SVGGElement, unknown, null, undefined>,

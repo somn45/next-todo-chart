@@ -1,8 +1,8 @@
 import { getTodoStats } from "@/apis/getTodoStats";
 import { distributeByDate } from "@/app/(private)/stats/_utils/distributeByDate";
-import LineGraph from "@/app/(private)/stats/LineGraph";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
+import LineGraphSparkline from "./Sparkline";
 
 interface AccessTokenPayload {
   sub: string;
@@ -21,5 +21,5 @@ export default async function DashboardDailyActive() {
 
   // [date, state, count]
   const lineGraphData = distributeByDate(todoStats);
-  return <LineGraph stats={lineGraphData} />;
+  return <LineGraphSparkline stats={lineGraphData} dateDomainBase="week" />;
 }
