@@ -3,8 +3,8 @@ import { screen, within } from "@testing-library/react";
 
 describe("createSVGContainer", () => {
   const margin = { top: 20, left: 40, bottom: 20, right: 80 };
-  const width = 600 - margin.left - margin.right;
-  const height = 450 - margin.top - margin.bottom;
+  const width = 600;
+  const height = 450;
   const layout = { width, height, margin };
 
   it("그래프를 그릴 svg 컨테이너와 그래프 관련 요소를 묶는 g 요소를 반환한다.", () => {
@@ -15,14 +15,8 @@ describe("createSVGContainer", () => {
 
     expect(svg).not.toBeNull();
     if (svg) {
-      expect(svg).toHaveAttribute(
-        "width",
-        String(width + margin.left + margin.right),
-      );
-      expect(svg).toHaveAttribute(
-        "height",
-        String(height + margin.top + margin.bottom),
-      );
+      expect(svg).toHaveAttribute("width", String(width));
+      expect(svg).toHaveAttribute("height", String(height));
 
       expect(graphArea).not.toBeNull();
       expect(graphArea).toHaveAttribute(

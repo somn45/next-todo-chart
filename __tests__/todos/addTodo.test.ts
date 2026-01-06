@@ -60,8 +60,9 @@ describe("addTodo 서버 액션", () => {
       { $push: { content: mockTodo._id } },
       { upsert: true },
     );
-    expect(revalidateTag).toHaveBeenCalledTimes(1);
+    expect(revalidateTag).toHaveBeenCalledTimes(2);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
+    expect(revalidateTag).toHaveBeenCalledWith("dashboard");
   });
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {

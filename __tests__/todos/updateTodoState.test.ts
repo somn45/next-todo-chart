@@ -73,9 +73,10 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
       },
     );
 
-    expect(revalidateTag).toHaveBeenCalledTimes(2);
+    expect(revalidateTag).toHaveBeenCalledTimes(3);
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
+    expect(revalidateTag).toHaveBeenCalledWith("dashboard");
   });
 
   it("만약 FormData에 완료 상태가 담겨있다면 completedAt 속성을 변경하는 쓰기 함수가 호출된다.", async () => {
@@ -117,9 +118,10 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
       },
     );
 
-    expect(revalidateTag).toHaveBeenCalledTimes(2);
+    expect(revalidateTag).toHaveBeenCalledTimes(3);
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
+    expect(revalidateTag).toHaveBeenCalledWith("dashboard");
   });
 
   it("인수로 받는 todoid가 없거나 ObjectId 타입 할당에 적절하지 않은 경우 에러를 던진다.", async () => {

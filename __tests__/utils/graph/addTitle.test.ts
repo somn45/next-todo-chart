@@ -11,7 +11,7 @@ describe("addTitle", () => {
     const svg = createSVGContainer(layout, graphWrapper);
     const graphTitle = "모의 그래프 제목";
 
-    addTitle(svg, width / 2, 20, graphTitle);
+    addTitle(svg, width, 20, graphTitle);
 
     const textElement = graphWrapper.querySelector("text");
 

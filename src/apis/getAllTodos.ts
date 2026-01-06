@@ -13,7 +13,7 @@ interface AccessTokenPayload {
 }
 
 export const getAllTodos = async (
-  userid: string | undefined | null,
+  id: string | undefined | null,
   searchRange: "week" | "month" | "year" = "week",
 ) => {
   const cookieStore = await cookies();
@@ -21,7 +21,10 @@ export const getAllTodos = async (
 
   // 에러 작업 예정
   if (!accessToken) return [];
-  const { sub: user }: AccessTokenPayload = decodeJwtTokenPayload(accessToken);
+  const { sub: userid }: AccessTokenPayload =
+    decodeJwtTokenPayload(accessToken);
+
+  console.log(userid);
 
   if (!userid) {
     return redirect("/login");
@@ -52,7 +55,7 @@ export const getAllTodos = async (
     .aggregate([
       {
         $match: {
-          author: user,
+          author: userid,
         },
       },
       {

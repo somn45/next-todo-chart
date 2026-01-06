@@ -50,9 +50,10 @@ describe("deleteTodo 서버 액션", () => {
       { author: "mockuser" },
       { $pull: { content: new ObjectId(mockTodo._id) } },
     );
-    expect(revalidateTag).toHaveBeenCalledTimes(2);
+    expect(revalidateTag).toHaveBeenCalledTimes(3);
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
+    expect(revalidateTag).toHaveBeenCalledWith("dashboard");
   });
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {

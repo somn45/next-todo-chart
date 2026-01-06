@@ -64,7 +64,9 @@ jest.mock("@/libs/database", () => {
     connectDB: Promise.resolve({
       db: jest.fn().mockReturnValue({
         collection: jest.fn().mockReturnValue({
-          aggregate: jest.fn(),
+          aggregate: jest.fn().mockReturnValue({
+            toArray: jest.fn(),
+          }),
         }),
       }),
     }),
@@ -79,60 +81,48 @@ describe("getTodoStats API", () => {
     jest.clearAllMocks();
   });
   it("getTodoStats 함수가 실행될 경우 최근 7일에 해당하는 Todo Stat 목록을 반환한다.", async () => {
-    const currentDateSharp = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth() - 1,
-      new Date().getDate(),
-    );
-    const weeks = Array.from({ length: 7 }, (_, i) => i - 1);
-    const lastlyOneWeek = weeks.map(day => {
-      return new Date(
-        currentDateSharp.getTime() - (weeks.length - 1 - day) * ONE_DAY,
-      );
-    });
-
     const db = (await connectDB).db("next-todo-chart-cluster");
     const statCollection = db.collection("stat");
-    lastlyOneWeek.forEach((_, index) => {
-      (statCollection.aggregate as jest.Mock).mockReturnValueOnce({
-        next: jest.fn().mockResolvedValue(mockTodoStats[index]),
-      });
+    (statCollection.aggregate as jest.Mock).mockReturnValue({
+      toArray: jest.fn().mockResolvedValue(mockTodoStats),
     });
 
     const todoStats = await getTodoStats("mockuser");
 
-    expect(statCollection.aggregate).toHaveBeenCalledTimes(7);
-    mockTodoStats.forEach(stat => {
-      expect(statCollection.aggregate).toHaveBeenCalledWith([
-        {
-          $match: { date: stat._id },
-        },
-        {
-          $group: {
-            _id: "$date",
-            totalCount: {
-              $sum: 1,
+    expect(statCollection.aggregate).toHaveBeenCalledTimes(1);
+    expect(statCollection.aggregate).toHaveBeenCalledWith([
+      {
+        $match: { date: { $in: mockTodoStats.map(stat => stat._id) } },
+      },
+      {
+        $group: {
+          _id: "$date",
+          totalCount: {
+            $sum: 1,
+          },
+          todoStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
             },
-            todoStateCount: {
-              $sum: {
-                $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
-              },
+          },
+          doingStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
             },
-            doingStateCount: {
-              $sum: {
-                $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
-              },
-            },
-            doneStateCount: {
-              $sum: {
-                $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
-              },
+          },
+          doneStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
             },
           },
         },
-      ]);
-    });
-    expect(todoStats).toEqual(mockTodoStats);
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    expect(todoStats).toEqual(
+      mockTodoStats.map(stat => ({ ...stat, _id: stat._id.toISOString() })),
+    );
   });
 });
 
