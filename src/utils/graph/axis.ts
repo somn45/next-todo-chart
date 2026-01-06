@@ -18,7 +18,7 @@ export const setXAxis = (
       d3
         .axisBottom(scale)
         .ticks(tickCount)
-        .tickFormat((d, _) =>
+        .tickFormat(d =>
           dateDomainBase === "year"
             ? (new Date(d.toString()).getMonth() + 1).toString()
             : formatByISO8601(d),
@@ -42,7 +42,7 @@ export const setSparklineXAxis = (
       d3
         .axisBottom(scale)
         .ticks(tickCount)
-        .tickFormat((d, _) =>
+        .tickFormat(d =>
           dateDomainBase === "year"
             ? (new Date(d.toString()).getMonth() + 1).toString()
             : new Date(d.toString()).getDate().toString(),

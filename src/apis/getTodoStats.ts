@@ -1,5 +1,5 @@
 import { connectDB } from "@/libs/database";
-import { Stat, StatStringifyId, TodoStats } from "@/types/schema";
+import { Stat, StatStringifyId } from "@/types/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
@@ -13,54 +13,39 @@ export const getTodoStats = async (
 
   const db = (await connectDB).db("next-todo-chart-cluster");
 
-  const datesLastlyPeriod = getDatesLastlyPeriod(searchRange);
+  const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);
 
-  // 현재 날짜의 00:00시 가져오기
-  const todoStatsDoc = await Promise.all(
-    datesLastlyPeriod.map(async dateInLastPeriod => {
-      const todoStatsDoc = (await db
-        .collection<TodoStats>("stat")
-        .aggregate([
-          {
-            $match: { date: dateInLastPeriod },
+  const statsDoc = (await db
+    .collection("stat")
+    .aggregate([
+      {
+        $match: { date: { $in: dateListLastlyPeriod } },
+      },
+      {
+        $group: {
+          _id: "$date",
+          totalCount: {
+            $sum: 1,
           },
-          {
-            $group: {
-              _id: "$date",
-              totalCount: {
-                $sum: 1,
-              },
-              todoStateCount: {
-                $sum: {
-                  $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
-                },
-              },
-              doingStateCount: {
-                $sum: {
-                  $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
-                },
-              },
-              doneStateCount: {
-                $sum: {
-                  $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
-                },
-              },
+          todoStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
             },
           },
-        ])
-        .next()) as Stat;
-
-      return todoStatsDoc
-        ? todoStatsDoc
-        : {
-            _id: dateInLastPeriod,
-            totalCount: 0,
-            todoStateCount: 0,
-            doingStateCount: 0,
-            doneStateCount: 0,
-          };
-    }),
-  );
-
-  return JSON.parse(JSON.stringify(todoStatsDoc)) as StatStringifyId[];
+          doingStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
+            },
+          },
+          doneStateCount: {
+            $sum: {
+              $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
+            },
+          },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ])
+    .toArray()) as Stat[];
+  return JSON.parse(JSON.stringify(statsDoc)) as StatStringifyId[];
 };

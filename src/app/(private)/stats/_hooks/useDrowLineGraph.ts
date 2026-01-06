@@ -11,6 +11,7 @@ import {
   setYAxis,
 } from "@/utils/graph";
 import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
+import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 import * as d3 from "d3";
 import { RefObject, useEffect, useRef, useState } from "react";
 
@@ -56,7 +57,7 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
     const container = lineGraphWrapperRef.current;
     if (!container) return;
 
-    const { outerWidth, outerHeight, data } = graphConfig;
+    const { outerWidth, outerHeight, data, dateDomainBase } = graphConfig;
     const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
       caculateGraphLayout(outerWidth, outerHeight, graphMargin);
@@ -86,8 +87,12 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
       legendTexts,
     );
 
+    const statsKeys = groupedStats.keys();
+    const count = statsKeys.toArray().length;
+    const tickCount = caculateTickCount(dateDomainBase, count, data.length);
+
     const x_scale = createTimeScale({ rangeMax: innerWidth, data });
-    setXAxis(svg, x_scale, 7, innerHeight);
+    setXAxis(svg, x_scale, tickCount, innerHeight, dateDomainBase);
 
     const y_scale = createLinearScale(data, innerHeight);
     setYAxis(svg, y_scale);
@@ -96,8 +101,6 @@ const useDrowLineGraph: useDrowLineGraphType = graphConfig => {
       .line<DataPoint>()
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
-
-    const statsKeys = groupedStats.keys();
 
     const color = createColorScale(statsKeys, [
       "#000000",

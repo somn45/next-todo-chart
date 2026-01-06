@@ -8,6 +8,7 @@ import {
 } from "@/utils/graph";
 import { setSparklineXAxis } from "@/utils/graph/axis";
 import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
+import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 import * as d3 from "d3";
 import { RefObject, useEffect, useRef, useState } from "react";
 
@@ -68,8 +69,12 @@ const useDrowLineGraphSparkline: useDrowLineGraphType = graphConfig => {
       container,
     );
 
+    const statsKeys = groupedStats.keys();
+    const count = statsKeys.toArray().length;
+    const tickCount = caculateTickCount(dateDomainBase, count, data.length);
+
     const x_scale = createTimeScale({ rangeMax: innerWidth, data });
-    setSparklineXAxis(svg, x_scale, 7, innerHeight, dateDomainBase);
+    setSparklineXAxis(svg, x_scale, tickCount, innerHeight, dateDomainBase);
 
     const y_scale = createLinearScale(data, innerHeight);
     setYAxis(svg, y_scale);
@@ -79,8 +84,6 @@ const useDrowLineGraphSparkline: useDrowLineGraphType = graphConfig => {
       .defined(d => d.count !== null)
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
-
-    const statsKeys = groupedStats.keys();
 
     const color = createColorScale(statsKeys, [
       "#000000",

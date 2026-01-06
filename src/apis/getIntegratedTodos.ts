@@ -7,8 +7,6 @@ import {
 } from "@/types/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
-  getCurrentWeekEndDate,
-  getCurrentWeekStartDate,
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
@@ -146,21 +144,9 @@ export const getIntegratedTodos = async (
     ])
     .toArray()) as Stat[];
 
-  const statsMap = new Map(statsDoc.map(d => [d._id.getTime(), d]));
-  const stats = dateListLastlyPeriod.map(
-    date =>
-      statsMap.get(date.getTime()) || {
-        _id: date,
-        totalCount: 0,
-        todoStateCount: 0,
-        doingStateCount: 0,
-        doneStateCount: 0,
-      },
-  );
-
   const dashboardDataList = {
     ...integratedTodos,
-    todoStats: stats,
+    todoStats: statsDoc,
   };
 
   return JSON.parse(JSON.stringify(dashboardDataList)) as IIntegratedTodos;
