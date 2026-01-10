@@ -58,8 +58,8 @@ export const getCurrentYearEndDate = () => {
     currentYear[currentYear.length - 1].getFullYear(),
     currentYear[currentYear.length - 1].getMonth(),
     currentYear[currentYear.length - 1].getDate(),
-    0,
-    0,
+    23,
+    59,
   );
 
   return currentYearEndDate;
@@ -88,8 +88,8 @@ export const getCurrentMonthEndDate = () => {
     currentMonth[currentMonth.length - 1].getFullYear(),
     currentMonth[currentMonth.length - 1].getMonth(),
     currentMonth[currentMonth.length - 1].getDate(),
-    0,
-    0,
+    23,
+    59,
   );
 
   return currentMonthEndDate;
