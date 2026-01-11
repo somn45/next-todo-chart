@@ -2,7 +2,7 @@ import { getTodoStats } from "@/apis/getTodoStats";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
 import { distributeByDate } from "../_utils/distributeByDate";
-import LineGraph from "../LineGraph";
+import DailyActiveTodoLineGraph from "@/components/domain/Stat/DailyActiveTodoLineGraph";
 
 interface AccessTokenPayload {
   sub: string;
@@ -30,5 +30,5 @@ export default async function DailyActive({
 
   // [date, state, count]
   const lineGraphData = distributeByDate(todoStats);
-  return <LineGraph stats={lineGraphData} dateDomainBase={da} />;
+  return <DailyActiveTodoLineGraph stats={lineGraphData} dateDomainBase={da} />;
 }

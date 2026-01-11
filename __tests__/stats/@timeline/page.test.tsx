@@ -16,11 +16,11 @@ jest.mock("next/headers", () => ({
 jest.mock("@/utils/decodeJwtTokenPayload", () => ({
   decodeJwtTokenPayload: jest.fn().mockReturnValue("mockuser"),
 }));
-jest.mock("@/app/(private)/stats/TimeLine", () =>
+jest.mock("@/components/domain/Stat/TodoTimeline", () =>
   jest.fn(props => <div data-testid="timeline"></div>),
 );
 
-import TimeLine from "@/app/(private)/stats/TimeLine";
+import TodoTimeline from "@/components/domain/Stat/TodoTimeline";
 
 describe("<Timeline />", () => {
   it("getAllTodos API에서 가져온 투두리스트 데이터와 함께 Timeline 컴포넌트를 렌더링한다.", async () => {
@@ -30,7 +30,7 @@ describe("<Timeline />", () => {
     });
     render(timelineComponent);
 
-    expect(TimeLine).toHaveBeenCalledWith(
+    expect(TodoTimeline).toHaveBeenCalledWith(
       {
         todos: mockTodos,
         dateDomainBase: "week",

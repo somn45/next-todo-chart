@@ -12,11 +12,11 @@ jest.mock("next/headers", () => ({
 jest.mock("@/utils/decodeJwtTokenPayload", () => ({
   decodeJwtTokenPayload: jest.fn().mockReturnValue("mockuser"),
 }));
-jest.mock("@/app/(private)/stats/LineGraph", () =>
+jest.mock("@/components/domain/Stat/DailyActiveTodoLineGraph", () =>
   jest.fn(props => <div data-testid="line graph"></div>),
 );
 
-import LineGraph from "@/app/(private)/stats/LineGraph";
+import DailyActiveTodoLineGraph from "@/components/domain/Stat/DailyActiveTodoLineGraph";
 import { getTodoStats } from "@/apis/getTodoStats";
 
 describe("<DailyActive />", () => {
@@ -27,7 +27,7 @@ describe("<DailyActive />", () => {
     });
     render(dailyActiveComponent);
 
-    expect(LineGraph).toHaveBeenCalledWith(
+    expect(DailyActiveTodoLineGraph).toHaveBeenCalledWith(
       {
         stats: [],
         dateDomainBase: "month",

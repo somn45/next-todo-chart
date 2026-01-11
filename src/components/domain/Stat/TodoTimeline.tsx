@@ -1,7 +1,7 @@
 "use client";
 
+import useDrowBandGraph from "@/app/(private)/stats/_hooks/useDrowBandGraph";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
-import useDrowBandGraph from "./_hooks/useDrowBandGraph";
 
 interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
@@ -11,11 +11,11 @@ interface TimeLineProps {
 const GRAPH_WIDTH = 700;
 const GRAPH_HEIGHT = 400;
 
-export default function TimeLine({
+export default function TodoTimeline({
   todos,
   dateDomainBase = "week",
 }: TimeLineProps) {
-  const [svg, scale, graphWrapperRef] = useDrowBandGraph({
+  const [, , graphWrapperRef] = useDrowBandGraph({
     outerWidth: GRAPH_WIDTH,
     outerHeight: GRAPH_HEIGHT,
     data: todos,

@@ -3,20 +3,20 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { createFollowMouseFocus } from "@/utils/graph";
+import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
+import { ILineGraphData } from "@/types/schema";
+import useDrowLineGraph from "@/app/(private)/stats/_hooks/useDrowLineGraph";
 import {
   displayFollowElement,
   hiddenFollowElement,
   setCoordFocusAndToolTip,
-} from "./_utils/lineGraphMouseEvent";
-import useDrowLineGraph from "./_hooks/useDrowLineGraph";
-import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
-import { ILineGraphData } from "@/types/schema";
+} from "@/app/(private)/stats/_utils/lineGraphMouseEvent";
 
 const GRAPH_WIDTH = 700;
 const GRAPH_HEIGHT = 400;
 const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
 
-export default function LineGraph({
+export default function DailyActiveTodoLineGraph({
   stats,
   dateDomainBase = "week",
 }: {

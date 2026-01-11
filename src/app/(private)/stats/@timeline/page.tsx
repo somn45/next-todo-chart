@@ -1,7 +1,7 @@
 import { getAllTodos } from "@/apis/getAllTodos";
+import TodoTimeline from "@/components/domain/Stat/TodoTimeline";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
-import TimeLine from "@/app/(private)/stats/TimeLine";
 
 interface AccessTokenPayload {
   sub: string;
@@ -27,5 +27,5 @@ export default async function Timeline({
 
   const todos = await getAllTodos(userid, tl || "week");
 
-  return <TimeLine todos={todos} dateDomainBase={tl} />;
+  return <TodoTimeline todos={todos} dateDomainBase={tl} />;
 }
