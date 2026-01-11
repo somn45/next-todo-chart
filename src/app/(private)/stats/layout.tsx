@@ -6,7 +6,7 @@
  * 투두 생성부터 완료까지 걸린 시간 : 밴드 그래프
  */
 
-export default async function StatsLayout({
+export default function StatsLayout({
   timeline,
   children,
   dailyActive,

@@ -1,7 +1,7 @@
 import { getAllTodos } from "@/apis/getAllTodos";
 import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { cookies } from "next/headers";
-import TimeLine from "../TimeLine";
+import TimeLine from "@/app/(private)/stats/TimeLine";
 
 interface AccessTokenPayload {
   sub: string;
