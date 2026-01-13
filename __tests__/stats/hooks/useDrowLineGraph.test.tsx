@@ -3,7 +3,6 @@ import { render, screen, within } from "@testing-library/react";
 import { act } from "react";
 import { ILineGraphData } from "@/types/schema";
 
-const margin = { top: 20, right: 20, bottom: 20, left: 20 };
 const width = 600;
 const height = 400;
 const mockTodos: ILineGraphData[] = [
@@ -55,10 +54,9 @@ const mockTodos: ILineGraphData[] = [
 ];
 
 const TestLineGraph = () => {
-  const [svg, graphScale, graphWrapperRef] = useDrowLineGraph({
-    width,
-    height,
-    margin,
+  const [, , graphWrapperRef] = useDrowLineGraph({
+    outerWidth: width,
+    outerHeight: height,
     data: mockTodos,
   });
 
