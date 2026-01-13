@@ -24,8 +24,6 @@ export const getAllTodos = async (
   const { sub: userid }: AccessTokenPayload =
     decodeJwtTokenPayload(accessToken);
 
-  console.log(userid);
-
   if (!userid) {
     return redirect("/login");
   }

@@ -22,7 +22,7 @@ export default async function DashBoardTodos() {
   return (
     <div>
       <TodosForm userid={userid} />
-      {activeTodos.slice(0, 3).map(todo => (
+      {activeTodos.map(todo => (
         <TodoWrapper
           key={todo.content._id}
           todo={todo.content}

@@ -7,7 +7,7 @@
 
 import React from "react";
 
-export default async function Dashboard({
+export default function Dashboard({
   children,
   todos,
   graph,
