@@ -1,17 +1,32 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+
 export default function InterceptedLoginModal() {
+  const router = useRouter();
+  const modalContentRef = useRef<HTMLDivElement | null>(null);
   return (
     <div
       style={{
         width: "100%",
         height: "100vh",
-        backgroundColor: "black",
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         position: "absolute",
         left: 0,
         top: 0,
-        opacity: 0.7,
+        zIndex: 100,
+      }}
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+        if (
+          modalContentRef.current &&
+          !modalContentRef.current.contains(e.currentTarget)
+        ) {
+          router.back();
+        }
       }}
     >
       <div
@@ -25,7 +40,10 @@ export default function InterceptedLoginModal() {
           fontWeight: "bold",
           display: "flex",
           justifyContent: "center",
+          zIndex: 200,
         }}
+        ref={modalContentRef}
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
         가로챈 로그인 모달
       </div>
