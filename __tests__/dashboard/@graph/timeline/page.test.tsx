@@ -1,4 +1,3 @@
-import { setTodoStats } from "@/apis/setTodoStats";
 import DashboardTimeline from "@/app/(private)/dashboard/@graph/timeline/page";
 import TimelineContainer from "@/app/(private)/dashboard/@graph/timeline/TimelineContainer";
 import { render } from "@testing-library/react";

@@ -4,19 +4,13 @@ import {
   TodoStats,
   WithStringifyId,
 } from "@/types/schema";
-import { redirect } from "next/navigation";
 import {
   lookupTodoDocument,
-  matchUserId,
   toStringMongoDBObjectId,
   unwindContent,
 } from "./queries/queries";
 
-export const setTodoStats = async (userid: string | undefined | null) => {
-  if (!userid) {
-    redirect("/login");
-  }
-
+export const setTodoStats = async () => {
   const db = (await connectDB).db("next-todo-chart-cluster");
 
   // 11/27일이 되었다면
@@ -47,7 +41,6 @@ export const setTodoStats = async (userid: string | undefined | null) => {
   const todosDoc = (await db
     .collection("todos")
     .aggregate([
-      matchUserId(userid),
       lookupTodoDocument(),
       unwindContent(),
       {
@@ -79,7 +72,7 @@ export const setTodoStats = async (userid: string | undefined | null) => {
   }));
 
   await db.collection("stat").insertMany(todoStats);
-  return todoStats;
+  return todosDoc;
 };
 
 // 단일 투두 객체 검색 => stat 문서에 이미 해당 투두가 있으면 패스
