@@ -1,9 +1,5 @@
 import { connectDB } from "@/libs/database";
-import {
-  LookupedTodoWithObjectId,
-  TodoStats,
-  WithStringifyId,
-} from "@/types/schema";
+import { LookupedTodo, TodoStats, WithStringifyId } from "@/types/schema";
 import {
   lookupTodoDocument,
   toStringMongoDBObjectId,
@@ -34,9 +30,12 @@ export const setTodoStats = async () => {
   );
 
   const recordedTodoStats = await db
-    .collection<TodoStats>("stat")
+    .collection<TodoStats>("stats")
     .findOne({ date: prevDateSharp });
-  if (recordedTodoStats) return recordedTodoStats;
+
+  if (recordedTodoStats) {
+    return recordedTodoStats;
+  }
 
   const todosDoc = (await db
     .collection("todos")
@@ -64,15 +63,35 @@ export const setTodoStats = async () => {
       },
       toStringMongoDBObjectId(),
     ])
-    .toArray()) as (LookupedTodoWithObjectId & WithStringifyId)[];
+    .toArray()) as (LookupedTodo & WithStringifyId)[];
 
-  const todoStats = todosDoc.map(todoDoc => ({
-    todo: todoDoc.content,
-    date: prevDateSharp,
-  }));
+  const todoStatsMap: Map<string, number> = new Map([
+    ["총합", 0],
+    ["할 일", 0],
+    ["진행 중", 0],
+    ["완료", 0],
+  ]);
 
-  await db.collection("stat").insertMany(todoStats);
-  return todosDoc;
+  todosDoc.forEach(todo => {
+    const todoStatsCount = todoStatsMap.get(todo.content.state) ?? 0;
+    todoStatsMap.set(todo.content.state, todoStatsCount + 1);
+  });
+
+  todoStatsMap.set("총합", todosDoc.length);
+
+  const todoStatList = Array.from(todoStatsMap.entries()).map(
+    ([state, count]) => {
+      return {
+        date: prevDateSharp,
+        state,
+        count,
+      };
+    },
+  );
+
+  await db.collection("stats").insertMany(todoStatList);
+
+  return todoStatList;
 };
 
 // 단일 투두 객체 검색 => stat 문서에 이미 해당 투두가 있으면 패스

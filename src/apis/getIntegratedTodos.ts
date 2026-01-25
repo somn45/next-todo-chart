@@ -1,10 +1,5 @@
 import { connectDB } from "@/libs/database";
-import {
-  LookupedTodo,
-  Stat,
-  StatStringifyId,
-  WithStringifyId,
-} from "@/types/schema";
+import { ILineGraphData, LookupedTodo, WithStringifyId } from "@/types/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
   getEndOfPeriod,
@@ -16,7 +11,7 @@ import { redirect } from "next/navigation";
 interface IIntegratedTodos {
   activeTodos: (LookupedTodo & WithStringifyId)[];
   todosIncludeThisWeek: (LookupedTodo & WithStringifyId)[];
-  todoStats: StatStringifyId[];
+  todoStats: ILineGraphData[];
 }
 
 export const getIntegratedTodos = async (
@@ -36,7 +31,7 @@ export const getIntegratedTodos = async (
   const startOfPeriod = getStartOfPeriod(searchRange);
   const endOfPeriod = getEndOfPeriod(searchRange);
 
-  const integratedTodos = await db
+  const integratedTodos = (await db
     .collection("todos")
     .aggregate([
       {
@@ -107,47 +102,27 @@ export const getIntegratedTodos = async (
         },
       },
     ])
-    .next();
+    .next()) as {
+    activeTodos: (LookupedTodo & WithStringifyId)[];
+    todosIncludeThisWeek: (LookupedTodo & WithStringifyId)[];
+  };
 
   const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);
 
   const statsDoc = (await db
-    .collection("stat")
+    .collection("stats")
     .aggregate([
       {
         $match: { date: { $in: dateListLastlyPeriod } },
       },
-      {
-        $group: {
-          _id: "$date",
-          totalCount: {
-            $sum: 1,
-          },
-          todoStateCount: {
-            $sum: {
-              $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
-            },
-          },
-          doingStateCount: {
-            $sum: {
-              $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
-            },
-          },
-          doneStateCount: {
-            $sum: {
-              $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
-            },
-          },
-        },
-      },
-      { $sort: { _id: 1 } },
+      { $project: { _id: 0 } },
     ])
-    .toArray()) as Stat[];
+    .toArray()) as ILineGraphData[];
 
   const dashboardDataList = {
-    ...integratedTodos,
+    ...JSON.parse(JSON.stringify(integratedTodos)),
     todoStats: statsDoc,
   };
 
-  return JSON.parse(JSON.stringify(dashboardDataList)) as IIntegratedTodos;
+  return dashboardDataList as IIntegratedTodos;
 };

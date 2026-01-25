@@ -1,6 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
 import { mockStats } from "../../../__mocks__/stats";
-import { distributeByDate } from "@/app/(private)/stats/_utils/distributeByDate";
 import { act } from "react";
 import useDrowLineGraphSparkline from "@/app/(private)/dashboard/hooks/useDrowLineGraphSparkline";
 const GRAPH_WIDTH = 600;
@@ -10,7 +9,7 @@ const MockLineGraphSparkline = () => {
   const [, , lineGraphSparklineRef] = useDrowLineGraphSparkline({
     outerWidth: GRAPH_WIDTH,
     outerHeight: GRAPH_HEIGHT,
-    data: distributeByDate(mockStats),
+    data: mockStats,
   });
 
   return <div ref={lineGraphSparklineRef}></div>;

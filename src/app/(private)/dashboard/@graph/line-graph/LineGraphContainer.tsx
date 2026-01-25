@@ -1,6 +1,5 @@
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import LineGraphSparkline from "./Sparkline";
-import { distributeByDate } from "@/app/(private)/stats/_utils/distributeByDate";
 
 export default async function LineGraphContainer({
   userid,
@@ -11,10 +10,5 @@ export default async function LineGraphContainer({
 }) {
   const { todoStats } = await getIntegratedTodos(userid, searchRange);
 
-  // [date, state, count]
-  const lineGraphData = distributeByDate(todoStats);
-
-  return (
-    <LineGraphSparkline stats={lineGraphData} dateDomainBase={searchRange} />
-  );
+  return <LineGraphSparkline stats={todoStats} dateDomainBase={searchRange} />;
 }

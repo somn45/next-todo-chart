@@ -2,7 +2,6 @@ import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import LineGraphContainer from "@/app/(private)/dashboard/@graph/line-graph/LineGraphContainer";
 import { mockStats } from "../../../../__mocks__/stats";
 import { render } from "@testing-library/react";
-import { distributeByDate } from "@/app/(private)/stats/_utils/distributeByDate";
 import LineGraphSparkline from "@/app/(private)/dashboard/@graph/line-graph/Sparkline";
 
 jest.mock("@/apis/getIntegratedTodos", () => ({
@@ -21,7 +20,7 @@ describe("@graph line-graph LineGraphContainer", () => {
       userid: "mockuser",
       searchRange: "month",
     });
-    const lineGraphDatas = distributeByDate(mockStats);
+    const lineGraphDatas = mockStats;
 
     render(LineGraphContainerComponent);
     expect(LineGraphSparkline).toHaveBeenCalledWith(
