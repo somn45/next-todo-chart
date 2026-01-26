@@ -1,16 +1,24 @@
-export const mockStats = [
+import { ILineGraphData } from "@/types/schema";
+
+export const mockStats: ILineGraphData[] = [
   {
-    _id: new Date(2025, 6, 10).toString(),
-    doingStateCount: 3,
-    doneStateCount: 4,
-    todoStateCount: 2,
-    totalCount: 9,
+    date: new Date(2026, 1, 17),
+    state: "할 일",
+    count: 7,
   },
   {
-    _id: new Date(2025, 6, 11).toString(),
-    doingStateCount: 2,
-    doneStateCount: 1,
-    todoStateCount: 4,
-    totalCount: 7,
+    date: new Date(2026, 1, 17),
+    state: "진행 중",
+    count: 3,
+  },
+  {
+    date: new Date(2026, 1, 17),
+    state: "완료",
+    count: 5,
+  },
+  {
+    date: new Date(2026, 1, 17),
+    state: "총합",
+    count: 14,
   },
 ];

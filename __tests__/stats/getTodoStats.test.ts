@@ -1,59 +1,14 @@
 import { getTodoStats } from "@/apis/getTodoStats";
 import { connectDB } from "@/libs/database";
-import { Stat } from "@/types/schema";
+import { ILineGraphData } from "@/types/schema";
+import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
-const ONE_DAY = 1000 * 60 * 60 * 24;
-
-const mockTodoStats: Stat[] = [
+const mockTodoStats: ILineGraphData[] = [
   {
-    _id: new Date(2025, 6, 1),
-    totalCount: 8,
-    todoStateCount: 3,
-    doingStateCount: 3,
-    doneStateCount: 2,
-  },
-  {
-    _id: new Date(2025, 6, 2),
-    totalCount: 10,
-    todoStateCount: 4,
-    doingStateCount: 3,
-    doneStateCount: 3,
-  },
-  {
-    _id: new Date(2025, 6, 3),
-    totalCount: 10,
-    todoStateCount: 4,
-    doingStateCount: 3,
-    doneStateCount: 3,
-  },
-  {
-    _id: new Date(2025, 6, 4),
-    totalCount: 10,
-    todoStateCount: 4,
-    doingStateCount: 3,
-    doneStateCount: 3,
-  },
-  {
-    _id: new Date(2025, 6, 5),
-    totalCount: 10,
-    todoStateCount: 4,
-    doingStateCount: 3,
-    doneStateCount: 3,
-  },
-  {
-    _id: new Date(2025, 6, 6),
-    totalCount: 10,
-    todoStateCount: 4,
-    doingStateCount: 3,
-    doneStateCount: 3,
-  },
-  {
-    _id: new Date(2025, 6, 7),
-    totalCount: 10,
-    todoStateCount: 4,
-    doingStateCount: 3,
-    doneStateCount: 3,
+    date: new Date(2026, 1, 17),
+    state: "할 일",
+    count: 5,
   },
 ];
 
@@ -87,42 +42,18 @@ describe("getTodoStats API", () => {
       toArray: jest.fn().mockResolvedValue(mockTodoStats),
     });
 
-    const todoStats = await getTodoStats("mockuser");
+    const todoStats = await getTodoStats("mockuser", "month");
+    const searchRange = "month";
 
     expect(statCollection.aggregate).toHaveBeenCalledTimes(1);
     expect(statCollection.aggregate).toHaveBeenCalledWith([
       {
-        $match: { date: { $in: mockTodoStats.map(stat => stat._id) } },
+        $match: { date: { $in: getDatesLastlyPeriod(searchRange) } },
       },
-      {
-        $group: {
-          _id: "$date",
-          totalCount: {
-            $sum: 1,
-          },
-          todoStateCount: {
-            $sum: {
-              $cond: [{ $eq: ["$todo.state", "할 일"] }, 1, 0],
-            },
-          },
-          doingStateCount: {
-            $sum: {
-              $cond: [{ $eq: ["$todo.state", "진행 중"] }, 1, 0],
-            },
-          },
-          doneStateCount: {
-            $sum: {
-              $cond: [{ $eq: ["$todo.state", "완료"] }, 1, 0],
-            },
-          },
-        },
-      },
-      { $sort: { _id: 1 } },
+      { $project: { _id: 0 } },
     ]);
 
-    expect(todoStats).toEqual(
-      mockTodoStats.map(stat => ({ ...stat, _id: stat._id.toISOString() })),
-    );
+    expect(todoStats).toEqual(mockTodoStats);
   });
 });
 
