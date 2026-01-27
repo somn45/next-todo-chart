@@ -5,6 +5,7 @@ import { validateUser } from "@/utils/validateUser";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 import { setCookies } from "@/utils/setCookies";
+import { cookies } from "next/headers";
 
 interface LoginFormData {
   userid: string;
@@ -49,7 +50,16 @@ export const login = async (
       body: JSON.stringify(loggedUser.userid),
     })
   ).json();
-  await setCookies(accessToken, 1000 * 60 * 60);
+  const cookieStore = await cookies();
+  cookieStore.set("lc_at", accessToken, {
+    maxAge: 60 * 60,
+    httpOnly: true,
+  });
+  cookieStore.set("lc_rt", refreshToken, {
+    maxAge: 60 * 60 * 24 * 7,
+    httpOnly: true,
+  });
+
   db.collection("users").findOneAndUpdate(
     { userid: loggedUser.userid },
     {

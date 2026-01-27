@@ -13,30 +13,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const accessToken = request.cookies.get("atk");
-  // accessToken이 없다면 로그아웃 및 로그인 페이지로 리다이렉트
-  if (!accessToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  const accessTokenPayload: Jwt = decodeJwtTokenPayload(accessToken);
-  const userid = accessTokenPayload.id;
-  const isExpiredAccessToken = Date.now() > accessTokenPayload.exp * 1000;
+  const accessToken = request.cookies.get("lc_at");
 
   // accessToken 만료일자 판단
-  if (isExpiredAccessToken) {
-    const { refreshToken } = (await (
-      await fetch(`http://localhost:3000/api/token/refresh?userid=${userid}`)
-    ).json()) as { refreshToken: string };
+  if (!accessToken) {
+    const refreshToken = request.cookies.get("lc_rt");
 
     // refreshToken이 없다면 로그아웃 및 로그인 페이지로 리다이렉트
     if (!refreshToken) {
-      request.cookies.delete("atk");
+      request.cookies.delete("lc_at");
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
     const refreshTokenPayload: Jwt = decodeJwtTokenPayload(refreshToken);
     const isExpiredRefreshToken = Date.now() > refreshTokenPayload.exp * 1000;
+    const userid = refreshTokenPayload.id;
 
     // refreshToken도 만료되었다면 로그아웃 및 페이지로 리다이렉트
     if (isExpiredRefreshToken) {
@@ -44,7 +35,7 @@ export async function middleware(request: NextRequest) {
         method: "DELETE",
         body: JSON.stringify(userid),
       });
-      request.cookies.delete("atk");
+      request.cookies.delete("lc_at");
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
@@ -56,12 +47,25 @@ export async function middleware(request: NextRequest) {
       })
     ).json()) as { newAccessToken: string };
     NextResponse.next().cookies.set({
-      name: "atk",
+      name: "lc_at",
       value: newAccessToken,
       path: "/",
       httpOnly: true,
       maxAge: 60 * 60,
     });
+  } else {
+    const { isVerify } = (await (
+      await fetch("http://localhost:3000/api/token/verify", {
+        method: "POST",
+        body: JSON.stringify(accessToken.value),
+      })
+    ).json()) as { isVerify: true };
+
+    // 토큰 변조 유무 확인
+    if (!isVerify) {
+      request.cookies.delete("lc_at");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
   }
 
   return NextResponse.next();

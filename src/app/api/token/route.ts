@@ -8,6 +8,7 @@ export async function POST(request: NextRequest) {
     expiresIn: "1h",
     subject: userid,
   });
+
   const refreshToken = jwt.sign({ id: userid }, jwtSecretKey, {
     expiresIn: "7 days",
   });
