@@ -34,6 +34,11 @@ describe("middleware", () => {
     expect(NextResponse.next).toHaveBeenCalledTimes(1);
   });
   it("accessToken이 있고 만료일도 지나지 않았을 때 라우팅을 지속한다.", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ isVerify: true }),
+      }),
+    ) as jest.Mock;
     const payload = {
       id: "abc123",
       exp: Date.now() / 1000 + 60 * 60,
@@ -71,7 +76,8 @@ describe("middleware", () => {
   it("accessToken이 만료되었을 때 refreshToken이 없다면 모든 쿠키 삭제 및 로그인 페이지로 리다이렉트한다.", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve({ refreshToken: null }),
+        json: () =>
+          Promise.resolve({ accessToken: "accessToken", refreshToken: null }),
       }),
     ) as jest.Mock;
     const payload = {
@@ -127,29 +133,18 @@ describe("middleware", () => {
     expect(NextResponse.redirect).toHaveBeenCalledTimes(1);
   });
   it("accessToken이 만료되었을 때 만료되지 않은 refreshToken이 있다면 토큰 재발급 함수를 호출한다", async () => {
-    const accessTokenPayload = {
-      id: "abc123",
-      exp: Date.now() / 1000 - 1000,
-    };
     const refreshTokenPayload = {
       id: "abc123",
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
     };
-    const accessToken = `header.${btoa(
-      JSON.stringify(accessTokenPayload),
-    )}.signature`;
+
     const refreshToken = `header.${btoa(
       JSON.stringify(refreshTokenPayload),
     )}.signature`;
 
-    const mockedFetch = jest
-      .fn()
-      .mockResolvedValueOnce({
-        json: () => Promise.resolve({ refreshToken }),
-      })
-      .mockResolvedValueOnce({
-        json: () => Promise.resolve({ newAccessToken: "accessToken" }),
-      });
+    const mockedFetch = jest.fn().mockResolvedValueOnce({
+      json: () => Promise.resolve({ accessToken: "accessToken" }),
+    });
     global.fetch = mockedFetch;
     const mockRequest = {
       nextUrl: {
@@ -157,18 +152,26 @@ describe("middleware", () => {
       },
       url: "http://localhost:3000",
       cookies: {
-        get: jest.fn().mockReturnValue({
-          name: "atk",
-          value: accessToken,
+        get: jest.fn().mockImplementation((name: string) => {
+          const cookiesMap: Map<
+            string,
+            { name: string; value: string } | null
+          > = new Map([
+            ["lc_at", null],
+            ["lc_rt", { name: "lc_rt", value: refreshToken }],
+          ]);
+          return cookiesMap.get(name);
         }),
         delete: jest.fn(),
       },
     } as unknown as NextRequest;
     await middleware(mockRequest);
+
+    const response = NextResponse.next();
     expect(NextResponse.next).toHaveBeenCalledTimes(2);
-    expect(NextResponse.next().cookies.set).toHaveBeenCalledTimes(1);
-    expect(NextResponse.next().cookies.set).toHaveBeenCalledWith({
-      name: "atk",
+    expect(response.cookies.set).toHaveBeenCalledTimes(1);
+    expect(response.cookies.set).toHaveBeenCalledWith({
+      name: "lc_at",
       value: "accessToken",
       path: "/",
       httpOnly: true,

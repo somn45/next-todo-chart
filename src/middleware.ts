@@ -56,6 +56,7 @@ export async function middleware(request: NextRequest) {
         body: JSON.stringify(userid),
       })
     ).json()) as { accessToken: string };
+    console.log(newAccessToken);
     response.cookies.set({
       name: "lc_at",
       value: newAccessToken,

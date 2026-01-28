@@ -19,7 +19,10 @@ describe("JWT 토큰을 디코딩하여 payload 값을 해독하는 유틸 함�
       exp: Date.now() / 1000 + 60 * 60,
     };
     const accessToken = `header.${btoa(JSON.stringify(payload))}.signature`;
-    const jwtTokenPayload = decodeJwtTokenPayload(accessToken);
+    const jwtTokenPayload = decodeJwtTokenPayload({
+      name: "accessToken",
+      value: accessToken,
+    });
     expect(jwtTokenPayload?.id).toEqual("abc123");
   });
   it("Jwt 구조가 아닌 토큰이 decodeJwtTokenPayload 인수에 담겨 있을 경우 에러를 반환한다.", () => {

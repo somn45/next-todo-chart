@@ -4,7 +4,6 @@ import { connectDB } from "@/libs/database";
 import { validateUser } from "@/utils/validateUser";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
-import { setCookies } from "@/utils/setCookies";
 import { cookies } from "next/headers";
 
 interface LoginFormData {
@@ -52,7 +51,7 @@ export const login = async (
   ).json();
   const cookieStore = await cookies();
   cookieStore.set("lc_at", accessToken, {
-    maxAge: 60,
+    maxAge: 60 * 60,
     httpOnly: true,
   });
   cookieStore.set("lc_rt", refreshToken, {
