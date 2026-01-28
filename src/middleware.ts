@@ -1,16 +1,24 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { decodeJwtTokenPayload } from "./utils/decodeJwtTokenPayload";
+import { JwtPayload } from "jsonwebtoken";
 
-interface Jwt {
+interface Jwt extends JwtPayload {
   id: string; // userid
-  exp: number;
 }
+
+/**
+ * 이후 작업 계획
+ * - 변조된 토큰을 통해 만료일을 변경했을 것을 대비해 만료일도 판단
+ * - refreshToken이 변조되었을 때의 추가 작업
+ * - 로그아웃 처리가 될 때 대시보드 페이지에서 인터셉터 로그인 페이지가 나오는 현상 고민...
+ */
 
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.pathname;
+  const response = NextResponse.next();
 
   if (url === "/login" || url === "/join") {
-    return NextResponse.next();
+    return response;
   }
 
   const accessToken = request.cookies.get("lc_at");
@@ -26,7 +34,9 @@ export async function middleware(request: NextRequest) {
     }
 
     const refreshTokenPayload: Jwt = decodeJwtTokenPayload(refreshToken);
-    const isExpiredRefreshToken = Date.now() > refreshTokenPayload.exp * 1000;
+    const isExpiredRefreshToken = refreshTokenPayload.exp
+      ? Date.now() > refreshTokenPayload.exp * 1000
+      : false;
     const userid = refreshTokenPayload.id;
 
     // refreshToken도 만료되었다면 로그아웃 및 페이지로 리다이렉트
@@ -40,13 +50,13 @@ export async function middleware(request: NextRequest) {
     }
 
     // refreshToken이 있다면 accessToken 재발급
-    const { newAccessToken } = (await (
+    const { accessToken: newAccessToken } = (await (
       await fetch("http://localhost:3000/api/token", {
         method: "POST",
         body: JSON.stringify(userid),
       })
-    ).json()) as { newAccessToken: string };
-    NextResponse.next().cookies.set({
+    ).json()) as { accessToken: string };
+    response.cookies.set({
       name: "lc_at",
       value: newAccessToken,
       path: "/",
@@ -68,7 +78,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

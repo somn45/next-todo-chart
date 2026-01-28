@@ -56,7 +56,7 @@ export const login = async (
     httpOnly: true,
   });
   cookieStore.set("lc_rt", refreshToken, {
-    maxAge: 60 * 3,
+    maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
   });
 
