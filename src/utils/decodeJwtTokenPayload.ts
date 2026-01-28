@@ -1,6 +1,11 @@
+import { JwtPayload } from "jsonwebtoken";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
-export const decodeJwtTokenPayload = (jwtToken: RequestCookie) => {
+interface Jwt extends JwtPayload {
+  id: string; // userid
+}
+
+export const decodeJwtTokenPayload = (jwtToken: RequestCookie): Jwt => {
   const incodedJwtToken = jwtToken.value;
   const jwtTokenRegExp = /\w+\.(\w|\=)+\.\w+/i;
   if (!jwtTokenRegExp.test(incodedJwtToken))

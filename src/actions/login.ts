@@ -52,11 +52,11 @@ export const login = async (
   ).json();
   const cookieStore = await cookies();
   cookieStore.set("lc_at", accessToken, {
-    maxAge: 60 * 60,
+    maxAge: 60,
     httpOnly: true,
   });
   cookieStore.set("lc_rt", refreshToken, {
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 3,
     httpOnly: true,
   });
 

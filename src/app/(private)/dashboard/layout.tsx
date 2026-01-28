@@ -47,16 +47,3 @@ export default function Dashboard({
     </section>
   );
 }
-
-/*
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("atk");
-
-  // 에러 작업 예정
-  if (!accessToken) return [];
-  const { sub: userid }: AccessTokenPayload =
-    decodeJwtTokenPayload(accessToken);
-
-  const dashboardDataList = await getIntegratedTodos(userid);
-
-*/

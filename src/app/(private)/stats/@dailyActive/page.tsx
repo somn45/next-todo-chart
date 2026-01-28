@@ -1,11 +1,6 @@
 import { getTodoStats } from "@/apis/getTodoStats";
-import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
-import { cookies } from "next/headers";
 import DailyActiveTodoLineGraph from "@/components/domain/Stat/DailyActiveTodoLineGraph";
-
-interface AccessTokenPayload {
-  sub: string;
-}
+import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
 
 export default async function DailyActive({
   searchParams,
@@ -15,13 +10,7 @@ export default async function DailyActive({
     da: "week" | "month" | "year";
   }>;
 }) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("atk");
-
-  // 에러 작업 예정
-  if (!accessToken) return [];
-  const { sub: userid }: AccessTokenPayload =
-    decodeJwtTokenPayload(accessToken);
+  const userid = await getUserIdWithAccessToken();
 
   const { da } = await searchParams;
 

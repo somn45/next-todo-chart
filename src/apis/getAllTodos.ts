@@ -1,11 +1,10 @@
 import { connectDB } from "@/libs/database";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
+import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
 import {
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
-import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 interface AccessTokenPayload {
@@ -16,13 +15,7 @@ export const getAllTodos = async (
   id: string | undefined | null,
   searchRange: "week" | "month" | "year" = "week",
 ) => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("atk");
-
-  // 에러 작업 예정
-  if (!accessToken) return [];
-  const { sub: userid }: AccessTokenPayload =
-    decodeJwtTokenPayload(accessToken);
+  const userid = await getUserIdWithAccessToken();
 
   if (!userid) {
     return redirect("/login");

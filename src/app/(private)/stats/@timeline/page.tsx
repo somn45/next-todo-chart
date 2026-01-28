@@ -1,11 +1,6 @@
 import { getAllTodos } from "@/apis/getAllTodos";
 import TodoTimeline from "@/components/domain/Stat/TodoTimeline";
-import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
-import { cookies } from "next/headers";
-
-interface AccessTokenPayload {
-  sub: string;
-}
+import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
 
 export default async function Timeline({
   searchParams,
@@ -15,13 +10,7 @@ export default async function Timeline({
     da: "week" | "month" | "year";
   }>;
 }) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("atk");
-
-  // 에러 작업 예정
-  if (!accessToken) return [];
-  const { sub: userid }: AccessTokenPayload =
-    decodeJwtTokenPayload(accessToken);
+  const userid = await getUserIdWithAccessToken();
 
   const { tl } = await searchParams;
 
