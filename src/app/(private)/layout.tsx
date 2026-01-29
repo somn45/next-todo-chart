@@ -1,4 +1,24 @@
+import Nav, { NavLinkAttr } from "@/components/ui/molecures/Nav";
 import Link from "next/link";
+
+const mainNavLinks: NavLinkAttr[] = [
+  {
+    href: "/dashboard",
+    content: "메인으로",
+  },
+  {
+    href: "/todos",
+    content: "투두리스트",
+  },
+  {
+    href: "/stats?tl=week&da=week",
+    content: "통계",
+  },
+  {
+    href: "/login",
+    content: "로그인",
+  },
+];
 
 export default function ProtectedLayout({
   children,
@@ -6,22 +26,7 @@ export default function ProtectedLayout({
   return (
     <>
       <header>
-        <nav>
-          <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
-            <li>
-              <Link href="/dashboard">메인으로</Link>
-            </li>
-            <li>
-              <Link href="/todos">투두리스트</Link>
-            </li>
-            <li>
-              <Link href="/stats?tl=week&da=week">통계</Link>
-            </li>
-            <li>
-              <Link href="/login">로그인</Link>
-            </li>
-          </ul>
-        </nav>
+        <Nav NavLinks={mainNavLinks} />
       </header>
       <main>
         <div></div>

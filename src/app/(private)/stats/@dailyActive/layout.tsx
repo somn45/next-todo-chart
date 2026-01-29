@@ -1,4 +1,4 @@
-import TabMenu from "./TabMenu";
+import TabMenu from "./StatsTabMenu";
 
 export default function DailyActiveLayout({
   children,

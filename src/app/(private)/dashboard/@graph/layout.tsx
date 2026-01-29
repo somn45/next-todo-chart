@@ -1,4 +1,17 @@
+import { NavLinkAttr } from "@/components/ui/molecures/Nav";
+import TabMenu from "@/components/ui/molecures/TabMenu";
 import Link from "next/link";
+
+const tabMenuItems: NavLinkAttr[] = [
+  {
+    href: "/dashboard/line-graph",
+    content: "라인 그래프",
+  },
+  {
+    href: "/dashboard/timeline",
+    content: "타임라인",
+  },
+];
 
 export default function DashboardGraphLayout({
   children,
@@ -7,10 +20,7 @@ export default function DashboardGraphLayout({
 }) {
   return (
     <div>
-      <nav style={{ display: "flex", gap: "20px" }}>
-        <Link href="/dashboard/line-graph">라인 그래프</Link>
-        <Link href="/dashboard/timeline">타임라인</Link>
-      </nav>
+      <TabMenu tabMenuItems={tabMenuItems} />
       {children}
     </div>
   );

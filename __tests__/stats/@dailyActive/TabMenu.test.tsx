@@ -1,4 +1,4 @@
-import TabMenu from "@/app/(private)/stats/@dailyActive/TabMenu";
+import TabMenu from "@/app/(private)/stats/@dailyActive/StatsTabMenu";
 import { render, screen } from "@testing-library/react";
 import { useSearchParams } from "next/navigation";
 
