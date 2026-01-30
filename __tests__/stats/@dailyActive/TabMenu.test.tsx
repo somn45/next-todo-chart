@@ -1,4 +1,4 @@
-import TabMenu from "@/app/(private)/stats/@dailyActive/StatsTabMenu";
+import TabMenu from "@/app/(private)/stats/@dailyActive/Navigation";
 import { render, screen } from "@testing-library/react";
 
 jest.mock("next/navigation", () => ({

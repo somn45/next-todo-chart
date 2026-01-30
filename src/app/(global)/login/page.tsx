@@ -2,9 +2,10 @@
 
 import { login } from "@/actions/login";
 import Form from "./Form";
-import Nav, { NavLinkAttr } from "@/components/ui/molecures/Nav";
+import Nav from "@/components/ui/molecures/Nav";
+import { NavLinkItem } from "@/types/ui";
 
-const loginNavLinks: NavLinkAttr[] = [
+const loginNavLinks: NavLinkItem[] = [
   {
     href: "/join",
     content: "회원가입 페이지로 가기",

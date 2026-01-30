@@ -1,4 +1,4 @@
-import TabMenu from "./StatsTabMenu";
+import Navigation from "./Navigation";
 
 export default function TimeLineLayout({
   children,
@@ -7,7 +7,7 @@ export default function TimeLineLayout({
 }) {
   return (
     <div>
-      <TabMenu />
+      <Navigation />
       {children}
     </div>
   );

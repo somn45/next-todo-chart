@@ -1,4 +1,4 @@
-import TabMenu from "./StatsTabMenu";
+import Navigation from "./Navigation";
 
 export default function DailyActiveLayout({
   children,
@@ -7,7 +7,7 @@ export default function DailyActiveLayout({
 }) {
   return (
     <div>
-      <TabMenu />
+      <Navigation />
       {children}
     </div>
   );

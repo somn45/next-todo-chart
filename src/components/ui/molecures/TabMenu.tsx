@@ -1,15 +1,10 @@
 "use client";
 
+import { TabMenuItem } from "@/types/ui";
 import NavLink from "../atoms/NavLink";
-import useQueryString from "@/hooks/useQueryString";
-
-export interface NavLinkAttr {
-  href: string;
-  content: string;
-}
 
 interface TabMenuProps {
-  tabMenuItems: NavLinkAttr[];
+  tabMenuItems: TabMenuItem[];
 }
 
 /**
@@ -18,16 +13,14 @@ interface TabMenuProps {
  *
  */
 export default function TabMenu({ tabMenuItems }: TabMenuProps) {
-  const url = useQueryString();
-
   return (
     <nav>
       <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
-        {tabMenuItems.map(({ href, content }) => (
+        {tabMenuItems.map(({ href, content, isActive }) => (
           <li
             key={content}
             style={{
-              fontWeight: url === href ? "600" : "400",
+              fontWeight: isActive ? "600" : "400",
             }}
           >
             <NavLink href={href} content={content} />

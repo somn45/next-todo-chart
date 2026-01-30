@@ -1,14 +1,18 @@
 "use client";
 
-import { NavLinkAttr } from "@/components/ui/molecures/Nav";
 import TabMenu from "@/components/ui/molecures/TabMenu";
+import useQueryString from "@/hooks/useQueryString";
+import { NavLinkItem } from "@/types/ui";
+import getTabMenuItems from "@/utils/ui/getTabMenuItems";
 import { useSearchParams } from "next/navigation";
 
 export default function StatsTabMenu() {
   const searchParams = useSearchParams();
   const tlPeriodType = searchParams.get("tl") || "week";
 
-  const tabMenuItems: NavLinkAttr[] = [
+  const url = useQueryString();
+
+  const navLinkItems: NavLinkItem[] = [
     {
       href: `/stats?tl=${tlPeriodType}&da=week`,
       content: "1 주",
@@ -23,5 +27,5 @@ export default function StatsTabMenu() {
     },
   ];
 
-  return <TabMenu tabMenuItems={tabMenuItems} />;
+  return <TabMenu tabMenuItems={getTabMenuItems(navLinkItems, url)} />;
 }

@@ -1,12 +1,8 @@
+import { NavLinkItem } from "@/types/ui";
 import NavLink from "../atoms/NavLink";
 
-export interface NavLinkAttr {
-  href: string;
-  content: string;
-}
-
 interface NavProps {
-  NavLinks: NavLinkAttr[];
+  NavLinks: NavLinkItem[];
 }
 
 // 단순 다른 경로로 이동
