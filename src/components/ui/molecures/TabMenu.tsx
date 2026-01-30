@@ -1,8 +1,7 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
 import NavLink from "../atoms/NavLink";
-import { useEffect, useMemo, useState } from "react";
+import useQueryString from "@/hooks/useQueryString";
 
 export interface NavLinkAttr {
   href: string;
@@ -19,23 +18,7 @@ interface TabMenuProps {
  *
  */
 export default function TabMenu({ tabMenuItems }: TabMenuProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [queryString, setQueryString] = useState("");
-
-  const url = `${pathname}${queryString}`;
-
-  useEffect(() => {
-    let queryParams: string[] = [];
-    for (const key of searchParams.keys()) {
-      const resultOfGetSearchParams = searchParams.get(key) ?? "";
-      queryParams = [...queryParams, `${key}=${resultOfGetSearchParams}`];
-    }
-    const queryString = queryParams.join("&")
-      ? `?${queryParams.join("&")}`
-      : "";
-    setQueryString(queryString);
-  }, searchParams.values().toArray());
+  const url = useQueryString();
 
   return (
     <nav>

@@ -1,6 +1,5 @@
 import { NavLinkAttr } from "@/components/ui/molecures/Nav";
 import TabMenu from "@/components/ui/molecures/TabMenu";
-import Link from "next/link";
 
 const tabMenuItems: NavLinkAttr[] = [
   {

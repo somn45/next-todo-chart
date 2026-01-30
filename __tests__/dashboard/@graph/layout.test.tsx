@@ -1,6 +1,11 @@
 import DashboardGraphLayout from "@/app/(private)/dashboard/@graph/layout";
 import { render, screen } from "@testing-library/react";
 
+jest.mock("@/hooks/useQueryString", () => ({
+  __esModule: true,
+  default: jest.fn(() => "/stats?tl=week&da=week"),
+}));
+
 describe("Dashboard @graph Layout 컴포넌트", () => {
   const testCases = [
     {

@@ -1,11 +1,14 @@
 import TabMenu from "@/app/(private)/stats/@dailyActive/StatsTabMenu";
 import { render, screen } from "@testing-library/react";
-import { useSearchParams } from "next/navigation";
 
 jest.mock("next/navigation", () => ({
   useSearchParams: jest.fn().mockReturnValue({
     get: jest.fn().mockReturnValue("week"),
   }),
+}));
+jest.mock("@/hooks/useQueryString", () => ({
+  __esModule: true,
+  default: jest.fn(() => "/stats?tl=week&da=week"),
 }));
 
 describe("<TabMenu />", () => {

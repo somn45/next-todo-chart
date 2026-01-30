@@ -6,6 +6,10 @@ jest.mock("next/navigation", () => ({
     get: jest.fn().mockReturnValue("week"),
   }),
 }));
+jest.mock("@/hooks/useQueryString", () => ({
+  __esModule: true,
+  default: jest.fn(() => "/stats?tl=week&da=week"),
+}));
 
 describe("<TabMenu />", () => {
   beforeEach(() => {
