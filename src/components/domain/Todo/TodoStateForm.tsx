@@ -2,6 +2,7 @@
 
 import { updateTodoState } from "@/actions/updateTodoState";
 import Button from "@/components/ui/atoms/Button";
+import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
@@ -20,7 +21,7 @@ export default function TodoStateForm({
   });
   return (
     <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
-      <span>{actionState.message}</span>
+      <ErrorMessage message={actionState.message} />
       <li>
         <form
           action={formAction}

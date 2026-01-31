@@ -5,6 +5,8 @@ import Deleteform from "./DeleteForm";
 import { LookupedTodo } from "@/types/schema";
 import TodoStateForm from "./TodoStateForm";
 import { useEffect, useRef, useState } from "react";
+import Text from "@/components/ui/atoms/Text";
+import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 
 // 6시 20분 완료인데 6시 14분일 경우
 
@@ -64,9 +66,9 @@ export default function Todo({
         flexDirection: "column",
       }}
     >
-      <p>{message}</p>
-      <span data-testid="todo-textField">{textField}</span>
-      <span data-testid="todo-state">현재 상태 {state}</span>
+      <ErrorMessage message={message} />
+      <Text content={textField} dataTestId="todo-textfield" />
+      <Text content={`현재 상태 ${state}`} dataTestId="todo-state" />
       <TodoStateForm todoid={_id} todoState={state} />
       <EditForm todoid={_id} userid={userid} />
       <Deleteform

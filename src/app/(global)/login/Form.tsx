@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/atoms/Button";
+import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
@@ -34,7 +35,7 @@ export default function Form({ serverAction, initialState }: FormProps) {
         ariaLabel="비밀번호 입력칸"
       />
       <Button type="submit" value="로그인" />
-      <span data-testid="validate-message">{state.message}</span>
+      <ErrorMessage message={state.message} dataTestId="validate-message" />
     </form>
   );
 }

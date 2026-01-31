@@ -2,6 +2,7 @@
 
 import { deleteTodo } from "@/actions/deleteTodo";
 import Button from "@/components/ui/atoms/Button";
+import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
@@ -21,7 +22,7 @@ export default function Deleteform({
   if (!showDeleteSection) return null;
   return (
     <form role="form" action={formAction}>
-      <span>{state.message}</span>
+      <ErrorMessage message={state.message} />
       <Input
         type="text"
         name="todo-id"

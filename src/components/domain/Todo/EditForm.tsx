@@ -2,6 +2,7 @@
 
 import { editTodo } from "@/actions/editTodo";
 import Button from "@/components/ui/atoms/Button";
+import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import { useActionState, useEffect, useState } from "react";
 
@@ -30,7 +31,7 @@ export default function EditForm({ todoid, userid }: EditFormProps) {
     );
   return (
     <form role="form" action={editTodoAction}>
-      <span>{state.message}</span>
+      <ErrorMessage message={state.message} />
       <Input
         type="text"
         placeholder="투두리스트 수정"
