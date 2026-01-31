@@ -27,8 +27,8 @@ describe("<LoginPage />", () => {
     });
     render(<Form serverAction={mockLogin} initialState={{ message: "" }} />);
 
-    const useridInput = screen.getByLabelText("아이디");
-    const passwordInput = screen.getByLabelText("비밀번호");
+    const useridInput = screen.getByLabelText("아이디 입력칸");
+    const passwordInput = screen.getByLabelText("비밀번호 입력칸");
 
     fireEvent.change(useridInput, { target: { value: "abc123" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });

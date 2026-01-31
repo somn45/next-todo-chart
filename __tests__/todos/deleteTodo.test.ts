@@ -37,7 +37,7 @@ describe("deleteTodo 서버 액션", () => {
   });
   it("deleteTodo 서버 액션이 실행되면 DB 삭제 쿼리, todo 캐시 함수가 호출된다.", async () => {
     const formData = new FormData();
-    formData.set("todoid", mockTodo._id);
+    formData.set("todo-id", mockTodo._id);
     await deleteTodo("mockuser", { message: "" }, formData);
 
     const db = (await connectDB).db("next-todo-chart-cluster");
@@ -58,7 +58,7 @@ describe("deleteTodo 서버 액션", () => {
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {
     const formData = new FormData();
-    formData.set("todoid", mockTodo._id);
+    formData.set("todo-id", mockTodo._id);
     const deleteTodoActionState = await deleteTodo(
       null,
       { message: "" },
@@ -76,9 +76,9 @@ describe("deleteTodo 서버 액션", () => {
     expect(revalidateTag).not.toHaveBeenCalled();
   });
 
-  it("formData로부터 받은 todoid가 없거나 ObjectId 할당에 적절한 타입이 아닐 경우 에러를 던진다.", async () => {
+  it("formData로부터 받은 todo-id가 없거나 ObjectId 할당에 적절한 타입이 아닐 경우 에러를 던진다.", async () => {
     const formData = new FormData();
-    formData.set("todoid", "22");
+    formData.set("todo-id", "22");
 
     const db = (await connectDB).db("next-todo-chart-cluster");
 
@@ -101,7 +101,7 @@ describe("deleteTodo 서버 액션", () => {
     (db.collection("todo").findOne as jest.Mock).mockResolvedValue(null);
 
     const formData = new FormData();
-    formData.set("todoid", mockTodo._id);
+    formData.set("todo-id", mockTodo._id);
 
     const deleteTodoActionState = await deleteTodo(
       "mockuser",
@@ -125,7 +125,7 @@ describe("deleteTodo 서버 액션", () => {
     });
 
     const formData = new FormData();
-    formData.set("todoid", mockTodo._id);
+    formData.set("todo-id", mockTodo._id);
 
     const deleteTodoActionState = await deleteTodo(
       "noAuthorityUser",

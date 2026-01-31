@@ -29,10 +29,10 @@ describe("<JoinPage />", () => {
 
     // screen.logTestingPlaygroundURL();
 
-    const useridInput = screen.getByRole("textbox", { name: "userid" });
-    const passwordInput = screen.getByLabelText("password");
-    const confirmPasswordInput = screen.getByLabelText("confirm-password");
-    const emailInput = screen.getByRole("textbox", { name: "email" });
+    const useridInput = screen.getByLabelText("아이디 입력칸");
+    const passwordInput = screen.getByLabelText("비밀번호 입력칸");
+    const confirmPasswordInput = screen.getByLabelText("비밀번호 확인 입력칸");
+    const emailInput = screen.getByLabelText("이메일 입력칸");
 
     fireEvent.change(useridInput, { target: { value: "abc123" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });
