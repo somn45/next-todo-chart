@@ -1,6 +1,8 @@
 "use client";
 
 import { deleteTodo } from "@/actions/deleteTodo";
+import Button from "@/components/ui/atoms/Button";
+import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
 export default function Deleteform({
@@ -20,16 +22,15 @@ export default function Deleteform({
   return (
     <form role="form" action={formAction}>
       <span>{state.message}</span>
-      <input
+      <Input
         type="text"
-        name="todoid"
-        value={todoid}
-        onChange={() => {}}
-        aria-label="삭제할 투두"
-        data-testid="delete-todo-form"
-        hidden
+        name="todo-id"
+        defaultValue={todoid}
+        ariaLabel="삭제할 투두"
+        dataTestId="delete-todo-form"
+        isHidden={true}
       />
-      <button type="submit">삭제</button>
+      <Button type="submit" value="삭제" />
     </form>
   );
 }

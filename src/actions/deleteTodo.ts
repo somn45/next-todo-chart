@@ -14,7 +14,8 @@ export const deleteTodo = async (
     return { message: "할 일을 삭제하는 작업은 로그인이 필요합니다." };
   }
 
-  const todoid = formData.get("todoid") as string;
+  const todoid = formData.get("todo-id") as string;
+  console.log(todoid);
 
   try {
     if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {

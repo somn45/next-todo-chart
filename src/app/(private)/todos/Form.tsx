@@ -1,6 +1,8 @@
 "use client";
 
 import { addTodo } from "@/actions/addTodo";
+import Button from "@/components/ui/atoms/Button";
+import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
 export default function TodosForm({ userid }: { userid: string }) {
@@ -12,13 +14,13 @@ export default function TodosForm({ userid }: { userid: string }) {
   return (
     <form role="form" action={formAction}>
       <span>{state.message}</span>
-      <input
+      <Input
         type="text"
         placeholder="새 투두리스트 추가"
         name="newTodo"
-        aria-label="새 투두리스트"
+        ariaLabel="새 투두리스트 입력칸"
       />
-      <button type="submit">새 투두리스트 추가</button>
+      <Button type="submit" value="새 투두리스트 추가" />
     </form>
   );
 }

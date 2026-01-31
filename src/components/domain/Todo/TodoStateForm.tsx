@@ -1,6 +1,8 @@
 "use client";
 
 import { updateTodoState } from "@/actions/updateTodoState";
+import Button from "@/components/ui/atoms/Button";
+import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
 interface TodoStateFormProps {
@@ -26,15 +28,15 @@ export default function TodoStateForm({
           aria-label="할 일이 포함된 양식"
           hidden={todoState === "할 일"}
         >
-          <input
+          <Input
             type="text"
             name="state"
-            value="할 일"
-            aria-label="할 일"
-            readOnly
-            hidden
+            defaultValue="할 일"
+            ariaLabel="할 일 투두 상태"
+            isReadOnly={true}
+            isHidden={true}
           />
-          <button type="submit">할 일</button>
+          <Button type="submit" value="할 일" />
         </form>
       </li>
       <li>
@@ -44,15 +46,15 @@ export default function TodoStateForm({
           aria-label="진행 중이 포함된 양식"
           hidden={todoState === "진행 중"}
         >
-          <input
+          <Input
             type="text"
             name="state"
-            value="진행 중"
-            aria-label="진행 중"
-            readOnly
-            hidden
+            defaultValue="진행 중"
+            ariaLabel="진행 중 투두 상태"
+            isReadOnly={true}
+            isHidden={true}
           />
-          <button type="submit">진행 중</button>
+          <Button type="submit" value="진행 중" />
         </form>
       </li>
       <li>
@@ -62,15 +64,15 @@ export default function TodoStateForm({
           aria-label="완료가 포함된 양식"
           hidden={todoState === "완료"}
         >
-          <input
+          <Input
             type="text"
             name="state"
-            value="완료"
-            aria-label="완료"
-            readOnly
-            hidden
+            defaultValue="완료"
+            ariaLabel="완료 투두 상태"
+            isReadOnly={true}
+            isHidden={true}
           />
-          <button type="submit">완료</button>
+          <Button type="submit" value="완료" />
         </form>
       </li>
     </ul>

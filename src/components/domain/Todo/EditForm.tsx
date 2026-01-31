@@ -1,6 +1,8 @@
 "use client";
 
 import { editTodo } from "@/actions/editTodo";
+import Button from "@/components/ui/atoms/Button";
+import Input from "@/components/ui/atoms/Input";
 import { useActionState, useEffect, useState } from "react";
 
 interface EditFormProps {
@@ -24,29 +26,19 @@ export default function EditForm({ todoid, userid }: EditFormProps) {
 
   if (!isEditMode)
     return (
-      <button
-        onClick={() => setIsEditMode(true)}
-        style={{
-          width: "80px",
-          height: "26px",
-        }}
-      >
-        수정
-      </button>
+      <Button type="button" value="수정" onClick={() => setIsEditMode(true)} />
     );
   return (
     <form role="form" action={editTodoAction}>
       <span>{state.message}</span>
-      <input
+      <Input
         type="text"
-        placeholder="투두리스트 작성"
+        placeholder="투두리스트 수정"
         name="todo"
-        aria-label="수정될 투두"
+        ariaLabel="수정될 투두 입력칸"
       />
-      <button type="submit">수정 완료</button>
-      <button type="button" onClick={() => setIsEditMode(false)}>
-        취소
-      </button>
+      <Button type="submit" value="수정 완료" />
+      <Button type="button" value="취소" onClick={() => setIsEditMode(false)} />
     </form>
   );
 }
