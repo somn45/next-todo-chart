@@ -5,7 +5,6 @@ import { ITodo } from "@/types/schema";
 import { ObjectId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
-const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
 const AFTER_TEN_MINUTES = 1000 * 60 * 10;
 
 export const updateTodoState = async (

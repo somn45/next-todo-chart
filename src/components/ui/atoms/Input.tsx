@@ -1,13 +1,4 @@
-interface InputProps {
-  type: "text" | "password" | "email";
-  name: string;
-  ariaLabel: string;
-  defaultValue?: string;
-  placeholder?: string;
-  dataTestId?: string;
-  isReadOnly?: boolean;
-  isHidden?: boolean;
-}
+import { InputProps } from "@/types/ui";
 
 export default function Input({
   type,

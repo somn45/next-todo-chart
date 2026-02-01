@@ -1,14 +1,12 @@
 "use client";
 
 import { LookupedTodo } from "@/types/schema";
-import TodoStateForm from "./TodoStateForm";
 import { useEffect, useRef, useState } from "react";
 import Text from "@/components/ui/atoms/Text";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import EditTodoForm from "@/components/ui/organisms/EditTodoForm";
 import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
-
-// 6시 20분 완료인데 6시 14분일 경우
+import SelectTodoStateForm from "@/components/ui/organisms/SelectTodoStateForm";
 
 export default function Todo({
   todo,
@@ -69,7 +67,7 @@ export default function Todo({
       <ErrorMessage message={message} />
       <Text content={textField} dataTestId="todo-textfield" />
       <Text content={`현재 상태 ${state}`} dataTestId="todo-state" />
-      <TodoStateForm todoid={_id} todoState={state} />
+      <SelectTodoStateForm todoid={_id} currentTodoState={state} />
       <EditTodoForm todoid={_id} userid={userid} />
       <DeleteTodoform
         todoid={_id}

@@ -9,8 +9,8 @@ jest.mock("@/libs/database", () => ({
     db: jest.fn(),
   }),
 }));
-jest.mock("@/components/domain/Todo/TodoStateForm", () => {
-  return function MockTodoStateForm() {
+jest.mock("@/components/ui/organisms/SelectTodoStateForm", () => {
+  return function MockSelectTodoStateForm() {
     return <div data-testid="todo-state-form">update todo state Form</div>;
   };
 });
