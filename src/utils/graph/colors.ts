@@ -4,4 +4,8 @@ import * as d3 from "d3";
 export const createColorScale = (
   keys: Iterable<string>,
   colors: Array<string>,
-) => d3.scaleOrdinal<string>().domain(keys).range(colors);
+) =>
+  d3
+    .scaleOrdinal<string>()
+    .domain(["총합", "할 일", "진행 중", "완료"])
+    .range(colors);

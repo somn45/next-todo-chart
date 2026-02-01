@@ -29,7 +29,7 @@ jest.mock("@/apis/getTodo", () => ({
 }));
 
 describe("<Todo />", () => {
-  it.skip("Todos 컴포넌트로부터 todo의 id와 userid를 받아 단일 todo를 가져온 후 페이지에 출력한다.", async () => {
+  it("Todos 컴포넌트로부터 todo의 id와 userid를 받아 단일 todo를 가져온 후 페이지에 출력한다.", async () => {
     (getTodo as jest.Mock).mockResolvedValue({
       _id: "objectId",
       userid: "mockuser",
@@ -46,7 +46,7 @@ describe("<Todo />", () => {
     };
     render(<TodoPage todo={mockTodo} />);
 
-    const textFieldSpan = screen.getByTestId("todo-textField");
+    const textFieldSpan = screen.getByTestId("todo-textfield");
     const todoStateSpan = screen.getByTestId("todo-state");
     const editTodoForm = screen.getByTestId("edit-form");
     const deleteTodoForm = screen.getByTestId("delete-form");
@@ -55,7 +55,7 @@ describe("<Todo />", () => {
     expect(editTodoForm).toBeInTheDocument();
     expect(deleteTodoForm).toBeInTheDocument();
   });
-  it.skip("만약 상태가 '완료'라면 유예 시간 알림 메세지를 출력하고 유예 시간이 지나면 해당 요소가 표시되지 않는다.", () => {
+  it("만약 상태가 '완료'라면 유예 시간 알림 메세지를 출력하고 유예 시간이 지나면 해당 요소가 표시되지 않는다.", () => {
     jest.useFakeTimers();
     const MOCK_DATE = new Date(2025, 10, 16, 9);
     jest.setSystemTime(MOCK_DATE);
