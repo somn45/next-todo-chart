@@ -14,13 +14,13 @@ jest.mock("@/components/domain/Todo/TodoStateForm", () => {
     return <div data-testid="todo-state-form">update todo state Form</div>;
   };
 });
-jest.mock("@/components/domain/Todo/EditForm", () => {
-  return function MockEditForm() {
+jest.mock("@/components/ui/organisms/EditTodoForm", () => {
+  return function MockEditTodoForm() {
     return <div data-testid="edit-form">Edit Form</div>;
   };
 });
-jest.mock("@/components/domain/Todo/DeleteForm", () => {
-  return function MockDeleteForm() {
+jest.mock("@/components/ui/organisms/DeleteTodoForm", () => {
+  return function MockDeleteTodoForm() {
     return <div data-testid="delete-form">Delete Form</div>;
   };
 });

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
 jest.mock("@/libs/database", () => ({
   connectDB: jest.fn(),
@@ -19,7 +19,7 @@ jest.mock("@/utils/decodeJwtTokenPayload", () => ({
     sub: "mockuser",
   }),
 }));
-jest.mock("@/app/(private)/todos/Form", () =>
+jest.mock("@/components/ui/organisms/AddTodoForm", () =>
   jest.fn(props => <form data-testid="todos-form"></form>),
 );
 jest.mock("@/components/domain/Todo/TodoWrapper", () =>
@@ -28,9 +28,9 @@ jest.mock("@/components/domain/Todo/TodoWrapper", () =>
 
 import DashBoardTodos from "@/app/(private)/dashboard/@todos/default";
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
-import { mockTodo, mockTodos } from "../../../__mocks__/todos";
+import { mockTodos } from "../../../__mocks__/todos";
 import { mockStats } from "../../../__mocks__/stats";
-import TodosForm from "@/app/(private)/todos/Form";
+import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
 import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 
 describe("Dashboard @todos 슬롯 페이지", () => {
@@ -49,7 +49,7 @@ describe("Dashboard @todos 슬롯 페이지", () => {
 
     expect(getIntegratedTodos).toHaveBeenCalledTimes(1);
     expect(getIntegratedTodos).toHaveBeenCalledWith("mockuser");
-    expect(TodosForm).toHaveBeenCalledWith({ userid: "mockuser" }, undefined);
+    expect(AddTodoForm).toHaveBeenCalledWith({ userid: "mockuser" }, undefined);
     expect(TodoWrapperCalledProps[0]).toEqual({
       todo: mockTodos[0].content,
       showDeleteSection: false,

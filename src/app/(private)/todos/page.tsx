@@ -1,7 +1,7 @@
 import { getTodos } from "@/apis/getTodos";
-import TodosForm from "./Form";
 import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
+import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
 
 export default async function Todos() {
   const userid = await getUserIdWithAccessToken();
@@ -18,7 +18,7 @@ export default async function Todos() {
   return (
     <section>
       <h2>Todos 페이지</h2>
-      <TodosForm userid={userid} />
+      <AddTodoForm userid={userid} />
       <ul>
         {todos.map(todo => (
           <TodoWrapper key={todo.content._id} todo={todo.content} />

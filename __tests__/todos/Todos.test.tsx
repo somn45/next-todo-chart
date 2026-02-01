@@ -11,8 +11,8 @@ jest.mock("@/libs/database", () => ({
 jest.mock("@/apis/getTodos", () => ({
   getTodos: jest.fn(),
 }));
-jest.mock("@/app/(private)/todos/Form", () => {
-  return function TodosForm() {
+jest.mock("@/components/ui/organisms/AddTodoForm", () => {
+  return function AddTodoForm() {
     return <div>Todos Form</div>;
   };
 });

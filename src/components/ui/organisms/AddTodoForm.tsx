@@ -1,11 +1,11 @@
 "use client";
 
 import { addTodo } from "@/actions/addTodo";
-import Button from "@/components/ui/atoms/Button";
-import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
+import Input from "../atoms/Input";
+import Button from "../atoms/Button";
 
-export default function TodosForm({ userid }: { userid: string }) {
+export default function AddTodoForm({ userid }: { userid: string }) {
   const addTodoWithUserId = addTodo.bind(null, userid);
   const [state, formAction] = useActionState(addTodoWithUserId, {
     message: "",

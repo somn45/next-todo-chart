@@ -11,7 +11,7 @@ interface EditFormProps {
   userid: string;
 }
 
-export default function EditForm({ todoid, userid }: EditFormProps) {
+export default function EditTodoForm({ todoid, userid }: EditFormProps) {
   const [isEditMode, setIsEditMode] = useState(false);
   const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
     todoid,

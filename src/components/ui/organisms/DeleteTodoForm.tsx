@@ -6,7 +6,7 @@ import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
-export default function Deleteform({
+export default function DeleteTodoform({
   todoid,
   userid,
   showDeleteSection = true,
