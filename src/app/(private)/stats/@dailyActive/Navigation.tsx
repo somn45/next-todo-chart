@@ -1,6 +1,6 @@
 "use client";
 
-import TabMenu from "@/components/ui/molecures/TabMenu";
+import TabMenu from "@/components/ui/molecules/TabMenu";
 import useQueryString from "@/hooks/useQueryString";
 import { NavLinkItem } from "@/types/ui";
 import getTabMenuItems from "@/utils/ui/getTabMenuItems";

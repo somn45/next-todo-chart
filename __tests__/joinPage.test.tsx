@@ -1,31 +1,36 @@
 import { join } from "@/actions/join";
-import Form from "@/app/(global)/join/Form";
+import JoinForm from "@/components/ui/organisms/JoinForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
+jest.mock("@/actions/join");
 jest.mock("@/libs/database", () => {
   const mockCollection = {
     find: jest.fn().mockReturnValue({
       toArray: jest.fn().mockResolvedValue([]),
     }),
-    isnertOne: jest.fn().mockReturnValue({}),
+    findOne: jest.fn().mockReturnValue({
+      toArray: jest.fn().mockResolvedValue("mockuser"),
+    }),
+    insertOne: jest.fn().mockReturnValue({}),
   };
   const mockDb = {
-    collection: jest.fn().mockReturnValue(mockCollection),
-    createCollection: jest.fn(),
+    db: jest.fn().mockReturnValue({
+      collection: jest.fn().mockReturnValue(mockCollection),
+      createCollection: jest.fn(),
+    }),
   };
   return {
     connectDB: Promise.resolve(mockDb),
   };
 });
-const mockAction = jest.fn(join);
 
 describe("<JoinPage />", () => {
   it("Form 제출 후 useActionState 인자에 할당된 서버 액션이 호출된다.", async () => {
-    mockAction.mockImplementation(async (prevState, initialState) => {
+    (join as jest.Mock).mockImplementation(async (prevState, initialState) => {
       await new Promise(resolve => setTimeout(resolve, 50));
       return { message: "회원가입 완료" };
     });
-    render(<Form serverAction={mockAction} initialState={{ message: "" }} />);
+    render(<JoinForm />);
 
     // screen.logTestingPlaygroundURL();
 
@@ -45,7 +50,7 @@ describe("<JoinPage />", () => {
     fireEvent.submit(form);
 
     await waitFor(() => {
-      expect(mockAction).toHaveBeenCalledTimes(1);
+      expect(join).toHaveBeenCalledTimes(1);
       const validateMessageSpan = screen.getByTestId("validate-message");
       expect(validateMessageSpan).toHaveTextContent("회원가입 완료");
     });

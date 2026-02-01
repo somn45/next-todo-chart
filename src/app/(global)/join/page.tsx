@@ -1,8 +1,5 @@
-"use client";
-
-import Form from "./Form";
-import { join } from "@/actions/join";
-import Nav from "@/components/ui/molecures/Nav";
+import Nav from "@/components/ui/molecules/Nav";
+import JoinForm from "@/components/ui/organisms/JoinForm";
 import { NavLinkItem } from "@/types/ui";
 
 const loginNavLinks: NavLinkItem[] = [
@@ -15,7 +12,7 @@ const loginNavLinks: NavLinkItem[] = [
 export default function JoinPage() {
   return (
     <>
-      <Form serverAction={join} initialState={{ message: "" }} />
+      <JoinForm />
       <Nav NavLinks={loginNavLinks} />
     </>
   );

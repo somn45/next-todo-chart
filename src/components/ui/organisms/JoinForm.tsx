@@ -1,26 +1,15 @@
 "use client";
 
-import Button from "@/components/ui/atoms/Button";
-import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
-import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
+import Button from "../atoms/Button";
+import ErrorMessage from "../atoms/ErrorMessage";
+import Input from "../atoms/Input";
+import { join } from "@/actions/join";
 
-interface FormState {
-  message: string;
-}
-
-interface FormProps {
-  serverAction: (
-    prevState: FormState,
-    formData: FormData,
-  ) => Promise<FormState>;
-  initialState: FormState;
-}
-
-export default function Form({ serverAction, initialState }: FormProps) {
-  const [state, formAction] = useActionState(serverAction, initialState);
+export default function JoinForm() {
+  const [state, formAction] = useActionState(join, { message: "" });
   return (
-    <form action={formAction} aria-label="회원가입 양식">
+    <form role="form" action={formAction} aria-label="회원가입 양식">
       <Input
         type="text"
         placeholder="회원 아이디"

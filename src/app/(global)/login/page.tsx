@@ -1,9 +1,6 @@
-"use client";
-
-import { login } from "@/actions/login";
-import Form from "./Form";
-import Nav from "@/components/ui/molecures/Nav";
+import Nav from "@/components/ui/molecules/Nav";
 import { NavLinkItem } from "@/types/ui";
+import LoginForm from "@/components/ui/organisms/LoginForm";
 
 const loginNavLinks: NavLinkItem[] = [
   {
@@ -15,7 +12,7 @@ const loginNavLinks: NavLinkItem[] = [
 export default function LoginPage() {
   return (
     <>
-      <Form serverAction={login} initialState={{ message: "" }} />
+      <LoginForm />
       <Nav NavLinks={loginNavLinks} />
     </>
   );

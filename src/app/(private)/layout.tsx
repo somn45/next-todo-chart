@@ -1,7 +1,7 @@
-import Nav, { NavLinkAttr } from "@/components/ui/molecures/Nav";
-import Link from "next/link";
+import Nav from "@/components/ui/molecules/Nav";
+import { NavLinkItem } from "@/types/ui";
 
-const mainNavLinks: NavLinkAttr[] = [
+const mainNavLinks: NavLinkItem[] = [
   {
     href: "/dashboard",
     content: "메인으로",
