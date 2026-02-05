@@ -4,7 +4,8 @@ import { editTodo } from "@/actions/editTodo";
 import Button from "@/components/ui/atoms/Button";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
-import { useActionState, useEffect, useState } from "react";
+import useEditMode from "@/hooks/useEditMode";
+import { useActionState } from "react";
 
 interface EditFormProps {
   todoid: string;
@@ -12,7 +13,6 @@ interface EditFormProps {
 }
 
 export default function EditTodoForm({ todoid, userid }: EditFormProps) {
-  const [isEditMode, setIsEditMode] = useState(false);
   const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
     todoid,
     userid,
@@ -20,18 +20,13 @@ export default function EditTodoForm({ todoid, userid }: EditFormProps) {
   const [state, editTodoAction] = useActionState(editTodoWithTodoIdAndUserId, {
     message: "",
   });
-
-  useEffect(() => {
-    if (state.message.length === 0) setIsEditMode(false);
-  }, [state]);
+  const [isEditMode, setEditMode, setReadMode] = useEditMode(state.message);
 
   if (!isEditMode)
-    return (
-      <Button type="button" value="수정" onClick={() => setIsEditMode(true)} />
-    );
+    return <Button type="button" value="수정" onClick={setEditMode} />;
   return (
     <form role="form" action={editTodoAction}>
-      <ErrorMessage message={state.message} />
+      <ErrorMessage message={state.message} successSignal={"투두 수정 성공"} />
       <Input
         type="text"
         placeholder="투두리스트 수정"
@@ -39,7 +34,7 @@ export default function EditTodoForm({ todoid, userid }: EditFormProps) {
         ariaLabel="수정될 투두 입력칸"
       />
       <Button type="submit" value="수정 완료" />
-      <Button type="button" value="취소" onClick={() => setIsEditMode(false)} />
+      <Button type="button" value="취소" onClick={setReadMode} />
     </form>
   );
 }

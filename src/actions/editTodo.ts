@@ -5,8 +5,6 @@ import { type ITodo } from "@/types/schema";
 import { ObjectId, WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
-const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
-
 export const editTodo = async (
   { todoid, userid }: { todoid: string; userid: string | null | undefined },
   prevState: { message: string },
@@ -51,7 +49,7 @@ export const editTodo = async (
     revalidateTag("todos");
     revalidateTag("dashboard");
 
-    return { message: "" };
+    return { message: "투두 수정 성공" };
   } catch (error) {
     if (error instanceof Error) {
       return {

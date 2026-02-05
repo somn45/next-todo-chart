@@ -1,6 +1,6 @@
 "use client";
 
-import { LookupedTodo } from "@/types/schema";
+import { ClientTodo, LookupedTodo } from "@/types/schema";
 import { ErrorBoundary } from "react-error-boundary";
 import TodoFallback from "./TodoFallback";
 import Todo from "./Todo";
@@ -10,7 +10,7 @@ export default function TodoWrapper({
   todo,
   showDeleteSection,
 }: {
-  todo: LookupedTodo["content"];
+  todo: ClientTodo;
   showDeleteSection?: boolean;
 }) {
   return (
