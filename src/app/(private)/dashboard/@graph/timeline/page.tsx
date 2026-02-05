@@ -1,8 +1,8 @@
+import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 import TimelineContainer from "./TimelineContainer";
-import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
 
 export default async function DashboardTimeline() {
-  const userid = await getUserIdWithAccessToken();
+  const userid = await getUserIdByHeaders();
 
   return (
     <section>

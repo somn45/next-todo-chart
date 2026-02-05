@@ -1,8 +1,8 @@
+import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 import LineGraphContainer from "./LineGraphContainer";
-import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
 
 export default async function DashboardDailyActive() {
-  const userid = await getUserIdWithAccessToken();
+  const userid = await getUserIdByHeaders();
 
   return (
     <section>

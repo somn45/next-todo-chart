@@ -1,15 +1,15 @@
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
-import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
+import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 
 export default async function DashBoardTodos() {
-  const userid = await getUserIdWithAccessToken();
-  const { activeTodos } = await getIntegratedTodos(userid);
+  const userId = await getUserIdByHeaders();
+  const { activeTodos } = await getIntegratedTodos(userId);
 
   return (
     <div>
-      <AddTodoForm userid={userid} />
+      <AddTodoForm userId={userId} />
       {activeTodos.slice(0, 3).map(todo => (
         <TodoWrapper
           key={todo.content._id}

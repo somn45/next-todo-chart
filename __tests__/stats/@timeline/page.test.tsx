@@ -9,12 +9,9 @@ jest.mock("@/apis/getAllTodos", () => {
   };
 });
 jest.mock("next/headers", () => ({
-  cookies: jest.fn().mockResolvedValue({
-    get: jest.fn().mockReturnValue("accessToken"),
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
   }),
-}));
-jest.mock("@/utils/decodeJwtTokenPayload", () => ({
-  decodeJwtTokenPayload: jest.fn().mockReturnValue("mockuser"),
 }));
 jest.mock("@/components/domain/Stat/TodoTimeline", () =>
   jest.fn(props => <div data-testid="timeline"></div>),

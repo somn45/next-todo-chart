@@ -7,16 +7,8 @@ jest.mock("@/apis/getIntegratedTodos", () => ({
   getIntegratedTodos: jest.fn().mockResolvedValue([]),
 }));
 jest.mock("next/headers", () => ({
-  cookies: jest.fn().mockResolvedValue({
-    get: jest.fn().mockReturnValue({
-      name: "",
-      value: "",
-    }),
-  }),
-}));
-jest.mock("@/utils/decodeJwtTokenPayload", () => ({
-  decodeJwtTokenPayload: jest.fn().mockReturnValue({
-    sub: "mockuser",
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
   }),
 }));
 jest.mock("@/components/ui/organisms/AddTodoForm", () =>
@@ -49,7 +41,7 @@ describe("Dashboard @todos 슬롯 페이지", () => {
 
     expect(getIntegratedTodos).toHaveBeenCalledTimes(1);
     expect(getIntegratedTodos).toHaveBeenCalledWith("mockuser");
-    expect(AddTodoForm).toHaveBeenCalledWith({ userid: "mockuser" }, undefined);
+    expect(AddTodoForm).toHaveBeenCalledWith({ userId: "mockuser" }, undefined);
     expect(TodoWrapperCalledProps[0]).toEqual({
       todo: mockTodos[0].content,
       showDeleteSection: false,

@@ -1,6 +1,6 @@
 import { getAllTodos } from "@/apis/getAllTodos";
 import TodoTimeline from "@/components/domain/Stat/TodoTimeline";
-import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
+import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 
 export default async function Timeline({
   searchParams,
@@ -10,7 +10,7 @@ export default async function Timeline({
     da: "week" | "month" | "year";
   }>;
 }) {
-  const userid = await getUserIdWithAccessToken();
+  const userid = await getUserIdByHeaders();
 
   const { tl } = await searchParams;
 

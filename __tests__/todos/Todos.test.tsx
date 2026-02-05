@@ -1,7 +1,7 @@
 import { getTodos } from "@/apis/getTodos";
 import Todos from "@/app/(private)/todos/page";
-import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
 import { render, screen, waitFor } from "@testing-library/react";
+import { headers } from "next/headers";
 
 jest.mock("@/libs/database", () => ({
   connectDB: jest.fn().mockResolvedValue({
@@ -21,19 +21,11 @@ jest.mock("@/components/domain/Todo/TodoWrapper", () => {
     return <li>{todo.textField}</li>;
   };
 });
-jest.mock("next/headers", () => {
-  const nextHeaders = jest.requireActual("next/headers");
-  return {
-    ...nextHeaders,
-    cookies: jest.fn(() => ({
-      get: jest.fn(() => ({
-        name: "",
-        value: "",
-      })),
-    })),
-  };
-});
-jest.mock("@/utils/decodeJwtTokenPayload");
+jest.mock("next/headers", () => ({
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
+  }),
+}));
 
 describe("<Todos />", () => {
   it("Todos 페이지에 접속 시 로그인 중인 사용자의 투두리스트가 페이지에 출력된다.", async () => {
@@ -59,9 +51,7 @@ describe("<Todos />", () => {
     ];
 
     (getTodos as jest.Mock).mockResolvedValue(mockTodos);
-    (decodeJwtTokenPayload as jest.Mock).mockReturnValue({
-      sub: { userid: "mockuser" },
-    });
+    ((await headers()).get as jest.Mock).mockReturnValue("mockuser");
     render(await Todos());
 
     waitFor(() => {
@@ -75,9 +65,7 @@ describe("<Todos />", () => {
 
   it("getTodos API에서 가져오는 todos가 null이나 undefined인 경우 대체 UI를 렌더링한다.", async () => {
     (getTodos as jest.Mock).mockResolvedValue(null);
-    (decodeJwtTokenPayload as jest.Mock).mockReturnValue({
-      sub: { userid: "mockuser" },
-    });
+    ((await headers()).get as jest.Mock).mockReturnValue("mockuser");
 
     render(await Todos());
 

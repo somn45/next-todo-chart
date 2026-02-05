@@ -12,10 +12,19 @@ jest.mock("next/server", () => {
         cookies: {
           set: jest.fn(),
         },
+        headers: {
+          set: jest.fn(),
+        },
       }),
     },
   };
 });
+jest.mock("next/headers", () => ({
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
+  }),
+}));
+
 import { middleware } from "@/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,7 +49,7 @@ describe("middleware", () => {
       }),
     ) as jest.Mock;
     const payload = {
-      id: "abc123",
+      id: "mockuser",
       exp: Date.now() / 1000 + 60 * 60,
     };
     const accessToken = {
@@ -57,6 +66,11 @@ describe("middleware", () => {
     } as unknown as NextRequest;
     await middleware(mockRequest);
     expect(NextResponse.next).toHaveBeenCalledTimes(1);
+    expect(NextResponse.next().headers.set).toHaveBeenCalledTimes(1);
+    expect(NextResponse.next().headers.set).toHaveBeenCalledWith(
+      "x-user-id",
+      "mockuser",
+    );
   });
   it("accessToken이 없을 경우 모든 쿠키 삭제 및 로그인 페이지로 리다이렉트한다.", async () => {
     const accessToken = undefined;

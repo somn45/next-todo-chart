@@ -77,6 +77,9 @@ export async function middleware(request: NextRequest) {
       request.cookies.delete("lc_at");
       return NextResponse.redirect(new URL("/login", request.url));
     }
+
+    const { id } = decodeJwtTokenPayload(accessToken);
+    response.headers.set("x-user-id", id);
   }
 
   return response;

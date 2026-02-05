@@ -1,7 +1,8 @@
 import { getAllTodos } from "@/apis/getAllTodos";
 import { connectDB } from "@/libs/database";
 import { WithStringifyId } from "@/types/schema";
-import { decodeJwtTokenPayload } from "@/utils/decodeJwtTokenPayload";
+import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export interface LookupedTodo {
@@ -75,17 +76,11 @@ jest.mock("@/libs/database", () => {
     connectDB: Promise.resolve(mockDb),
   };
 });
-jest.mock("next/headers", () => {
-  return {
-    cookies: jest.fn(() => ({
-      get: jest.fn(() => ({
-        name: "",
-        value: "",
-      })),
-    })),
-  };
-});
-jest.mock("@/utils/decodeJwtTokenPayload");
+jest.mock("next/headers", () => ({
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
+  }),
+}));
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
@@ -96,10 +91,6 @@ describe("getAllTodos API", () => {
   });
 
   it("getAllTodos 함수가 실행될 경우 오늘 날짜에 해당되는 금주에 활성화된 투두 목록을 반환한다.", async () => {
-    (decodeJwtTokenPayload as jest.Mock).mockReturnValue({
-      sub: "mockuser",
-    });
-
     const db = (await connectDB).db("next-todo-chart-cluster");
     (db.collection("todos").aggregate as jest.Mock).mockReturnValue({
       toArray: jest.fn().mockResolvedValue(mockTodos),
@@ -184,10 +175,7 @@ describe("getAllTodos 에러 핸들링 테스트", () => {
   });
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {
-    (decodeJwtTokenPayload as jest.Mock).mockReturnValue({
-      sub: null,
-    });
-
+    ((await headers()).get as jest.Mock).mockResolvedValue(null);
     await getAllTodos(null);
 
     expect(redirect).toHaveBeenCalledTimes(1);

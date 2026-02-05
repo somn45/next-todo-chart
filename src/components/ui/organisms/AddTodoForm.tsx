@@ -5,8 +5,8 @@ import { useActionState } from "react";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
-export default function AddTodoForm({ userid }: { userid: string }) {
-  const addTodoWithUserId = addTodo.bind(null, userid);
+export default function AddTodoForm({ userId }: { userId: string }) {
+  const addTodoWithUserId = addTodo.bind(null, userId);
   const [state, formAction] = useActionState(addTodoWithUserId, {
     message: "",
   });

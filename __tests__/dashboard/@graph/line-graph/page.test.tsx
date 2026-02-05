@@ -3,16 +3,8 @@ import DashboardDailyActive from "@/app/(private)/dashboard/@graph/line-graph/pa
 import { render } from "@testing-library/react";
 
 jest.mock("next/headers", () => ({
-  cookies: jest.fn().mockResolvedValue({
-    get: jest.fn(() => ({
-      name: "",
-      value: "",
-    })),
-  }),
-}));
-jest.mock("@/utils/decodeJwtTokenPayload", () => ({
-  decodeJwtTokenPayload: jest.fn().mockReturnValue({
-    sub: "mockuser",
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
   }),
 }));
 jest.mock(

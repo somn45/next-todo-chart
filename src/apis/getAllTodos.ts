@@ -1,21 +1,17 @@
 import { connectDB } from "@/libs/database";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
-import getUserIdWithAccessToken from "@/utils/auth/getUserIdWithAccessToken";
+import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 import {
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import { redirect } from "next/navigation";
 
-interface AccessTokenPayload {
-  sub: string;
-}
-
 export const getAllTodos = async (
   id: string | undefined | null,
   searchRange: "week" | "month" | "year" = "week",
 ) => {
-  const userid = await getUserIdWithAccessToken();
+  const userid = await getUserIdByHeaders();
 
   if (!userid) {
     return redirect("/login");
