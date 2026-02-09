@@ -2,19 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { createFollowMouseFocus } from "@/utils/graph";
-import { caculateGraphLayout } from "@/utils/graph/caculateGraphLayout";
 import { ILineGraphData } from "@/types/schema";
-import useDrowLineGraph from "@/app/(private)/stats/_hooks/useDrowLineGraph";
-import {
-  displayFollowElement,
-  hiddenFollowElement,
-  setCoordFocusAndToolTip,
-} from "@/app/(private)/stats/_utils/lineGraphMouseEvent";
+import { Graph } from "@/utils/graph/graph";
+import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 
-const GRAPH_WIDTH = 700;
-const GRAPH_HEIGHT = 400;
-const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
+interface DataPoint {
+  date: Date;
+  count: number;
+}
 
 export default function DailyActiveTodoLineGraph({
   stats,
@@ -23,50 +18,65 @@ export default function DailyActiveTodoLineGraph({
   stats: ILineGraphData[];
   dateDomainBase?: "week" | "month" | "year";
 }) {
+  const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
-  const [svg, { x_scale, y_scale }, lineGraphWrapperRef] = useDrowLineGraph({
-    outerWidth: GRAPH_WIDTH,
-    outerHeight: GRAPH_HEIGHT,
-    data: stats,
-    dateDomainBase,
-  });
-
   useEffect(() => {
-    if (svg === null || x_scale === null || y_scale === null) return;
+    const GRAPH_WIDTH = 700;
+    const GRAPH_HEIGHT = 400;
+    const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
 
-    const groupedStats = d3.group(stats, d => d.state);
-    const { innerWidth, innerHeight } = caculateGraphLayout(
+    const graph = new Graph(
       GRAPH_WIDTH,
       GRAPH_HEIGHT,
       graphMargin,
+      "week",
+      ["총합", "할 일", "진행 중", "완료"],
+      ["#000000", "#3498DB", "#FFA500", "#2ECC71"],
     );
 
-    const focus = createFollowMouseFocus(svg, "circle", 4);
-    const tooltip = d3.select(toolTipRef.current) as d3.Selection<
-      HTMLDivElement,
-      unknown,
-      null,
-      undefined
-    >;
+    const graphContainer = lineGraphWrapperRef.current;
+    graph.createSvgContainer(lineGraphWrapperRef.current);
+    const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
+      graph.caculateGraphLayout();
 
-    svg
-      .append("rect")
-      .attr("fill", "none")
-      .style("pointer-events", "all")
-      .attr("width", innerWidth)
-      .attr("height", innerHeight)
-      .on("mouseover", () => displayFollowElement([focus, tooltip]))
-      .on("mousemove", (event: MouseEvent) =>
-        setCoordFocusAndToolTip(
-          groupedStats,
-          { x_scale, y_scale },
-          { focus, tooltip },
-          event,
-        ),
-      )
-      .on("mouseleave", () => hiddenFollowElement([focus, tooltip]));
-  }, [svg]);
+    const groupedStats = d3.group(stats, d => d.state);
+
+    graph.addTitle(titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
+
+    const legend = graph.createLegend(legendStartOffset);
+    if (!legend) return;
+
+    const legendMarkerSize = { width: 15, height: 2 };
+    const legendInitCoord = { x: 0, y: 0, textX: 22, textY: 6 };
+    graph.setLegendItems("rect", legend, legendMarkerSize, legendInitCoord);
+
+    const statsKeys = groupedStats.keys();
+    const count = statsKeys.toArray().length;
+    const tickCount = caculateTickCount(dateDomainBase, count, stats.length);
+
+    const x_scale = graph.createTimeScale({
+      rangeMax: innerWidth,
+      data: stats,
+    });
+    graph.setXAxis(x_scale, tickCount, innerHeight);
+
+    const y_scale = graph.createLinearScale(stats, innerHeight);
+    graph.setYAxis(y_scale);
+
+    const lineGenerator = d3
+      .line<DataPoint>()
+      .x(d => x_scale(d.date))
+      .y(d => y_scale(d.count));
+
+    const color = graph.createColorScale();
+
+    graph.drowGraph(groupedStats, color, lineGenerator);
+
+    return () => {
+      d3.select(graphContainer).selectAll("*").remove();
+    };
+  }, [dateDomainBase]);
 
   return (
     <>
