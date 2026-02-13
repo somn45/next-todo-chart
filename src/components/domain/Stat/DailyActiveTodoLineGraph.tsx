@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { ILineGraphData } from "@/types/schema";
-import { Graph } from "@/utils/graph/graph";
+import { Graph, LineGraph } from "@/utils/graph/graph";
 import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 
 interface DataPoint {
@@ -26,7 +26,7 @@ export default function DailyActiveTodoLineGraph({
     const GRAPH_HEIGHT = 400;
     const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
 
-    const graph = new Graph(
+    const lineGraph = new LineGraph(
       GRAPH_WIDTH,
       GRAPH_HEIGHT,
       graphMargin,
@@ -36,42 +36,42 @@ export default function DailyActiveTodoLineGraph({
     );
 
     const graphContainer = lineGraphWrapperRef.current;
-    graph.createSvgContainer(lineGraphWrapperRef.current);
+    lineGraph.createSvgContainer(lineGraphWrapperRef.current);
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
-      graph.caculateGraphLayout();
+      lineGraph.caculateGraphLayout();
 
     const groupedStats = d3.group(stats, d => d.state);
 
-    graph.addTitle(titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
+    lineGraph.addTitle(titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
 
-    const legend = graph.createLegend(legendStartOffset);
+    const legend = lineGraph.createLegend(legendStartOffset);
     if (!legend) return;
 
     const legendMarkerSize = { width: 15, height: 2 };
     const legendInitCoord = { x: 0, y: 0, textX: 22, textY: 6 };
-    graph.setLegendItems("rect", legend, legendMarkerSize, legendInitCoord);
+    lineGraph.setLegendItems("rect", legend, legendMarkerSize, legendInitCoord);
 
     const statsKeys = groupedStats.keys();
     const count = statsKeys.toArray().length;
     const tickCount = caculateTickCount(dateDomainBase, count, stats.length);
 
-    const x_scale = graph.createTimeScale({
+    const x_scale = lineGraph.createTimeScale({
       rangeMax: innerWidth,
       data: stats,
     });
-    graph.setXAxis(x_scale, tickCount, innerHeight);
+    lineGraph.setXAxis(x_scale, tickCount, innerHeight);
 
-    const y_scale = graph.createLinearScale(stats, innerHeight);
-    graph.setYAxis(y_scale);
+    const y_scale = lineGraph.createLinearScale(stats, innerHeight);
+    lineGraph.setYAxis(y_scale);
 
     const lineGenerator = d3
       .line<DataPoint>()
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
 
-    const color = graph.createColorScale();
+    const color = lineGraph.createColorScale();
 
-    graph.drowGraph(groupedStats, color, lineGenerator);
+    lineGraph.drowGraph(groupedStats, color, lineGenerator);
 
     return () => {
       d3.select(graphContainer).selectAll("*").remove();
