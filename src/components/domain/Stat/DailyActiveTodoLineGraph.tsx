@@ -62,7 +62,7 @@ export default function DailyActiveTodoLineGraph({
     lineGraph.setXAxis(x_scale, tickCount, innerHeight);
 
     const y_scale = lineGraph.createLinearScale(stats, innerHeight);
-    lineGraph.setYAxis(y_scale);
+    lineGraph.setYAxis({ type: "linearScale", linearScale: y_scale });
 
     const lineGenerator = d3
       .line<DataPoint>()
