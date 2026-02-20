@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { ILineGraphData } from "@/types/schema";
-import { Graph, LineGraph } from "@/utils/graph/graph";
 import { caculateTickCount } from "@/utils/graph/caculateTickCount";
+import { LineGraph } from "@/utils/graph/lineGraph";
 
 interface DataPoint {
   date: Date;
@@ -71,7 +71,7 @@ export default function DailyActiveTodoLineGraph({
 
     const color = lineGraph.createColorScale();
 
-    lineGraph.drowGraph(groupedStats, color, lineGenerator);
+    lineGraph.drowLineGraph(groupedStats, color, lineGenerator);
 
     return () => {
       d3.select(graphContainer).selectAll("*").remove();
