@@ -6,8 +6,8 @@ import {
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
-import { BandGraph } from "@/utils/graph/graph";
 import { useEffect, useRef } from "react";
+import { BandGraph } from "@/utils/graph/bandGraph";
 
 interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
@@ -74,11 +74,14 @@ export default function TodoTimeline({
     });
 
     const color_scale = bandGraph.createColorScale();
-    bandGraph.drowBandGraph(todos, {
-      x: x_scale,
-      y: y_scale,
-      color: color_scale,
-    });
+    bandGraph.drowBandGraph(
+      {
+        x: x_scale,
+        y: y_scale,
+        color: color_scale,
+      },
+      todos,
+    );
 
     return () => {
       d3.select(graphContainer).selectAll("*").remove();

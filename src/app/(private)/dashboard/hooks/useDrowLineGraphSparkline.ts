@@ -108,7 +108,7 @@ const useDrowLineGraphSparkline: useDrowLineGraphType = graphConfig => {
     return () => {
       d3.select(container).selectAll("*").remove();
     };
-  }, [graphConfig.dateDomainBase]);
+  }, []);
 
   return [svgContainer, graphScale, lineGraphSparklineRef];
 };
