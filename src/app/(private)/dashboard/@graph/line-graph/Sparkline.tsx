@@ -3,8 +3,8 @@
 import * as d3 from "d3";
 import { ILineGraphData } from "@/types/schema";
 import { useEffect, useRef } from "react";
-import { LineSparkline } from "@/utils/graph/lineGraph";
 import { caculateTickCount } from "@/utils/graph/caculateTickCount";
+import { LineSparkline } from "@/utils/graph/line/sparkline";
 
 interface LineGraphSparklineProps {
   stats: ILineGraphData[];
@@ -66,11 +66,11 @@ export default function LineGraphSparkline({
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
 
-    lineSparkline.drowLineGraph(groupedStats, color_scale, lineGenerator);
+    lineSparkline.setLineDataset(groupedStats, color_scale, lineGenerator);
     return () => {
       d3.select(container).selectAll("*").remove();
     };
-  }, [dateDomainBase]);
+  }, []);
 
   return <div ref={lineSparklineRef}></div>;
 }

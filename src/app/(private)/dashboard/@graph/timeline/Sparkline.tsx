@@ -2,13 +2,12 @@
 
 import * as d3 from "d3";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
-import useDrowTimelineSparkline from "../../hooks/useDrowTimelineSparkline";
 import { useEffect, useRef } from "react";
-import { BandSparkline } from "@/utils/graph/bandGraph";
 import {
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
+import { BandSparkline } from "@/utils/graph/band/sparkline";
 
 interface TimelineSparklineProps {
   todos: (LookupedTodo & WithStringifyId)[];
@@ -22,12 +21,6 @@ export default function TimeLineSparkline({
   todos,
   dateDomainBase = "week",
 }: TimelineSparklineProps) {
-  const [, , timelineSparklineRef] = useDrowTimelineSparkline({
-    outerWidth: GRAPH_WIDTH,
-    outerHeight: GRAPH_HEIGHT,
-    data: todos,
-    dateDomainBase,
-  });
   const bandSparklineRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -67,7 +60,7 @@ export default function TimeLineSparkline({
 
     const color_scale = bandSparkline.createColorScale();
 
-    bandSparkline.drowBandGraph(
+    bandSparkline.setBandDataset(
       { x: x_scale, y: y_scale, color: color_scale },
       todos,
     );
@@ -75,7 +68,7 @@ export default function TimeLineSparkline({
     return () => {
       d3.select(container).selectAll("*").remove();
     };
-  }, [dateDomainBase]);
+  }, []);
 
   return (
     <>

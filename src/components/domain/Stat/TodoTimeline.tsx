@@ -7,7 +7,7 @@ import {
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import { useEffect, useRef } from "react";
-import { BandGraph } from "@/utils/graph/bandGraph";
+import { BandGraph } from "@/utils/graph/band/originGraph";
 
 interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
@@ -74,7 +74,7 @@ export default function TodoTimeline({
     });
 
     const color_scale = bandGraph.createColorScale();
-    bandGraph.drowBandGraph(
+    bandGraph.setBandDataset(
       {
         x: x_scale,
         y: y_scale,
