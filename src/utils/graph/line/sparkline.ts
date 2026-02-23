@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import { ILineGraphData } from "@/types/schema";
 import { Graph } from "../graphCore/graphCore";
-import { GraphMainContent } from "./interface";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
+import { caculateTickCount } from "../caculateTickCount";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
@@ -23,8 +23,8 @@ type bandScaleType = {
   bandScale: d3.ScaleBand<string>;
 };
 
-export class LineSparkline extends Graph implements GraphMainContent {
-  setXAxis(
+export class LineSparkline extends Graph {
+  protected setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
@@ -48,7 +48,7 @@ export class LineSparkline extends Graph implements GraphMainContent {
     }
   }
 
-  setYAxis(scale: linearScaleType | bandScaleType): void {
+  protected setYAxis(scale: linearScaleType | bandScaleType): void {
     if (this.svg) {
       if ("linearScale" in scale) {
         this.svg
@@ -64,7 +64,7 @@ export class LineSparkline extends Graph implements GraphMainContent {
     }
   }
 
-  createTimeScale<T extends { date: Date }>({
+  private createTimeScale<T extends { date: Date }>({
     rangeMax,
     data,
   }: createTimeScaleParams<T>): d3.ScaleTime<number, number, never> {
@@ -74,7 +74,7 @@ export class LineSparkline extends Graph implements GraphMainContent {
       .range([0, rangeMax]);
   }
 
-  createLinearScale<T extends { count: number }>(
+  private createLinearScale<T extends { count: number }>(
     data: T[],
     rangeMax: number,
   ): d3.ScaleLinear<number, number, never> {
@@ -85,7 +85,7 @@ export class LineSparkline extends Graph implements GraphMainContent {
       .nice(1);
   }
 
-  setLineDataset(
+  private setLineDataset(
     groupedData: d3.InternMap<string, ILineGraphData[]>,
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
@@ -102,5 +102,40 @@ export class LineSparkline extends Graph implements GraphMainContent {
         .attr("stroke-width", 2.5)
         .attr("d", d => lineGenerator(d[1]));
     }
+  }
+
+  drowLineSparkline(graphContainer: HTMLDivElement, data: ILineGraphData[]) {
+    this.createSvgContainer(graphContainer);
+
+    const groupedStats = d3.group(data, d => d.state);
+
+    const statsKeys = groupedStats.keys();
+    const count = statsKeys.toArray().length;
+    const tickCount = caculateTickCount(
+      this.dateDomainBase,
+      count,
+      data.length,
+    );
+
+    const { innerWidth, innerHeight } = this.caculateGraphLayout();
+
+    const x_scale = this.createTimeScale({
+      rangeMax: innerWidth,
+      data,
+    });
+    this.setXAxis(x_scale, tickCount, innerHeight);
+
+    const y_scale = this.createLinearScale(data, innerHeight);
+    this.setYAxis({ type: "linearScale", linearScale: y_scale });
+
+    const color_scale = this.createColorScale();
+
+    const lineGenerator = d3
+      .line<DataPoint>()
+      .defined(d => d.count !== null)
+      .x(d => x_scale(d.date))
+      .y(d => y_scale(d.count));
+
+    this.setLineDataset(groupedStats, color_scale, lineGenerator);
   }
 }

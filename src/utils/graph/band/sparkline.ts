@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import { Graph } from "../graphCore/graphCore";
-import { BandGraphMainContent } from "./interface";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import {
   getEndOfPeriod,
@@ -13,8 +12,8 @@ interface createTimeScaleParams {
   timeScaleDomain: [Date, Date];
 }
 
-export class BandSparkline extends Graph implements BandGraphMainContent {
-  setXAxis(
+export class BandSparkline extends Graph {
+  protected setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
@@ -38,7 +37,7 @@ export class BandSparkline extends Graph implements BandGraphMainContent {
     }
   }
 
-  setYAxis(
+  protected setYAxis(
     scale:
       | {
           type: "linearScale";
@@ -61,14 +60,14 @@ export class BandSparkline extends Graph implements BandGraphMainContent {
     }
   }
 
-  createTimeScale({
+  private createTimeScale({
     rangeMax,
     timeScaleDomain,
   }: createTimeScaleParams): d3.ScaleTime<number, number, never> {
     return d3.scaleTime().domain(timeScaleDomain).range([0, rangeMax]);
   }
 
-  createBandScale<T extends { text: string }>(
+  private createBandScale<T extends { text: string }>(
     data: T[],
     rangeMax: number,
     padding: number,
@@ -80,7 +79,7 @@ export class BandSparkline extends Graph implements BandGraphMainContent {
       .padding(padding);
   }
 
-  setBandDataset(
+  private setBandDataset(
     scale: {
       x: d3.ScaleTime<number, number, never>;
       y: d3.ScaleBand<string>;
@@ -116,5 +115,34 @@ export class BandSparkline extends Graph implements BandGraphMainContent {
         )
         .attr("height", scale.y.bandwidth());
     }
+  }
+
+  drowBandSparkline(
+    graphContainer: HTMLDivElement,
+    data: (LookupedTodo & WithStringifyId)[],
+  ) {
+    const { innerWidth, innerHeight } = this.caculateGraphLayout();
+
+    this.createSvgContainer(graphContainer);
+
+    const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
+    const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
+
+    const x_scale = this.createTimeScale({
+      rangeMax: innerWidth,
+      timeScaleDomain: [startOfPeriod, endOfPeriod],
+    });
+    this.setXAxis(x_scale, 8, innerHeight);
+
+    const y_scale = this.createBandScale(
+      data.map(todo => ({ text: todo.content.textField })),
+      innerHeight,
+      0.2,
+    );
+    this.setYAxis({ type: "bandScale", bandScale: y_scale });
+
+    const color_scale = this.createColorScale();
+
+    this.setBandDataset({ x: x_scale, y: y_scale, color: color_scale }, data);
   }
 }

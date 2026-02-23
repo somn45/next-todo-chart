@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { Graph } from "../graphCore/graphCore";
-import { BandGraphMainContent, BandGraphSubContent } from "./interface";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import {
   getEndOfPeriod,
@@ -40,11 +39,8 @@ interface createTimeScaleParams {
   timeScaleDomain: [Date, Date];
 }
 
-export class BandGraph
-  extends Graph
-  implements BandGraphMainContent, BandGraphSubContent
-{
-  setXAxis(
+export class BandGraph extends Graph {
+  protected setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
@@ -68,7 +64,7 @@ export class BandGraph
     }
   }
 
-  setYAxis(
+  protected setYAxis(
     scale:
       | {
           type: "linearScale";
@@ -91,14 +87,14 @@ export class BandGraph
     }
   }
 
-  createTimeScale({
+  private createTimeScale({
     rangeMax,
     timeScaleDomain,
   }: createTimeScaleParams): d3.ScaleTime<number, number, never> {
     return d3.scaleTime().domain(timeScaleDomain).range([0, rangeMax]);
   }
 
-  createBandScale<T extends { text: string }>(
+  private createBandScale<T extends { text: string }>(
     data: T[],
     rangeMax: number,
     padding: number,
@@ -110,7 +106,7 @@ export class BandGraph
       .padding(padding);
   }
 
-  setBandDataset(
+  private setBandDataset(
     scale: {
       x: d3.ScaleTime<number, number, never>;
       y: d3.ScaleBand<string>;
@@ -148,7 +144,7 @@ export class BandGraph
     }
   }
 
-  addTitle(y: number, width: number, title: string): void {
+  private addTitle(y: number, width: number, title: string): void {
     if (this.svg) {
       this.svg
         .append("text")
@@ -162,7 +158,7 @@ export class BandGraph
     }
   }
 
-  createLegend(
+  private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
     return this.svg!.append("g")
@@ -206,7 +202,7 @@ export class BandGraph
       .text(text);
   }
 
-  setLegendItems(
+  private setLegendItems(
     markerType: D3MarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
     markerLayout: Partial<Omit<legendAttr, "margin">>,
@@ -235,5 +231,57 @@ export class BandGraph
 
       this.setLegendText(legend, textCoord, text);
     });
+  }
+
+  drowBandGraph(
+    graphContainer: HTMLDivElement,
+    data: (LookupedTodo & WithStringifyId)[],
+  ) {
+    this.createSvgContainer(graphContainer);
+
+    const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
+      this.caculateGraphLayout();
+
+    this.addTitle(titleStartOffset, -50, "금주 투두 진행 타임라인");
+
+    const legendInitCoord = {
+      x: 0,
+      y: 0,
+      textX: 12,
+      textY: 4,
+    };
+
+    const legend = this.createLegend(legendStartOffset);
+    if (!legend) return;
+    this.setLegendItems("circle", legend, { radius: 5 }, legendInitCoord);
+
+    const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
+    const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
+
+    const x_scale = this.createTimeScale({
+      rangeMax: innerWidth,
+      timeScaleDomain: [startOfPeriod, endOfPeriod],
+    });
+    this.setXAxis(x_scale, 8, innerHeight);
+
+    const y_scale = this.createBandScale(
+      data.map(todo => ({ text: todo.content.textField })),
+      innerHeight,
+      0.2,
+    );
+    this.setYAxis({
+      type: "bandScale",
+      bandScale: y_scale,
+    });
+
+    const color_scale = this.createColorScale();
+    this.setBandDataset(
+      {
+        x: x_scale,
+        y: y_scale,
+        color: color_scale,
+      },
+      data,
+    );
   }
 }

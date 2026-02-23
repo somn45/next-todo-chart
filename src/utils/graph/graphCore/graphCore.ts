@@ -37,7 +37,9 @@ export abstract class Graph {
   }
 
   // 그래프 요소들을 담을 svg 컨테이너 생성
-  createSvgContainer = (graphContainerElement: HTMLDivElement | null) => {
+  protected createSvgContainer = (
+    graphContainerElement: HTMLDivElement | null,
+  ) => {
     const svg = d3
       .select(graphContainerElement)
       .append("svg")
@@ -54,7 +56,7 @@ export abstract class Graph {
   };
 
   // 그래프 컨테이너 내의 그룹 레이아웃과 title, legend 좌표 계산
-  caculateGraphLayout = () => {
+  protected caculateGraphLayout = () => {
     // graph inner
     const graphInnerWidth =
       this.width - this.graphMargin.left - this.graphMargin.right;
@@ -76,14 +78,14 @@ export abstract class Graph {
   };
 
   // 특정 상태와 매칭되는 그래프 마커(라인, 밴드 등)의 색상 스케일 반환
-  createColorScale = () =>
+  protected createColorScale = () =>
     d3.scaleOrdinal<string>().domain(this.texts).range(this.colors);
 
-  abstract setXAxis(
+  protected abstract setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
   ): void;
 
-  abstract setYAxis(scale: linearScaleType | bandScaleType): void;
+  protected abstract setYAxis(scale: linearScaleType | bandScaleType): void;
 }

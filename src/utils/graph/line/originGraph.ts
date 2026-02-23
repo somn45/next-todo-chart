@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import { Graph } from "../graphCore/graphCore";
-import { GraphMainContent, GraphSubContent } from "./interface";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { ILineGraphData } from "@/types/schema";
+import { caculateTickCount } from "../caculateTickCount";
 
 type D3MarkerType = "circle" | "rect";
 
@@ -49,11 +49,8 @@ type bandScaleType = {
   bandScale: d3.ScaleBand<string>;
 };
 
-export class LineGraph
-  extends Graph
-  implements GraphMainContent, GraphSubContent
-{
-  setXAxis(
+export class LineGraph extends Graph {
+  protected setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
@@ -77,7 +74,7 @@ export class LineGraph
     }
   }
 
-  setYAxis(scale: linearScaleType | bandScaleType): void {
+  protected setYAxis(scale: linearScaleType | bandScaleType): void {
     if (this.svg) {
       if ("linearScale" in scale) {
         this.svg
@@ -93,7 +90,7 @@ export class LineGraph
     }
   }
 
-  createTimeScale<T extends { date: Date }>({
+  private createTimeScale<T extends { date: Date }>({
     rangeMax,
     data,
   }: createTimeScaleParams<T>): d3.ScaleTime<number, number, never> {
@@ -103,7 +100,7 @@ export class LineGraph
       .range([0, rangeMax]);
   }
 
-  createLinearScale<T extends { count: number }>(
+  private createLinearScale<T extends { count: number }>(
     data: T[],
     rangeMax: number,
   ): d3.ScaleLinear<number, number, never> {
@@ -114,7 +111,7 @@ export class LineGraph
       .nice(1);
   }
 
-  setLineDataset(
+  private setLineDataset(
     groupedData: d3.InternMap<string, ILineGraphData[]>,
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
@@ -133,7 +130,7 @@ export class LineGraph
     }
   }
 
-  addTitle(y: number, width: number, title: string): void {
+  private addTitle(y: number, width: number, title: string): void {
     if (this.svg) {
       this.svg
         .append("text")
@@ -147,7 +144,7 @@ export class LineGraph
     }
   }
 
-  createLegend(
+  private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
     return this.svg!.append("g")
@@ -193,7 +190,7 @@ export class LineGraph
       .text(text);
   }
 
-  setLegendItems(
+  private setLegendItems(
     markerType: D3MarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
     markerLayout: Partial<Omit<legendAttr, "margin">>,
@@ -229,5 +226,48 @@ export class LineGraph
 
       this.setLegendText(legend, textCoord, text);
     });
+  }
+
+  drowLineGraph(graphContainer: HTMLDivElement, data: ILineGraphData[]) {
+    this.createSvgContainer(graphContainer);
+    const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
+      this.caculateGraphLayout();
+
+    const groupedStats = d3.group(data, d => d.state);
+
+    this.addTitle(titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
+
+    const legend = this.createLegend(legendStartOffset);
+    if (!legend) return;
+
+    const legendMarkerSize = { width: 15, height: 2 };
+    const legendInitCoord = { x: 0, y: 0, textX: 22, textY: 6 };
+    this.setLegendItems("rect", legend, legendMarkerSize, legendInitCoord);
+
+    const statsKeys = groupedStats.keys();
+    const count = statsKeys.toArray().length;
+    const tickCount = caculateTickCount(
+      this.dateDomainBase,
+      count,
+      data.length,
+    );
+
+    const x_scale = this.createTimeScale({
+      rangeMax: innerWidth,
+      data,
+    });
+    this.setXAxis(x_scale, tickCount, innerHeight);
+
+    const y_scale = this.createLinearScale(data, innerHeight);
+    this.setYAxis({ type: "linearScale", linearScale: y_scale });
+
+    const lineGenerator = d3
+      .line<DataPoint>()
+      .x(d => x_scale(d.date))
+      .y(d => y_scale(d.count));
+
+    const color = this.createColorScale();
+
+    this.setLineDataset(groupedStats, color, lineGenerator);
   }
 }

@@ -3,10 +3,6 @@
 import * as d3 from "d3";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import { useEffect, useRef } from "react";
-import {
-  getEndOfPeriod,
-  getStartOfPeriod,
-} from "@/utils/date/getDateInCurrentDate";
 import { BandSparkline } from "@/utils/graph/band/sparkline";
 
 interface TimelineSparklineProps {
@@ -38,32 +34,7 @@ export default function TimeLineSparkline({
       ["#3498DB", "#FFA500", "#2ECC71"],
     );
 
-    const { innerWidth, innerHeight } = bandSparkline.caculateGraphLayout();
-
-    bandSparkline.createSvgContainer(container);
-
-    const startOfPeriod = getStartOfPeriod(dateDomainBase || "week");
-    const endOfPeriod = getEndOfPeriod(dateDomainBase || "week");
-
-    const x_scale = bandSparkline.createTimeScale({
-      rangeMax: innerWidth,
-      timeScaleDomain: [startOfPeriod, endOfPeriod],
-    });
-    bandSparkline.setXAxis(x_scale, 8, innerHeight);
-
-    const y_scale = bandSparkline.createBandScale(
-      todos.map(todo => ({ text: todo.content.textField })),
-      innerHeight,
-      0.2,
-    );
-    bandSparkline.setYAxis({ type: "bandScale", bandScale: y_scale });
-
-    const color_scale = bandSparkline.createColorScale();
-
-    bandSparkline.setBandDataset(
-      { x: x_scale, y: y_scale, color: color_scale },
-      todos,
-    );
+    bandSparkline.drowBandSparkline(container, todos);
 
     return () => {
       d3.select(container).selectAll("*").remove();

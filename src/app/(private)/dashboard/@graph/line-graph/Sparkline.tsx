@@ -39,34 +39,8 @@ export default function LineGraphSparkline({
       ["#000000", "#3498DB", "#FFA500", "#2ECC71"],
     );
 
-    lineSparkline.createSvgContainer(container);
+    lineSparkline.drowLineSparkline(container, stats);
 
-    const groupedStats = d3.group(stats, d => d.state);
-
-    const statsKeys = groupedStats.keys();
-    const count = statsKeys.toArray().length;
-    const tickCount = caculateTickCount(dateDomainBase, count, stats.length);
-
-    const { innerWidth, innerHeight } = lineSparkline.caculateGraphLayout();
-
-    const x_scale = lineSparkline.createTimeScale({
-      rangeMax: innerWidth,
-      data: stats,
-    });
-    lineSparkline.setXAxis(x_scale, tickCount, innerHeight);
-
-    const y_scale = lineSparkline.createLinearScale(stats, innerHeight);
-    lineSparkline.setYAxis({ type: "linearScale", linearScale: y_scale });
-
-    const color_scale = lineSparkline.createColorScale();
-
-    const lineGenerator = d3
-      .line<DataPoint>()
-      .defined(d => d.count !== null)
-      .x(d => x_scale(d.date))
-      .y(d => y_scale(d.count));
-
-    lineSparkline.setLineDataset(groupedStats, color_scale, lineGenerator);
     return () => {
       d3.select(container).selectAll("*").remove();
     };
