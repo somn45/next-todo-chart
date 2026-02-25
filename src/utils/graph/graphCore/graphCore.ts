@@ -36,6 +36,10 @@ export abstract class Graph {
     this.colors = colors;
   }
 
+  get getSvg() {
+    return this.svg;
+  }
+
   // 그래프 요소들을 담을 svg 컨테이너 생성
   protected createSvgContainer = (
     graphContainerElement: HTMLDivElement | null,

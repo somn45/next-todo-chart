@@ -16,6 +16,7 @@ interface Elements {
   tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>;
 }
 
+// 마우스가 그래프 내 영역에 있을 때 포커스와 툴팁 표시
 export const displayFollowElement = (followElements: FollowElements[]) => {
   followElements.forEach(element => element.style("opacity", 1));
 };
@@ -48,6 +49,7 @@ export const setCoordFocusAndToolTip = (
     .style("top", `${target.y_pixel - 15}px`);
 };
 
+// 마우스가 그래프 외의 영역에 있을 때 포커스와 툴팁 숨김
 export const hiddenFollowElement = (followElements: FollowElements[]) => {
   followElements.forEach(element => element.style("opacity", 0));
 };

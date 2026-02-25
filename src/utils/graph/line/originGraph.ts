@@ -228,7 +228,15 @@ export class LineGraph extends Graph {
     });
   }
 
-  drowLineGraph(graphContainer: HTMLDivElement, data: ILineGraphData[]) {
+  drowLineGraph(
+    graphContainer: HTMLDivElement,
+    data: ILineGraphData[],
+  ):
+    | {
+        x: d3.ScaleTime<number, number, never>;
+        y: d3.ScaleLinear<number, number, never>;
+      }
+    | undefined {
     this.createSvgContainer(graphContainer);
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
       this.caculateGraphLayout();
@@ -269,5 +277,6 @@ export class LineGraph extends Graph {
     const color = this.createColorScale();
 
     this.setLineDataset(groupedStats, color, lineGenerator);
+    return { x: x_scale, y: y_scale };
   }
 }

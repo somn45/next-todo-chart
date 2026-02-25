@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { ILineGraphData } from "@/types/schema";
 import { LineGraph } from "@/utils/graph/line/originGraph";
+import { LineGraphMouseEvent } from "@/utils/graph/line/event";
 
 export default function DailyActiveTodoLineGraph({
   stats,
@@ -16,6 +17,7 @@ export default function DailyActiveTodoLineGraph({
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    console.log(stats);
     const GRAPH_WIDTH = 700;
     const GRAPH_HEIGHT = 400;
     const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
@@ -31,7 +33,20 @@ export default function DailyActiveTodoLineGraph({
 
     const graphContainer = lineGraphWrapperRef.current;
     if (!graphContainer) return;
-    lineGraph.drowLineGraph(graphContainer, stats);
+    const scale = lineGraph.drowLineGraph(graphContainer, stats);
+    if (!scale) return;
+    const svg = lineGraph.getSvg;
+    if (!svg) return;
+    if (!toolTipRef.current) return;
+
+    const lineGraphMouseEvent = new LineGraphMouseEvent(
+      { width: GRAPH_WIDTH, height: GRAPH_HEIGHT, margin: graphMargin },
+      svg,
+      { x: scale.x, y: scale.y },
+      stats,
+      toolTipRef.current,
+    );
+    lineGraphMouseEvent.handleGraphMouseEvent();
 
     return () => {
       d3.select(graphContainer).selectAll("*").remove();
