@@ -19,6 +19,12 @@ type bandScaleType = {
 };
 
 export abstract class Graph {
+  protected svg:
+    | d3.Selection<SVGSVGElement, unknown, null, undefined>
+    | undefined = undefined;
+  protected graphGroup:
+    | d3.Selection<SVGGElement, unknown, null, undefined>
+    | undefined = undefined;
   constructor(
     protected width: number,
     protected height: number,
@@ -26,7 +32,6 @@ export abstract class Graph {
     protected dateDomainBase: dateDomainBaseType,
     protected texts: string[],
     protected colors: string[],
-    protected svg?: d3.Selection<SVGGElement, unknown, null, undefined>,
   ) {
     this.width = width;
     this.height = height;
@@ -36,8 +41,8 @@ export abstract class Graph {
     this.colors = colors;
   }
 
-  get getSvg() {
-    return this.svg;
+  get getGraphGroup() {
+    return this.graphGroup;
   }
 
   // 그래프 요소들을 담을 svg 컨테이너 생성
@@ -49,14 +54,19 @@ export abstract class Graph {
       .append("svg")
       .attr("data-testid", "svg container")
       .attr("width", this.width)
-      .attr("height", this.height)
+      .attr("height", this.height);
+
+    const groupGroup = svg
       .append("g")
       .attr("data-testid", "graph area")
+      .attr("width", this.width)
+      .attr("height", this.height)
       .attr(
         "transform",
         `translate(${this.graphMargin.left}, ${this.graphMargin.top})`,
       );
     this.svg = svg;
+    this.graphGroup = groupGroup;
   };
 
   // 그래프 컨테이너 내의 그룹 레이아웃과 title, legend 좌표 계산
@@ -68,10 +78,11 @@ export abstract class Graph {
       this.height - this.graphMargin.top - this.graphMargin.bottom;
 
     // title 시작 위치
-    const titleStartOffset = this.width - this.graphMargin.left;
+    const titleStartOffset =
+      this.width - this.graphMargin.left + this.graphMargin.right;
 
     // legend 시작 위치
-    const legendStartOffset = graphInnerWidth + this.graphMargin.right / 4;
+    const legendStartOffset = this.width - 60;
 
     return {
       innerWidth: graphInnerWidth,

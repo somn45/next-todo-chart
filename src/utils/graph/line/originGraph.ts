@@ -55,8 +55,8 @@ export class LineGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.svg) {
-      this.svg
+    if (this.graphGroup) {
+      this.graphGroup
         .append("g")
         .attr("class", "xAxis")
         .attr("data-testid", "x axis")
@@ -75,14 +75,14 @@ export class LineGraph extends Graph {
   }
 
   protected setYAxis(scale: linearScaleType | bandScaleType): void {
-    if (this.svg) {
+    if (this.graphGroup) {
       if ("linearScale" in scale) {
-        this.svg
+        this.graphGroup
           .append("g")
           .attr("data-testid", "y axis")
           .call(d3.axisLeft(scale.linearScale));
       } else {
-        this.svg
+        this.graphGroup
           .append("g")
           .attr("data-testid", "y axis")
           .call(d3.axisLeft(scale.bandScale));
@@ -116,8 +116,8 @@ export class LineGraph extends Graph {
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void {
-    if (this.svg) {
-      this.svg
+    if (this.graphGroup) {
+      this.graphGroup
         .selectAll(".line")
         .data(groupedData.entries())
         .enter()
@@ -130,13 +130,13 @@ export class LineGraph extends Graph {
     }
   }
 
-  private addTitle(y: number, width: number, title: string): void {
+  private addTitle(x: number, title: string): void {
     if (this.svg) {
       this.svg
         .append("text")
         .attr("aria-label", "graph title")
-        .attr("x", this.width / 2)
-        .attr("y", y)
+        .attr("x", x / 2)
+        .attr("y", 30)
         .attr("text-anchor", "middle")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
@@ -209,11 +209,11 @@ export class LineGraph extends Graph {
 
       const coord = {
         x,
-        y: y + 25 * i,
+        y: y + 25 * (i + 1),
       };
       const textCoord = {
         x: textX,
-        y: textY + 25 * i,
+        y: textY + 25 * (i + 1),
       };
 
       this.setLegendRectMarker(
@@ -243,7 +243,7 @@ export class LineGraph extends Graph {
 
     const groupedStats = d3.group(data, d => d.state);
 
-    this.addTitle(titleStartOffset, -50, "최근 1주간 등록된 투두 합계");
+    this.addTitle(titleStartOffset, "최근 1주간 등록된 투두 합계");
 
     const legend = this.createLegend(legendStartOffset);
     if (!legend) return;

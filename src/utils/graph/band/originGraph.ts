@@ -45,8 +45,8 @@ export class BandGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.svg) {
-      this.svg
+    if (this.graphGroup) {
+      this.graphGroup
         .append("g")
         .attr("class", "xAxis")
         .attr("data-testid", "x axis")
@@ -72,14 +72,14 @@ export class BandGraph extends Graph {
         }
       | { type: "bandScale"; bandScale: d3.ScaleBand<string> },
   ): void {
-    if (this.svg) {
+    if (this.graphGroup) {
       if ("linearScale" in scale) {
-        this.svg
+        this.graphGroup
           .append("g")
           .attr("data-testid", "y axis")
           .call(d3.axisLeft(scale.linearScale));
       } else {
-        this.svg
+        this.graphGroup
           .append("g")
           .attr("data-testid", "y axis")
           .call(d3.axisLeft(scale.bandScale));
@@ -114,11 +114,11 @@ export class BandGraph extends Graph {
     },
     data: (LookupedTodo & WithStringifyId)[],
   ) {
-    if (this.svg) {
-      const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
-      const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
+    const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
+    const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
 
-      this.svg
+    if (this.graphGroup) {
+      this.graphGroup
         .selectAll("rect")
         .data(data)
         .join("rect")
@@ -144,13 +144,13 @@ export class BandGraph extends Graph {
     }
   }
 
-  private addTitle(y: number, width: number, title: string): void {
+  private addTitle(x: number, title: string): void {
     if (this.svg) {
       this.svg
         .append("text")
         .attr("aria-label", "graph title")
-        .attr("x", this.width / 2)
-        .attr("y", y)
+        .attr("x", x / 2)
+        .attr("y", 30)
         .attr("text-anchor", "middle")
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
@@ -220,11 +220,11 @@ export class BandGraph extends Graph {
 
       const coord = {
         x,
-        y: y + 25 * i,
+        y: y + 25 * (i + 1),
       };
       const textCoord = {
         x: textX,
-        y: textY + 25 * i,
+        y: textY + 25 * (i + 1),
       };
 
       this.setLegendCircleMarker(markerType, legend, radius, coord, color);
@@ -242,7 +242,7 @@ export class BandGraph extends Graph {
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
       this.caculateGraphLayout();
 
-    this.addTitle(titleStartOffset, -50, "금주 투두 진행 타임라인");
+    this.addTitle(titleStartOffset, "금주 투두 진행 타임라인");
 
     const legendInitCoord = {
       x: 0,
