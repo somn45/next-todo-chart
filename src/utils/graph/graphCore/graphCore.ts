@@ -19,10 +19,10 @@ type bandScaleType = {
 };
 
 export abstract class Graph {
-  protected svg:
+  protected _svg:
     | d3.Selection<SVGSVGElement, unknown, null, undefined>
     | undefined = undefined;
-  protected graphGroup:
+  protected _graphGroup:
     | d3.Selection<SVGGElement, unknown, null, undefined>
     | undefined = undefined;
   constructor(
@@ -41,8 +41,24 @@ export abstract class Graph {
     this.colors = colors;
   }
 
-  get getGraphGroup() {
-    return this.graphGroup;
+  set svg(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) {
+    this._svg = svg;
+  }
+
+  set graphGroup(
+    graphGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
+  ) {
+    this._graphGroup = graphGroup;
+  }
+
+  get svg() {
+    if (!this._svg) throw new Error("생성된 svg가 존재하지 않습니다.");
+    return this._svg;
+  }
+
+  get graphGroup() {
+    if (!this._graphGroup) throw new Error("생성된 g가 존재하지 않습니다.");
+    return this._graphGroup;
   }
 
   // 그래프 요소들을 담을 svg 컨테이너 생성

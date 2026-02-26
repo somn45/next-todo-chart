@@ -55,38 +55,34 @@ export class LineGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.graphGroup) {
-      this.graphGroup
-        .append("g")
-        .attr("class", "xAxis")
-        .attr("data-testid", "x axis")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .call(
-          d3
-            .axisBottom(scale)
-            .ticks(tickCount)
-            .tickFormat(d =>
-              this.dateDomainBase === "year"
-                ? (new Date(d.toString()).getMonth() + 1).toString()
-                : formatByISO8601(d),
-            ),
-        );
-    }
+    this.graphGroup
+      .append("g")
+      .attr("class", "xAxis")
+      .attr("data-testid", "x axis")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .call(
+        d3
+          .axisBottom(scale)
+          .ticks(tickCount)
+          .tickFormat(d =>
+            this.dateDomainBase === "year"
+              ? (new Date(d.toString()).getMonth() + 1).toString()
+              : formatByISO8601(d),
+          ),
+      );
   }
 
   protected setYAxis(scale: linearScaleType | bandScaleType): void {
-    if (this.graphGroup) {
-      if ("linearScale" in scale) {
-        this.graphGroup
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.linearScale));
-      } else {
-        this.graphGroup
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.bandScale));
-      }
+    if ("linearScale" in scale) {
+      this.graphGroup
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.linearScale));
+    } else {
+      this.graphGroup
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.bandScale));
     }
   }
 
@@ -116,38 +112,35 @@ export class LineGraph extends Graph {
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void {
-    if (this.graphGroup) {
-      this.graphGroup
-        .selectAll(".line")
-        .data(groupedData.entries())
-        .enter()
-        .append("path")
-        .attr("data-testid", "line")
-        .attr("fill", "none")
-        .attr("stroke", d => color(d[0]))
-        .attr("stroke-width", 2.5)
-        .attr("d", d => lineGenerator(d[1]));
-    }
+    this.graphGroup
+      .selectAll(".line")
+      .data(groupedData.entries())
+      .enter()
+      .append("path")
+      .attr("data-testid", "line")
+      .attr("fill", "none")
+      .attr("stroke", d => color(d[0]))
+      .attr("stroke-width", 2.5)
+      .attr("d", d => lineGenerator(d[1]));
   }
 
   private addTitle(x: number, title: string): void {
-    if (this.svg) {
-      this.svg
-        .append("text")
-        .attr("aria-label", "graph title")
-        .attr("x", x / 2)
-        .attr("y", 30)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
-        .text(title);
-    }
+    this.svg
+      .append("text")
+      .attr("aria-label", "graph title")
+      .attr("x", x / 2)
+      .attr("y", 30)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold")
+      .text(title);
   }
 
   private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
-    return this.svg!.append("g")
+    return this.svg
+      .append("g")
       .attr("data-testid", "legend list")
       .attr("class", "legend")
       .attr("transform", `translate(${legendStartOffset}, 0)`);

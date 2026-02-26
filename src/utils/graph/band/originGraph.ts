@@ -45,23 +45,21 @@ export class BandGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.graphGroup) {
-      this.graphGroup
-        .append("g")
-        .attr("class", "xAxis")
-        .attr("data-testid", "x axis")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .call(
-          d3
-            .axisBottom(scale)
-            .ticks(tickCount)
-            .tickFormat(d =>
-              this.dateDomainBase === "year"
-                ? (new Date(d.toString()).getMonth() + 1).toString()
-                : formatByISO8601(d),
-            ),
-        );
-    }
+    this.graphGroup
+      .append("g")
+      .attr("class", "xAxis")
+      .attr("data-testid", "x axis")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .call(
+        d3
+          .axisBottom(scale)
+          .ticks(tickCount)
+          .tickFormat(d =>
+            this.dateDomainBase === "year"
+              ? (new Date(d.toString()).getMonth() + 1).toString()
+              : formatByISO8601(d),
+          ),
+      );
   }
 
   protected setYAxis(
@@ -72,18 +70,16 @@ export class BandGraph extends Graph {
         }
       | { type: "bandScale"; bandScale: d3.ScaleBand<string> },
   ): void {
-    if (this.graphGroup) {
-      if ("linearScale" in scale) {
-        this.graphGroup
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.linearScale));
-      } else {
-        this.graphGroup
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.bandScale));
-      }
+    if ("linearScale" in scale) {
+      this.graphGroup
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.linearScale));
+    } else {
+      this.graphGroup
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.bandScale));
     }
   }
 
@@ -117,45 +113,39 @@ export class BandGraph extends Graph {
     const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
     const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
 
-    if (this.graphGroup) {
-      this.graphGroup
-        .selectAll("rect")
-        .data(data)
-        .join("rect")
-        .attr("data-testid", "band")
-        .attr("fill", d => scale.color(d.content.state))
-        .attr("x", d => {
-          if (
-            startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()
-          ) {
-            return scale.x(startOfPeriod);
-          }
-          return scale.x(new Date(d.content.createdAt));
-        })
-        .attr("y", d => scale.y(d.content.textField)!)
-        .attr("width", d =>
-          caculateBandLength(
-            d.content,
-            { x_scale: scale.x },
-            { domainStart: startOfPeriod, domainEnd: endOfPeriod },
-          ),
-        )
-        .attr("height", scale.y.bandwidth());
-    }
+    this.graphGroup
+      .selectAll("rect")
+      .data(data)
+      .join("rect")
+      .attr("data-testid", "band")
+      .attr("fill", d => scale.color(d.content.state))
+      .attr("x", d => {
+        if (startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()) {
+          return scale.x(startOfPeriod);
+        }
+        return scale.x(new Date(d.content.createdAt));
+      })
+      .attr("y", d => scale.y(d.content.textField)!)
+      .attr("width", d =>
+        caculateBandLength(
+          d.content,
+          { x_scale: scale.x },
+          { domainStart: startOfPeriod, domainEnd: endOfPeriod },
+        ),
+      )
+      .attr("height", scale.y.bandwidth());
   }
 
   private addTitle(x: number, title: string): void {
-    if (this.svg) {
-      this.svg
-        .append("text")
-        .attr("aria-label", "graph title")
-        .attr("x", x / 2)
-        .attr("y", 30)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
-        .text(title);
-    }
+    this.svg
+      .append("text")
+      .attr("aria-label", "graph title")
+      .attr("x", x / 2)
+      .attr("y", 30)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold")
+      .text(title);
   }
 
   private createLegend(

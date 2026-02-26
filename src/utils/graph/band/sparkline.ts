@@ -18,23 +18,21 @@ export class BandSparkline extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.svg) {
-      this.svg
-        .append("g")
-        .attr("class", "xAxis")
-        .attr("data-testid", "x axis")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .call(
-          d3
-            .axisBottom(scale)
-            .ticks(tickCount)
-            .tickFormat(d =>
-              this.dateDomainBase === "year"
-                ? (new Date(d.toString()).getMonth() + 1).toString()
-                : new Date(d.toString()).getDate().toString(),
-            ),
-        );
-    }
+    this.svg
+      .append("g")
+      .attr("class", "xAxis")
+      .attr("data-testid", "x axis")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .call(
+        d3
+          .axisBottom(scale)
+          .ticks(tickCount)
+          .tickFormat(d =>
+            this.dateDomainBase === "year"
+              ? (new Date(d.toString()).getMonth() + 1).toString()
+              : new Date(d.toString()).getDate().toString(),
+          ),
+      );
   }
 
   protected setYAxis(
@@ -45,18 +43,16 @@ export class BandSparkline extends Graph {
         }
       | { type: "bandScale"; bandScale: d3.ScaleBand<string> },
   ): void {
-    if (this.svg) {
-      if ("linearScale" in scale) {
-        this.svg
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.linearScale));
-      } else {
-        this.svg
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.bandScale));
-      }
+    if ("linearScale" in scale) {
+      this.svg
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.linearScale));
+    } else {
+      this.svg
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.bandScale));
     }
   }
 
@@ -87,34 +83,30 @@ export class BandSparkline extends Graph {
     },
     data: (LookupedTodo & WithStringifyId)[],
   ): void {
-    if (this.svg) {
-      const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
-      const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
+    const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
+    const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
 
-      this.svg
-        .selectAll("rect")
-        .data(data)
-        .join("rect")
-        .attr("data-testid", "band")
-        .attr("fill", d => scale.color(d.content.state))
-        .attr("x", d => {
-          if (
-            startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()
-          ) {
-            return scale.x(startOfPeriod);
-          }
-          return scale.x(new Date(d.content.createdAt));
-        })
-        .attr("y", d => scale.y(d.content.textField)!)
-        .attr("width", d =>
-          caculateBandLength(
-            d.content,
-            { x_scale: scale.x },
-            { domainStart: startOfPeriod, domainEnd: endOfPeriod },
-          ),
-        )
-        .attr("height", scale.y.bandwidth());
-    }
+    this.svg
+      .selectAll("rect")
+      .data(data)
+      .join("rect")
+      .attr("data-testid", "band")
+      .attr("fill", d => scale.color(d.content.state))
+      .attr("x", d => {
+        if (startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()) {
+          return scale.x(startOfPeriod);
+        }
+        return scale.x(new Date(d.content.createdAt));
+      })
+      .attr("y", d => scale.y(d.content.textField)!)
+      .attr("width", d =>
+        caculateBandLength(
+          d.content,
+          { x_scale: scale.x },
+          { domainStart: startOfPeriod, domainEnd: endOfPeriod },
+        ),
+      )
+      .attr("height", scale.y.bandwidth());
   }
 
   drowBandSparkline(

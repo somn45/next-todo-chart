@@ -34,8 +34,7 @@ export default function DailyActiveTodoLineGraph({
     if (!graphContainer) return;
     const scale = lineGraph.drowLineGraph(graphContainer, stats);
     if (!scale) return;
-    const graphGroup = lineGraph.getGraphGroup;
-    if (!graphGroup) return;
+    const graphGroup = lineGraph.graphGroup;
     if (!toolTipRef.current) return;
 
     const lineGraphMouseEvent = new LineGraphMouseEvent(

@@ -29,38 +29,34 @@ export class LineSparkline extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.svg) {
-      this.svg
-        .append("g")
-        .attr("class", "xAxis")
-        .attr("data-testid", "x axis")
-        .attr("transform", `translate(0, ${innerHeight})`)
-        .call(
-          d3
-            .axisBottom(scale)
-            .ticks(tickCount)
-            .tickFormat(d =>
-              this.dateDomainBase === "year"
-                ? (new Date(d.toString()).getMonth() + 1).toString()
-                : formatByISO8601(d),
-            ),
-        );
-    }
+    this.svg
+      .append("g")
+      .attr("class", "xAxis")
+      .attr("data-testid", "x axis")
+      .attr("transform", `translate(0, ${innerHeight})`)
+      .call(
+        d3
+          .axisBottom(scale)
+          .ticks(tickCount)
+          .tickFormat(d =>
+            this.dateDomainBase === "year"
+              ? (new Date(d.toString()).getMonth() + 1).toString()
+              : formatByISO8601(d),
+          ),
+      );
   }
 
   protected setYAxis(scale: linearScaleType | bandScaleType): void {
-    if (this.svg) {
-      if ("linearScale" in scale) {
-        this.svg
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.linearScale));
-      } else {
-        this.svg
-          .append("g")
-          .attr("data-testid", "y axis")
-          .call(d3.axisLeft(scale.bandScale));
-      }
+    if ("linearScale" in scale) {
+      this.svg
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.linearScale));
+    } else {
+      this.svg
+        .append("g")
+        .attr("data-testid", "y axis")
+        .call(d3.axisLeft(scale.bandScale));
     }
   }
 
@@ -90,18 +86,16 @@ export class LineSparkline extends Graph {
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void {
-    if (this.svg) {
-      this.svg
-        .selectAll(".line")
-        .data(groupedData.entries())
-        .enter()
-        .append("path")
-        .attr("data-testid", "line")
-        .attr("fill", "none")
-        .attr("stroke", d => color(d[0]))
-        .attr("stroke-width", 2.5)
-        .attr("d", d => lineGenerator(d[1]));
-    }
+    this.svg
+      .selectAll(".line")
+      .data(groupedData.entries())
+      .enter()
+      .append("path")
+      .attr("data-testid", "line")
+      .attr("fill", "none")
+      .attr("stroke", d => color(d[0]))
+      .attr("stroke-width", 2.5)
+      .attr("d", d => lineGenerator(d[1]));
   }
 
   drowLineSparkline(graphContainer: HTMLDivElement, data: ILineGraphData[]) {
