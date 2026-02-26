@@ -18,7 +18,7 @@ export class BandSparkline extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    this.svg
+    this.graphGroup
       .append("g")
       .attr("class", "xAxis")
       .attr("data-testid", "x axis")
@@ -44,12 +44,12 @@ export class BandSparkline extends Graph {
       | { type: "bandScale"; bandScale: d3.ScaleBand<string> },
   ): void {
     if ("linearScale" in scale) {
-      this.svg
+      this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
         .call(d3.axisLeft(scale.linearScale));
     } else {
-      this.svg
+      this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
         .call(d3.axisLeft(scale.bandScale));
@@ -86,7 +86,7 @@ export class BandSparkline extends Graph {
     const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
     const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
 
-    this.svg
+    this.graphGroup
       .selectAll("rect")
       .data(data)
       .join("rect")

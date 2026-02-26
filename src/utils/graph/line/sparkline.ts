@@ -29,7 +29,7 @@ export class LineSparkline extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    this.svg
+    this.graphGroup
       .append("g")
       .attr("class", "xAxis")
       .attr("data-testid", "x axis")
@@ -41,19 +41,19 @@ export class LineSparkline extends Graph {
           .tickFormat(d =>
             this.dateDomainBase === "year"
               ? (new Date(d.toString()).getMonth() + 1).toString()
-              : formatByISO8601(d),
+              : new Date(d.toString()).getDate().toString(),
           ),
       );
   }
 
   protected setYAxis(scale: linearScaleType | bandScaleType): void {
     if ("linearScale" in scale) {
-      this.svg
+      this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
         .call(d3.axisLeft(scale.linearScale));
     } else {
-      this.svg
+      this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
         .call(d3.axisLeft(scale.bandScale));
@@ -86,7 +86,7 @@ export class LineSparkline extends Graph {
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void {
-    this.svg
+    this.graphGroup
       .selectAll(".line")
       .data(groupedData.entries())
       .enter()
