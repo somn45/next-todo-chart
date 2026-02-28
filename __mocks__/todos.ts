@@ -1,4 +1,18 @@
-import { LookupedTodo, WithStringifyId } from "@/types/schema";
+import { WithStringifyId } from "@/types/schema";
+
+interface Todo {
+  userid: string;
+  textField: string;
+  state: "할 일" | "진행 중" | "완료";
+  createdAt: string;
+  updatedAt: string;
+  completedAt: string | null;
+}
+
+interface LookupedTodo {
+  author: string;
+  content: WithStringifyId & Todo;
+}
 
 export const mockTodos: (LookupedTodo & WithStringifyId)[] = [
   {
@@ -10,8 +24,8 @@ export const mockTodos: (LookupedTodo & WithStringifyId)[] = [
       textField: "mock text",
       state: "완료",
       createdAt: new Date(2025, 6, 10).toISOString(),
-      updatedAt: new Date(2025, 6, 12),
-      completedAt: new Date(2025, 6, 15),
+      updatedAt: new Date(2025, 6, 12).toISOString(),
+      completedAt: new Date(2025, 6, 15).toISOString(),
     },
   },
   {
@@ -23,7 +37,7 @@ export const mockTodos: (LookupedTodo & WithStringifyId)[] = [
       textField: "hello world",
       state: "진행 중",
       createdAt: new Date(2025, 6, 13).toISOString(),
-      updatedAt: new Date(2025, 6, 14),
+      updatedAt: new Date(2025, 6, 14).toISOString(),
       completedAt: null,
     },
   },

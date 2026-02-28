@@ -9,10 +9,9 @@ import {
   GRAPH_LEGEND_PADDING_RIGHT,
   GRAPH_WIDTH,
 } from "@/constants/graph";
-import { screen, within } from "@testing-library/react";
+import { within } from "@testing-library/react";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { mockStats } from "../../../../__mocks__/stats";
-import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 
 describe("LineGraph Class", () => {
   const lineGraph = new LineGraph(

@@ -7,30 +7,37 @@ import { mockTodos } from "../../__mocks__/todos";
 import { redirect } from "next/navigation";
 
 jest.mock("@/libs/database", () => {
-  const mockTodos = [
-    {
-      _id: "1",
-      author: "mockuser",
-      content: {
-        _id: "1",
-        userid: "mockuser",
-        textField: "mock text",
-      },
-    },
-    {
-      _id: "2",
-      author: "mockuser",
-      content: {
-        _id: "2",
-        userid: "mockuser",
-        textField: "hello world",
-      },
-    },
-  ];
   jest.mock("next/navigation");
 
   const mockAggregate = {
-    toArray: jest.fn().mockResolvedValue(mockTodos),
+    toArray: jest.fn().mockResolvedValue([
+      {
+        _id: "1",
+        author: "mockuser",
+        content: {
+          _id: "1",
+          userid: "mockuser",
+          textField: "mock text",
+          state: "완료",
+          createdAt: new Date(2025, 6, 10).toISOString(),
+          updatedAt: new Date(2025, 6, 12),
+          completedAt: new Date(2025, 6, 15),
+        },
+      },
+      {
+        _id: "2",
+        author: "mockuser",
+        content: {
+          _id: "2",
+          userid: "mockuser",
+          textField: "hello world",
+          state: "진행 중",
+          createdAt: new Date(2025, 6, 13).toISOString(),
+          updatedAt: new Date(2025, 6, 14),
+          completedAt: null,
+        },
+      },
+    ]),
   };
   const mockCollection = {
     aggregate: jest.fn().mockReturnValue(mockAggregate),

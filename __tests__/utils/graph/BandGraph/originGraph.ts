@@ -97,8 +97,9 @@ describe("BandGraph Class", () => {
     expect(y_scale).toBeTruthy();
 
     const band = within(g).getAllByTestId("band");
-    band.forEach((band, i) => {
+    band.forEach(band => {
       expect(band).toBeTruthy();
+
       const bandColor = band.getAttribute("fill");
       console.log(bandColor);
       expect(TL_LEGEND_COLORS).toContain(bandColor);
