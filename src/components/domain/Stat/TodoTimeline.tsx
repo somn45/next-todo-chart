@@ -2,21 +2,20 @@
 
 import * as d3 from "d3";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
-import {
-  getEndOfPeriod,
-  getStartOfPeriod,
-} from "@/utils/date/getDateInCurrentDate";
 import { useEffect, useRef } from "react";
 import { BandGraph } from "@/utils/graph/band/originGraph";
+import {
+  GRAPH_HEIGHT,
+  GRAPH_WIDTH,
+  TL_GRAPH_MARGIN,
+  TL_LEGEND_COLORS,
+  TL_LEGEND_TEXTS,
+} from "@/constants/graph";
 
 interface TimeLineProps {
   todos: (LookupedTodo & WithStringifyId)[];
   dateDomainBase?: "week" | "month" | "year";
 }
-
-const GRAPH_WIDTH = 700;
-const GRAPH_HEIGHT = 400;
-const GRAPH_MARGIN = { top: 80, left: 100, bottom: 20, right: 100 };
 
 export default function TodoTimeline({
   todos,
@@ -31,10 +30,10 @@ export default function TodoTimeline({
     const bandGraph = new BandGraph(
       GRAPH_WIDTH,
       GRAPH_HEIGHT,
-      GRAPH_MARGIN,
+      TL_GRAPH_MARGIN,
       dateDomainBase,
-      ["할 일", "진행 중", "완료"],
-      ["#3498DB", "#FFA500", "#2ECC71"],
+      TL_LEGEND_TEXTS,
+      TL_LEGEND_COLORS,
     );
 
     bandGraph.drowBandGraph(graphContainer, todos);

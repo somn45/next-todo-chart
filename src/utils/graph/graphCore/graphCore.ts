@@ -1,3 +1,4 @@
+import { GRAPH_LEGEND_PADDING_RIGHT } from "@/constants/graph";
 import * as d3 from "d3";
 
 interface GraphMargin {
@@ -98,7 +99,7 @@ export abstract class Graph {
       this.width - this.graphMargin.left + this.graphMargin.right;
 
     // legend 시작 위치
-    const legendStartOffset = this.width - 60;
+    const legendStartOffset = this.width - GRAPH_LEGEND_PADDING_RIGHT;
 
     return {
       innerWidth: graphInnerWidth,

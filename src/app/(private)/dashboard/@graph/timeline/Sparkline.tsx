@@ -4,14 +4,18 @@ import * as d3 from "d3";
 import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import { useEffect, useRef } from "react";
 import { BandSparkline } from "@/utils/graph/band/sparkline";
+import {
+  SPARKLINE_HEIGHT,
+  SPARKLINE_WIDTH,
+  TL_GRAPH_MARGIN,
+  TL_LEGEND_COLORS,
+  TL_LEGEND_TEXTS,
+} from "@/constants/graph";
 
 interface TimelineSparklineProps {
   todos: (LookupedTodo & WithStringifyId)[];
   dateDomainBase?: "week" | "month" | "year";
 }
-
-const GRAPH_WIDTH = 400;
-const GRAPH_HEIGHT = 300;
 
 export default function TimeLineSparkline({
   todos,
@@ -23,15 +27,13 @@ export default function TimeLineSparkline({
     const container = bandSparklineRef.current;
     if (!container) return;
 
-    const graphMargin = { top: 80, left: 100, bottom: 20, right: 100 };
-
     const bandSparkline = new BandSparkline(
-      GRAPH_WIDTH,
-      GRAPH_HEIGHT,
-      graphMargin,
+      SPARKLINE_WIDTH,
+      SPARKLINE_HEIGHT,
+      TL_GRAPH_MARGIN,
       dateDomainBase,
-      ["할 일", "진행 중", "완료"],
-      ["#3498DB", "#FFA500", "#2ECC71"],
+      TL_LEGEND_TEXTS,
+      TL_LEGEND_COLORS,
     );
 
     bandSparkline.drowBandSparkline(container, todos);

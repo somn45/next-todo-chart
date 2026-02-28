@@ -5,19 +5,18 @@ import { ILineGraphData } from "@/types/schema";
 import { useEffect, useRef } from "react";
 import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 import { LineSparkline } from "@/utils/graph/line/sparkline";
+import {
+  DAT_GRAPH_MARGIN,
+  DAT_LEGEND_COLORS,
+  DAT_LEGEND_TEXTS,
+  SPARKLINE_HEIGHT,
+  SPARKLINE_WIDTH,
+} from "@/constants/graph";
 
 interface LineGraphSparklineProps {
   stats: ILineGraphData[];
   dateDomainBase?: "week" | "month" | "year";
 }
-
-interface DataPoint {
-  date: Date;
-  count: number;
-}
-
-const GRAPH_WIDTH = 400;
-const GRAPH_HEIGHT = 300;
 
 export default function LineGraphSparkline({
   stats,
@@ -29,14 +28,13 @@ export default function LineGraphSparkline({
     const container = lineSparklineRef.current;
     if (!container) return;
 
-    const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
     const lineSparkline = new LineSparkline(
-      GRAPH_WIDTH,
-      GRAPH_HEIGHT,
-      graphMargin,
+      SPARKLINE_WIDTH,
+      SPARKLINE_HEIGHT,
+      DAT_GRAPH_MARGIN,
       dateDomainBase,
-      ["총합", "할 일", "진행 중", "완료"],
-      ["#000000", "#3498DB", "#FFA500", "#2ECC71"],
+      DAT_LEGEND_TEXTS,
+      DAT_LEGEND_COLORS,
     );
 
     lineSparkline.drowLineSparkline(container, stats);
