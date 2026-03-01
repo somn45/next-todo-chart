@@ -1,7 +1,6 @@
 "use client";
 
 import * as d3 from "d3";
-import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import { useEffect, useRef } from "react";
 import { BandSparkline } from "@/utils/graph/band/sparkline";
 import {
@@ -11,9 +10,10 @@ import {
   TL_LEGEND_COLORS,
   TL_LEGEND_TEXTS,
 } from "@/constants/graph";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 
 interface TimelineSparklineProps {
-  todos: (LookupedTodo & WithStringifyId)[];
+  todos: Array<TodosType & SerializedTodo>;
   dateDomainBase?: "week" | "month" | "year";
 }
 

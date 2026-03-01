@@ -1,11 +1,11 @@
 import * as d3 from "d3";
 import { Graph } from "../graphCore/graphCore";
-import { ClientTodos } from "@/types/schema";
 import {
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 
 interface createTimeScaleParams {
   rangeMax: number;
@@ -81,7 +81,7 @@ export class BandSparkline extends Graph {
       y: d3.ScaleBand<string>;
       color: d3.ScaleOrdinal<string, string, never>;
     },
-    data: ClientTodos[],
+    data: Array<TodosType & SerializedTodo>,
   ): void {
     const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
     const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
@@ -109,7 +109,10 @@ export class BandSparkline extends Graph {
       .attr("height", scale.y.bandwidth());
   }
 
-  drowBandSparkline(graphContainer: HTMLDivElement, data: ClientTodos[]) {
+  drowBandSparkline(
+    graphContainer: HTMLDivElement,
+    data: Array<TodosType & SerializedTodo>,
+  ) {
     const { innerWidth, innerHeight } = this.caculateGraphLayout();
 
     this.createSvgContainer(graphContainer);

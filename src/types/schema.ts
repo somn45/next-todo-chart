@@ -1,58 +1,8 @@
-import { ObjectId } from "mongodb";
-
-export type WithStringifyId = {
-  _id: string;
-};
-
-export interface ITodo {
-  userid: string;
-  textField: string;
-  state: "할 일" | "진행 중" | "완료";
-  createdAt: string;
-  updatedAt: Date;
-  completedAt: Date | null;
-}
-
-// 클라이언트용 Todo 타입
-export interface ClientTodo {
-  _id: string;
-  userid: string;
-  textField: string;
-  state: "할 일" | "진행 중" | "완료";
-  createdAt: string;
-  updatedAt: string;
-  completedAt: string | null;
-}
-
-export interface TodosType {
-  author: string;
-  content: WithStringifyId & ClientTodo;
-}
-//
-
-export interface LookupedTodo {
-  author: string;
-  content: WithStringifyId & ITodo;
-}
-
-export interface LookupedTodoWithObjectId {
-  author: string;
-  content: WithStringifyId & { _id: ObjectId };
-}
-
-export interface ClientTodos {
-  author: string;
-  content: WithStringifyId & ClientTodo;
-}
-
-export interface ITodos {
-  author: string;
-  content: ObjectId[];
-}
+import { RawTodo } from "./todos/schema";
 
 export interface TodoStats {
   date: Date;
-  todos: (ITodo | WithStringifyId)[];
+  todos: RawTodo[];
 }
 
 export interface Stat {

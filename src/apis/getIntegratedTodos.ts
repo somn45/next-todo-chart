@@ -1,5 +1,6 @@
 import { connectDB } from "@/libs/database";
-import { ILineGraphData, LookupedTodo, WithStringifyId } from "@/types/schema";
+import { ILineGraphData } from "@/types/schema";
+import { RawTodo, TodosType } from "@/types/todos/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
   getEndOfPeriod,
@@ -9,8 +10,8 @@ import { unstable_cacheTag as cacheTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 interface IIntegratedTodos {
-  activeTodos: (LookupedTodo & WithStringifyId)[];
-  todosIncludeThisWeek: (LookupedTodo & WithStringifyId)[];
+  activeTodos: Array<TodosType & RawTodo>;
+  todosIncludeThisWeek: Array<TodosType & RawTodo>;
   todoStats: ILineGraphData[];
 }
 
@@ -103,8 +104,8 @@ export const getIntegratedTodos = async (
       },
     ])
     .next()) as {
-    activeTodos: (LookupedTodo & WithStringifyId)[];
-    todosIncludeThisWeek: (LookupedTodo & WithStringifyId)[];
+    activeTodos: Array<TodosType & RawTodo>;
+    todosIncludeThisWeek: Array<TodosType & RawTodo>;
   };
 
   const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);

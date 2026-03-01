@@ -1,25 +1,10 @@
 import { getAllTodos } from "@/apis/getAllTodos";
 import { connectDB } from "@/libs/database";
-import { WithStringifyId } from "@/types/schema";
-import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export interface LookupedTodo {
-  author: string;
-  content: WithStringifyId & ITodo;
-}
-
-export interface ITodo {
-  userid: string;
-  textField: string;
-  state: "할 일" | "진행 중" | "완료";
-  createdAt: string;
-  updatedAt: string;
-  completedAt: string | null;
-}
-
-const mockTodos: (LookupedTodo & WithStringifyId)[] = [
+const mockTodos: Array<TodosType & SerializedTodo> = [
   {
     _id: "1",
     author: "mockuser",

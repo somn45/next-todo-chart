@@ -1,32 +1,35 @@
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
-import { ITodo } from "@/types/schema";
+import { SerializedTodo } from "@/types/todos/schema";
 import { createTimeScale } from "@/utils/graph";
 
-const mockTodo: ITodo = {
+const mockTodo: SerializedTodo["content"] = {
+  _id: "1",
   userid: "mockuser",
   textField: "임의의 할 일",
   state: "진행 중",
-  createdAt: new Date(2025, 6, 2).toString(),
-  updatedAt: new Date(2025, 6, 4),
-  completedAt: new Date(2025, 6, 4),
+  createdAt: new Date(2025, 6, 2).toISOString(),
+  updatedAt: new Date(2025, 6, 4).toISOString(),
+  completedAt: new Date(2025, 6, 4).toISOString(),
 };
 
-const mockTodoWithoutCompletedAt: ITodo = {
+const mockTodoWithoutCompletedAt: SerializedTodo["content"] = {
+  _id: "1",
   userid: "mockuser",
   textField: "임의의 할 일",
   state: "진행 중",
-  createdAt: new Date(2025, 6, 2).toString(),
-  updatedAt: new Date(2025, 6, 4),
+  createdAt: new Date(2025, 6, 2).toISOString(),
+  updatedAt: new Date(2025, 6, 4).toISOString(),
   completedAt: null,
 };
 
-const mockTodoIfCreatedAtLessthanDomainStart: ITodo = {
+const mockTodoIfCreatedAtLessthanDomainStart: SerializedTodo["content"] = {
+  _id: "1",
   userid: "mockuser",
   textField: "임의의 할 일",
   state: "진행 중",
-  createdAt: new Date(2025, 5, 27).toString(),
-  updatedAt: new Date(2025, 6, 4),
-  completedAt: new Date(2025, 6, 4),
+  createdAt: new Date(2025, 5, 27).toISOString(),
+  updatedAt: new Date(2025, 6, 4).toISOString(),
+  completedAt: new Date(2025, 6, 4).toISOString(),
 };
 
 describe("caculateBandLength", () => {

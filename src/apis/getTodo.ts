@@ -1,5 +1,5 @@
 import { connectDB } from "@/libs/database";
-import { ITodo, WithStringifyId } from "@/types/schema";
+import { RawTodo, SerializedTodo } from "@/types/todos/schema";
 import { ObjectId } from "mongodb";
 import { unstable_cacheTag as cacheTag } from "next/cache";
 import { redirect } from "next/navigation";
@@ -21,7 +21,7 @@ export const getTodo = async (
   const db = (await connectDB).db("next-todo-chart-cluster");
   const todoDoc = await db
     .collection("todo")
-    .aggregate([
+    .aggregate<RawTodo>([
       {
         $match: {
           userid,
@@ -36,5 +36,5 @@ export const getTodo = async (
     ])
     .next();
 
-  return JSON.parse(JSON.stringify(todoDoc)) as ITodo & WithStringifyId;
+  return JSON.parse(JSON.stringify(todoDoc)) as SerializedTodo["content"];
 };

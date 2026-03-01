@@ -1,12 +1,12 @@
 import * as d3 from "d3";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { Graph } from "../graphCore/graphCore";
-import { ClientTodos, LookupedTodo, WithStringifyId } from "@/types/schema";
 import {
   getEndOfPeriod,
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 
 type D3MarkerType = "circle" | "rect";
 
@@ -108,7 +108,7 @@ export class BandGraph extends Graph {
       y: d3.ScaleBand<string>;
       color: d3.ScaleOrdinal<string, string, never>;
     },
-    data: (ClientTodos & WithStringifyId)[],
+    data: Array<TodosType & SerializedTodo>,
   ) {
     const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
     const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
@@ -225,7 +225,7 @@ export class BandGraph extends Graph {
 
   drowBandGraph(
     graphContainer: HTMLDivElement,
-    data: (ClientTodos & WithStringifyId)[],
+    data: Array<TodosType & SerializedTodo>,
   ) {
     this.createSvgContainer(graphContainer);
 

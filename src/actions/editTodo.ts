@@ -1,7 +1,7 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { type ITodo } from "@/types/schema";
+import { RawTodo } from "@/types/todos/schema";
 import { ObjectId, WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
@@ -26,7 +26,7 @@ export const editTodo = async (
 
     const db = (await connectDB).db("next-todo-chart-cluster");
     const todoDoc = await db
-      .collection<WithId<ITodo>>("todo")
+      .collection<WithId<RawTodo["content"]>>("todo")
       .findOne({ _id: new ObjectId(todoid) });
 
     if (!todoDoc) {

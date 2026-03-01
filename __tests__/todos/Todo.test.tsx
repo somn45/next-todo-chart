@@ -1,8 +1,8 @@
 import { getTodo } from "@/apis/getTodo";
 import TodoPage from "@/components/domain/Todo/Todo";
-import { LookupedTodo } from "@/types/schema";
+import { SerializedTodo } from "@/types/todos/schema";
 import { render, screen } from "@testing-library/react";
-import { act, useRef } from "react";
+import { act } from "react";
 
 jest.mock("@/libs/database", () => ({
   connectDB: jest.fn().mockResolvedValue({
@@ -35,14 +35,14 @@ describe("<Todo />", () => {
       userid: "mockuser",
       textField: "mock text",
     });
-    const mockTodo: LookupedTodo["content"] = {
+    const mockTodo: SerializedTodo["content"] = {
       _id: "objectId",
       userid: "mockuser",
       textField: "mock text",
       state: "할 일",
       createdAt: "",
       updatedAt: "",
-      completedAt: new Date(),
+      completedAt: null,
     };
     render(<TodoPage todo={mockTodo} />);
 
@@ -60,14 +60,14 @@ describe("<Todo />", () => {
     const MOCK_DATE = new Date(2025, 10, 16, 9);
     jest.setSystemTime(MOCK_DATE);
 
-    const mockTodo: LookupedTodo["content"] = {
+    const mockTodo: SerializedTodo["content"] = {
       _id: "objectId",
       userid: "mockuser",
       textField: "mock text",
       state: "완료",
       createdAt: "",
       updatedAt: "",
-      completedAt: new Date(2025, 10, 16, 9, 10),
+      completedAt: new Date(2025, 10, 16, 9, 10).toISOString(),
     };
 
     render(<TodoPage todo={mockTodo} />);
@@ -93,14 +93,14 @@ describe("<Todo />", () => {
     const MOCK_DATE = new Date(2025, 10, 16, 9);
     jest.setSystemTime(MOCK_DATE);
 
-    const mockTodoFinishState: LookupedTodo["content"] = {
+    const mockTodoFinishState: SerializedTodo["content"] = {
       _id: "objectId",
       userid: "mockuser",
       textField: "mock text",
       state: "완료",
       createdAt: "",
       updatedAt: "",
-      completedAt: new Date(2025, 10, 16, 9, 10),
+      completedAt: new Date(2025, 10, 16, 9, 10).toISOString(),
     };
 
     const { rerender } = render(<TodoPage todo={mockTodoFinishState} />);
@@ -116,7 +116,7 @@ describe("<Todo />", () => {
       jest.advanceTimersByTime(1000 * 60 * 5);
     });
 
-    const mockTodoDoingState: LookupedTodo["content"] = {
+    const mockTodoDoingState: SerializedTodo["content"] = {
       _id: "objectId",
       userid: "mockuser",
       textField: "mock text",

@@ -1,11 +1,8 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { ITodos } from "@/types/schema";
-import { WithId } from "mongodb";
+import { TodosType, RawTodo, TodoRefer } from "@/types/todos/schema";
 import { revalidateTag } from "next/cache";
-
-const AFTER_NINE_HOUR = 1000 * 60 * 60 * 9;
 
 export const addTodo = async (
   userid: string | null | undefined,
@@ -23,7 +20,7 @@ export const addTodo = async (
 
   try {
     const db = (await connectDB).db("next-todo-chart-cluster");
-    const todo = await db.collection("todo").insertOne({
+    const todo = await db.collection<RawTodo["content"]>("todo").insertOne({
       userid,
       textField: newTodo,
       state: "할 일",
@@ -35,13 +32,14 @@ export const addTodo = async (
     if (!todo) {
       throw new Error("Todo not found");
     }
-    await db
-      .collection<WithId<ITodos>>("todos")
+    const newTodos = await db
+      .collection<TodosType & TodoRefer>("todos")
       .findOneAndUpdate(
         { author: userid },
         { $push: { content: todo.insertedId } },
         { upsert: true },
       );
+    console.log(newTodos);
     revalidateTag("todos");
     revalidateTag("dashboard");
     return { message: "" };

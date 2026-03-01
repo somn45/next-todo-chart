@@ -1,7 +1,6 @@
 "use client";
 
 import * as d3 from "d3";
-import { LookupedTodo, WithStringifyId } from "@/types/schema";
 import { useEffect, useRef } from "react";
 import { BandGraph } from "@/utils/graph/band/originGraph";
 import {
@@ -11,9 +10,10 @@ import {
   TL_LEGEND_COLORS,
   TL_LEGEND_TEXTS,
 } from "@/constants/graph";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 
 interface TimeLineProps {
-  todos: (LookupedTodo & WithStringifyId)[];
+  todos: Array<TodosType & SerializedTodo>;
   dateDomainBase?: "week" | "month" | "year";
 }
 

@@ -1,5 +1,6 @@
 import { connectDB } from "@/libs/database";
-import { LookupedTodo, WithStringifyId } from "@/types/schema";
+import { TodosType } from "@/types/schema";
+import { SerializedTodo } from "@/types/todos/schema";
 import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 import {
   getEndOfPeriod,
@@ -79,6 +80,7 @@ export const getAllTodos = async (
     ])
     .toArray();
 
-  return JSON.parse(JSON.stringify(todosDoc)) as (LookupedTodo &
-    WithStringifyId)[];
+  return JSON.parse(JSON.stringify(todosDoc)) as Array<
+    TodosType & SerializedTodo
+  >;
 };

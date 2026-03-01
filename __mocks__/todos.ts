@@ -1,20 +1,6 @@
-import { WithStringifyId } from "@/types/schema";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 
-interface Todo {
-  userid: string;
-  textField: string;
-  state: "할 일" | "진행 중" | "완료";
-  createdAt: string;
-  updatedAt: string;
-  completedAt: string | null;
-}
-
-interface LookupedTodo {
-  author: string;
-  content: WithStringifyId & Todo;
-}
-
-export const mockTodos: (LookupedTodo & WithStringifyId)[] = [
+export const mockTodos: Array<TodosType & SerializedTodo> = [
   {
     _id: "1",
     author: "mockuser",

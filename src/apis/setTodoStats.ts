@@ -1,10 +1,11 @@
 import { connectDB } from "@/libs/database";
-import { LookupedTodo, TodoStats, WithStringifyId } from "@/types/schema";
+import { TodoStats } from "@/types/schema";
 import {
   lookupTodoDocument,
   toStringMongoDBObjectId,
   unwindContent,
 } from "./queries/queries";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 
 export const setTodoStats = async () => {
   const db = (await connectDB).db("next-todo-chart-cluster");
@@ -63,7 +64,7 @@ export const setTodoStats = async () => {
       },
       toStringMongoDBObjectId(),
     ])
-    .toArray()) as (LookupedTodo & WithStringifyId)[];
+    .toArray()) as Array<TodosType & SerializedTodo>;
 
   const todoStatsMap: Map<string, number> = new Map([
     ["총합", 0],

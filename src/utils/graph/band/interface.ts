@@ -1,5 +1,6 @@
+import { TodosType } from "@/types/schema";
+import { SerializedTodo } from "@/types/todos/schema";
 import * as d3 from "d3";
-import { LookupedTodo, WithStringifyId } from "@/types/schema";
 
 type D3MarkerType = "circle" | "rect";
 
@@ -48,7 +49,7 @@ export interface BandGraphMainContent {
       y: d3.ScaleBand<string>;
       color: d3.ScaleOrdinal<string, string, never>;
     },
-    data: (LookupedTodo & WithStringifyId)[],
+    data: Array<TodosType & SerializedTodo>,
   ): void;
 }
 

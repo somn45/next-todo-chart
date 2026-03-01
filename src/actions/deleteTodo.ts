@@ -1,7 +1,7 @@
 "use server";
 
 import { connectDB } from "@/libs/database";
-import { ITodo } from "@/types/schema";
+import { RawTodo } from "@/types/todos/schema";
 import { ObjectId, WithId } from "mongodb";
 import { revalidateTag } from "next/cache";
 
@@ -24,7 +24,7 @@ export const deleteTodo = async (
 
     const db = (await connectDB).db("next-todo-chart-cluster");
     const todoDoc = await db
-      .collection<WithId<ITodo>>("todo")
+      .collection<WithId<RawTodo["content"]>>("todo")
       .findOne({ _id: new ObjectId(todoid) });
 
     if (!todoDoc) {
@@ -35,7 +35,7 @@ export const deleteTodo = async (
     }
 
     await db.collection("todo").deleteOne({ _id: new ObjectId(todoid) });
-    await db.collection<ITodo>("todos").updateOne(
+    await db.collection<RawTodo["content"]>("todos").updateOne(
       {
         author: userid,
       },
