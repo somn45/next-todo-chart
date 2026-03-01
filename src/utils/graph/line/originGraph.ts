@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 import { Graph } from "../graphCore/graphCore";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
-import { ILineGraphData } from "@/types/schema";
 import { caculateTickCount } from "../caculateTickCount";
+import { TodoStat } from "@/types/graph/schema";
 
 type D3MarkerType = "circle" | "rect";
 
@@ -108,7 +108,7 @@ export class LineGraph extends Graph {
   }
 
   private setLineDataset(
-    groupedData: d3.InternMap<string, ILineGraphData[]>,
+    groupedData: d3.InternMap<string, TodoStat[]>,
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void {
@@ -223,7 +223,7 @@ export class LineGraph extends Graph {
 
   drowLineGraph(
     graphContainer: HTMLDivElement,
-    data: ILineGraphData[],
+    data: TodoStat[],
   ):
     | {
         x: d3.ScaleTime<number, number, never>;

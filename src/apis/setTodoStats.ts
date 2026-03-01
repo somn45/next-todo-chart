@@ -1,11 +1,11 @@
 import { connectDB } from "@/libs/database";
-import { TodoStats } from "@/types/schema";
 import {
   lookupTodoDocument,
   toStringMongoDBObjectId,
   unwindContent,
 } from "./queries/queries";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
+import { TodoStat } from "@/types/graph/schema";
 
 export const setTodoStats = async () => {
   const db = (await connectDB).db("next-todo-chart-cluster");
@@ -31,7 +31,7 @@ export const setTodoStats = async () => {
   );
 
   const recordedTodoStats = await db
-    .collection<TodoStats>("stats")
+    .collection<Array<TodoStat>>("stats")
     .findOne({ date: prevDateSharp });
 
   if (recordedTodoStats) {

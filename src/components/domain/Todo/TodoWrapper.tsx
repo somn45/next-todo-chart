@@ -13,7 +13,6 @@ export default function TodoWrapper({
   todo: SerializedTodo["content"];
   showDeleteSection?: boolean;
 }) {
-  console.log(typeof todo.updatedAt);
   return (
     <ErrorBoundary FallbackComponent={TodoFallback}>
       <Todo todo={todo} showDeleteSection={showDeleteSection} />

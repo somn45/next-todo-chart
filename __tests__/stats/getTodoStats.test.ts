@@ -1,16 +1,8 @@
 import { getTodoStats } from "@/apis/getTodoStats";
 import { connectDB } from "@/libs/database";
-import { ILineGraphData } from "@/types/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
-
-const mockTodoStats: ILineGraphData[] = [
-  {
-    date: new Date(2026, 1, 17),
-    state: "할 일",
-    count: 5,
-  },
-];
+import { mockTodoStats } from "../../__mocks__/stats";
 
 jest.useFakeTimers();
 jest.setSystemTime(new Date(2025, 6, 8));

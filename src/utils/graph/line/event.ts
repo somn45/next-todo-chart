@@ -6,7 +6,7 @@ import {
 } from "@/app/(private)/stats/_utils/lineGraphMouseEvent";
 import { createFollowMouseFocus } from "../eventElement";
 import { caculateGraphLayout } from "../caculateGraphLayout";
-import { ILineGraphData } from "@/types/schema";
+import { TodoStat } from "@/types/graph/schema";
 
 interface GraphMargin {
   left: number;
@@ -27,7 +27,7 @@ export class LineGraphMouseEvent {
       x: d3.ScaleTime<number, number, never>;
       y: d3.ScaleLinear<number, number, never>;
     },
-    public data: ILineGraphData[],
+    public data: TodoStat[],
     public tooltipElement: HTMLDivElement,
   ) {}
   handleGraphMouseEvent() {

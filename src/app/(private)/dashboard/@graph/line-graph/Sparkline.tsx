@@ -1,9 +1,7 @@
 "use client";
 
 import * as d3 from "d3";
-import { ILineGraphData } from "@/types/schema";
 import { useEffect, useRef } from "react";
-import { caculateTickCount } from "@/utils/graph/caculateTickCount";
 import { LineSparkline } from "@/utils/graph/line/sparkline";
 import {
   DAT_GRAPH_MARGIN,
@@ -12,9 +10,10 @@ import {
   SPARKLINE_HEIGHT,
   SPARKLINE_WIDTH,
 } from "@/constants/graph";
+import { TodoStat } from "@/types/graph/schema";
 
 interface LineGraphSparklineProps {
-  stats: ILineGraphData[];
+  stats: TodoStat[];
   dateDomainBase?: "week" | "month" | "year";
 }
 

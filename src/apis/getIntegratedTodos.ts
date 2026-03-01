@@ -1,5 +1,5 @@
 import { connectDB } from "@/libs/database";
-import { ILineGraphData } from "@/types/schema";
+import { TodoStat } from "@/types/graph/schema";
 import { RawTodo, TodosType } from "@/types/todos/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 interface IIntegratedTodos {
   activeTodos: Array<TodosType & RawTodo>;
   todosIncludeThisWeek: Array<TodosType & RawTodo>;
-  todoStats: ILineGraphData[];
+  todoStats: TodoStat[];
 }
 
 export const getIntegratedTodos = async (
@@ -118,7 +118,7 @@ export const getIntegratedTodos = async (
       },
       { $project: { _id: 0 } },
     ])
-    .toArray()) as ILineGraphData[];
+    .toArray()) as TodoStat[];
 
   const dashboardDataList = {
     ...JSON.parse(JSON.stringify(integratedTodos)),

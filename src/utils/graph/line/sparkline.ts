@@ -1,8 +1,7 @@
 import * as d3 from "d3";
-import { ILineGraphData } from "@/types/schema";
 import { Graph } from "../graphCore/graphCore";
-import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { caculateTickCount } from "../caculateTickCount";
+import { TodoStat } from "@/types/graph/schema";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
@@ -82,7 +81,7 @@ export class LineSparkline extends Graph {
   }
 
   private setLineDataset(
-    groupedData: d3.InternMap<string, ILineGraphData[]>,
+    groupedData: d3.InternMap<string, TodoStat[]>,
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void {
@@ -98,7 +97,7 @@ export class LineSparkline extends Graph {
       .attr("d", d => lineGenerator(d[1]));
   }
 
-  drowLineSparkline(graphContainer: HTMLDivElement, data: ILineGraphData[]) {
+  drowLineSparkline(graphContainer: HTMLDivElement, data: TodoStat[]) {
     this.createSvgContainer(graphContainer);
 
     const groupedStats = d3.group(data, d => d.state);

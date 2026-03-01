@@ -10,55 +10,7 @@ import {
   hiddenFollowElement,
   setCoordFocusAndToolTip,
 } from "@/app/(private)/stats/_utils/lineGraphMouseEvent";
-import { ILineGraphData } from "@/types/schema";
-
-const mockTodos: ILineGraphData[] = [
-  {
-    date: new Date(2025, 6, 1),
-    state: "할 일",
-    count: 5,
-  },
-  {
-    date: new Date(2025, 6, 1),
-    state: "진행 중",
-    count: 3,
-  },
-  {
-    date: new Date(2025, 6, 1),
-    state: "완료",
-    count: 2,
-  },
-  {
-    date: new Date(2025, 6, 2),
-    state: "할 일",
-    count: 3,
-  },
-  {
-    date: new Date(2025, 6, 2),
-    state: "진행 중",
-    count: 3,
-  },
-  {
-    date: new Date(2025, 6, 2),
-    state: "완료",
-    count: 0,
-  },
-  {
-    date: new Date(2025, 6, 3),
-    state: "할 일",
-    count: 6,
-  },
-  {
-    date: new Date(2025, 6, 3),
-    state: "진행 중",
-    count: 1,
-  },
-  {
-    date: new Date(2025, 6, 3),
-    state: "완료",
-    count: 3,
-  },
-];
+import { mockTodoStats } from "../../../__mocks__/stats";
 
 describe("lineGraphMouseEvent", () => {
   const margin = { top: 20, left: 40, bottom: 20, right: 80 };
@@ -115,9 +67,9 @@ describe("lineGraphMouseEvent", () => {
       rangeMax: width,
       timeScaleDomain: [new Date(2025, 6, 1), new Date(2025, 6, 7)],
     });
-    const linearScale = createLinearScale(mockTodos, height);
+    const linearScale = createLinearScale(mockTodoStats, height);
 
-    const groupedData = d3.group(mockTodos, d => d.state);
+    const groupedData = d3.group(mockTodoStats, d => d.state);
     const event = new MouseEvent("mousemove", {
       clientX: 150,
       clientY: 150,

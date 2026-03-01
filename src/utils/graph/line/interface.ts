@@ -1,5 +1,5 @@
+import { TodoStat } from "@/types/graph/schema";
 import * as d3 from "d3";
-import { ILineGraphData } from "@/types/schema";
 
 type D3MarkerType = "circle" | "rect";
 
@@ -47,7 +47,7 @@ export interface GraphMainContent {
     rangeMax: number,
   ): d3.ScaleLinear<number, number, never>;
   setLineDataset(
-    groupedData: d3.InternMap<string, ILineGraphData[]>,
+    groupedData: d3.InternMap<string, TodoStat[]>,
     color: d3.ScaleOrdinal<string, string, never>,
     lineGenerator: d3.Line<DataPoint>,
   ): void;

@@ -10,7 +10,7 @@ import {
 } from "@/constants/graph";
 import { within } from "@testing-library/react";
 import { LineGraph } from "@/utils/graph/line/originGraph";
-import { mockStats } from "../../../../__mocks__/stats";
+import { mockTodoStats } from "../../../../__mocks__/stats";
 
 describe("LineGraph Class", () => {
   const lineGraph = new LineGraph(
@@ -23,7 +23,7 @@ describe("LineGraph Class", () => {
   );
   it("lineGraph 메서드를 활용해 그래프를 그린다.", () => {
     const mockGraphContainer = document.createElement("div");
-    lineGraph.drowLineGraph(mockGraphContainer, mockStats);
+    lineGraph.drowLineGraph(mockGraphContainer, mockTodoStats);
 
     const svg = within(mockGraphContainer).getByTestId("svg container");
     expect(svg).toBeTruthy();

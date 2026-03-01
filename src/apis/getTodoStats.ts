@@ -1,5 +1,5 @@
 import { connectDB } from "@/libs/database";
-import { ILineGraphData } from "@/types/schema";
+import { TodoStat } from "@/types/graph/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
@@ -23,7 +23,7 @@ export const getTodoStats = async (
       },
       { $project: { _id: 0 } },
     ])
-    .toArray()) as ILineGraphData[];
+    .toArray()) as TodoStat[];
 
-  return stats as ILineGraphData[];
+  return stats as TodoStat[];
 };

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { getDataPointClosetMousePointer } from "./getDataPointClosetMousePointer";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
-import { ILineGraphData } from "@/types/schema";
+import { TodoStat } from "@/types/graph/schema";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FollowElements = d3.Selection<any, unknown, any, unknown>;
@@ -22,7 +22,7 @@ export const displayFollowElement = (followElements: FollowElements[]) => {
 };
 
 export const setCoordFocusAndToolTip = (
-  groupedData: d3.InternMap<string, ILineGraphData[]>,
+  groupedData: d3.InternMap<string, TodoStat[]>,
   graphScale: TimeBasedLinearScale,
   followElements: Elements,
   event: MouseEvent,

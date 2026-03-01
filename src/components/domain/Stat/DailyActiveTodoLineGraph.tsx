@@ -2,15 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import { ILineGraphData } from "@/types/schema";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { LineGraphMouseEvent } from "@/utils/graph/line/event";
+import { TodoStat } from "@/types/graph/schema";
 
 export default function DailyActiveTodoLineGraph({
   stats,
   dateDomainBase = "week",
 }: {
-  stats: ILineGraphData[];
+  stats: TodoStat[];
   dateDomainBase?: "week" | "month" | "year";
 }) {
   const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);

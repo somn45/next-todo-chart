@@ -20,26 +20,27 @@ export const addTodo = async (
 
   try {
     const db = (await connectDB).db("next-todo-chart-cluster");
-    const todo = await db.collection<RawTodo["content"]>("todo").insertOne({
-      userid,
-      textField: newTodo,
-      state: "할 일",
-      createdAt: new Date(Date.now()),
-      updatedAt: new Date(Date.now()),
-      completedAt: null,
-    });
+    const todo = await db
+      .collection<Omit<RawTodo["content"], "_id">>("todo")
+      .insertOne({
+        userid,
+        textField: newTodo,
+        state: "할 일",
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
+        completedAt: null,
+      });
 
     if (!todo) {
       throw new Error("Todo not found");
     }
-    const newTodos = await db
+    await db
       .collection<TodosType & TodoRefer>("todos")
       .findOneAndUpdate(
         { author: userid },
         { $push: { content: todo.insertedId } },
         { upsert: true },
       );
-    console.log(newTodos);
     revalidateTag("todos");
     revalidateTag("dashboard");
     return { message: "" };
