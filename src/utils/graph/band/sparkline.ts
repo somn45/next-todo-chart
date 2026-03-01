@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { Graph } from "../graphCore/graphCore";
-import { LookupedTodo, WithStringifyId } from "@/types/schema";
+import { ClientTodos } from "@/types/schema";
 import {
   getEndOfPeriod,
   getStartOfPeriod,
@@ -81,7 +81,7 @@ export class BandSparkline extends Graph {
       y: d3.ScaleBand<string>;
       color: d3.ScaleOrdinal<string, string, never>;
     },
-    data: (LookupedTodo & WithStringifyId)[],
+    data: ClientTodos[],
   ): void {
     const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
     const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
@@ -109,10 +109,7 @@ export class BandSparkline extends Graph {
       .attr("height", scale.y.bandwidth());
   }
 
-  drowBandSparkline(
-    graphContainer: HTMLDivElement,
-    data: (LookupedTodo & WithStringifyId)[],
-  ) {
+  drowBandSparkline(graphContainer: HTMLDivElement, data: ClientTodos[]) {
     const { innerWidth, innerHeight } = this.caculateGraphLayout();
 
     this.createSvgContainer(graphContainer);

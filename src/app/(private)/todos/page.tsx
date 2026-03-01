@@ -1,7 +1,6 @@
 import { getTodos } from "@/apis/getTodos";
 import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
-import { ClientTodo } from "@/types/schema";
 import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 
 export default async function Todos() {

@@ -1,4 +1,3 @@
-import * as d3 from "d3";
 import {
   DAT_GRAPH_MARGIN,
   DAT_LEGEND_COLORS,

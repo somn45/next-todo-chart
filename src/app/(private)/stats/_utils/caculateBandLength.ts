@@ -1,4 +1,4 @@
-import { ITodo } from "@/types/schema";
+import { ClientTodo, ITodo } from "@/types/schema";
 
 interface TimeBasedLinearScale {
   x_scale: d3.ScaleTime<number, number, never>;
@@ -11,7 +11,7 @@ interface GraphDomain {
 
 // x 축이 시간 스케일인 밴드의 길이 계산
 const caculateBandLength = (
-  data: ITodo,
+  data: ClientTodo,
   graphScale: TimeBasedLinearScale,
   graphDomain: GraphDomain,
 ) => {

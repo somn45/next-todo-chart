@@ -20,7 +20,7 @@ export interface ClientTodo {
   textField: string;
   state: "할 일" | "진행 중" | "완료";
   createdAt: string;
-  updatedAt: Date;
+  updatedAt: string;
   completedAt: string | null;
 }
 
@@ -38,6 +38,11 @@ export interface LookupedTodo {
 export interface LookupedTodoWithObjectId {
   author: string;
   content: WithStringifyId & { _id: ObjectId };
+}
+
+export interface ClientTodos {
+  author: string;
+  content: WithStringifyId & ClientTodo;
 }
 
 export interface ITodos {
