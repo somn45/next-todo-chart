@@ -7,32 +7,12 @@ import {
 } from "@/utils/date/getDateInCurrentDate";
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
-
-type D3MarkerType = "circle" | "rect";
-
-interface GraphMargin {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-}
-
-interface D3Layout {
-  width: number;
-  height: number;
-  margin: GraphMargin;
-}
-
-interface legendAttr extends D3Layout {
-  radius: number;
-}
-
-interface D3Coord {
-  x: number;
-  y: number;
-  textX: number;
-  textY: number;
-}
+import {
+  D3ScaleType,
+  LegendMarkerLayout,
+  LegendMarkerType,
+  LegendUnitInitCoord,
+} from "@/types/graph/schema";
 
 interface createTimeScaleParams {
   rangeMax: number;
@@ -62,14 +42,7 @@ export class BandGraph extends Graph {
       );
   }
 
-  protected setYAxis(
-    scale:
-      | {
-          type: "linearScale";
-          linearScale: d3.ScaleLinear<number, number, never>;
-        }
-      | { type: "bandScale"; bandScale: d3.ScaleBand<string> },
-  ): void {
+  protected setYAxis(scale: D3ScaleType): void {
     if ("linearScale" in scale) {
       this.graphGroup
         .append("g")
@@ -158,10 +131,10 @@ export class BandGraph extends Graph {
   }
 
   private setLegendCircleMarker(
-    markerType: D3MarkerType,
+    markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
     radius: number,
-    coord: Pick<D3Coord, "x" | "y">,
+    coord: Pick<LegendUnitInitCoord, "x" | "y">,
     color: string,
   ) {
     const { x, y } = coord;
@@ -178,7 +151,7 @@ export class BandGraph extends Graph {
 
   private setLegendText(
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    coord: Pick<D3Coord, "x" | "y">,
+    coord: Pick<LegendUnitInitCoord, "x" | "y">,
     text: string,
   ): void {
     const { x, y } = coord;
@@ -193,10 +166,10 @@ export class BandGraph extends Graph {
   }
 
   private setLegendItems(
-    markerType: D3MarkerType,
+    markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    markerLayout: Partial<Omit<legendAttr, "margin">>,
-    initCoord: D3Coord,
+    markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
+    initCoord: LegendUnitInitCoord,
   ): void {
     const radius = markerLayout.radius ?? 0;
 

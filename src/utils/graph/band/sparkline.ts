@@ -6,6 +6,7 @@ import {
 } from "@/utils/date/getDateInCurrentDate";
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
+import { D3ScaleType } from "@/types/graph/schema";
 
 interface createTimeScaleParams {
   rangeMax: number;
@@ -35,14 +36,7 @@ export class BandSparkline extends Graph {
       );
   }
 
-  protected setYAxis(
-    scale:
-      | {
-          type: "linearScale";
-          linearScale: d3.ScaleLinear<number, number, never>;
-        }
-      | { type: "bandScale"; bandScale: d3.ScaleBand<string> },
-  ): void {
+  protected setYAxis(scale: D3ScaleType): void {
     if ("linearScale" in scale) {
       this.graphGroup
         .append("g")

@@ -1,6 +1,6 @@
 import { connectDB } from "@/libs/database";
-import { TodosType } from "@/types/schema";
-import { SerializedTodo } from "@/types/todos/schema";
+import { DataDomainBaseType } from "@/types/graph/schema";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 import {
   getEndOfPeriod,
@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 export const getAllTodos = async (
   id: string | undefined | null,
-  searchRange: "week" | "month" | "year" = "week",
+  searchRange: DataDomainBaseType = "week",
 ) => {
   const userid = await getUserIdByHeaders();
 

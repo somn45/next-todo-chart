@@ -11,10 +11,11 @@ import {
   TL_LEGEND_TEXTS,
 } from "@/constants/graph";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
+import { DataDomainBaseType } from "@/types/graph/schema";
 
 interface TimeLineProps {
   todos: Array<TodosType & SerializedTodo>;
-  dateDomainBase?: "week" | "month" | "year";
+  dateDomainBase?: DataDomainBaseType;
 }
 
 export default function TodoTimeline({

@@ -1,8 +1,6 @@
-import { TodosType } from "@/types/schema";
-import { SerializedTodo } from "@/types/todos/schema";
+import { LegendMarkerType } from "@/types/graph/schema";
+import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import * as d3 from "d3";
-
-type D3MarkerType = "circle" | "rect";
 
 interface GraphMargin {
   left: number;
@@ -59,7 +57,7 @@ export interface BandGraphSubContent {
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined>;
   setLegendItems(
-    markerType: D3MarkerType,
+    markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
     markerLayout: Partial<Omit<legendAttr, "margin">>,
     initCoord: D3Coord,

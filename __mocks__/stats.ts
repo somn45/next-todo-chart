@@ -1,4 +1,4 @@
-import { TodoStat } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 
 export const mockTodoStats: TodoStat[] = [
   {

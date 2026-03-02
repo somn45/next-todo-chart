@@ -1,6 +1,7 @@
 import { connectDB } from "@/libs/database";
-import { TodoStat } from "@/types/graph/schema";
-import { RawTodo, TodosType } from "@/types/todos/schema";
+import { DataDomainBaseType } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
+import { RawTodo, SerializedTodo, TodosType } from "@/types/todos/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import {
   getEndOfPeriod,
@@ -10,14 +11,14 @@ import { unstable_cacheTag as cacheTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 interface IIntegratedTodos {
-  activeTodos: Array<TodosType & RawTodo>;
-  todosIncludeThisWeek: Array<TodosType & RawTodo>;
+  activeTodos: Array<TodosType & SerializedTodo>;
+  todosIncludeThisWeek: Array<TodosType & SerializedTodo>;
   todoStats: TodoStat[];
 }
 
 export const getIntegratedTodos = async (
   userid: string | undefined | null,
-  searchRange: "week" | "month" | "year" = "week",
+  searchRange: DataDomainBaseType = "week",
 ) => {
   "use cache";
   cacheTag("dashboard");

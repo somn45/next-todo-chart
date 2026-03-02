@@ -4,14 +4,15 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { LineGraphMouseEvent } from "@/utils/graph/line/event";
-import { TodoStat } from "@/types/graph/schema";
+import { DataDomainBaseType } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 
 export default function DailyActiveTodoLineGraph({
   stats,
   dateDomainBase = "week",
 }: {
   stats: TodoStat[];
-  dateDomainBase?: "week" | "month" | "year";
+  dateDomainBase?: DataDomainBaseType;
 }) {
   const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);
   const toolTipRef = useRef<HTMLDivElement | null>(null);

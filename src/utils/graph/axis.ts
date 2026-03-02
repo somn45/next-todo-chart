@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { formatByISO8601 } from "../date/formatByISO8601";
+import { DataDomainBaseType } from "@/types/graph/schema";
 
 // x 축을 svg 컨테이너에 set
 export const setXAxis = (
@@ -7,7 +8,7 @@ export const setXAxis = (
   scale: d3.ScaleTime<number, number, never>,
   tickCount: number,
   height: number,
-  dateDomainBase: "week" | "month" | "year" = "week",
+  dateDomainBase: DataDomainBaseType = "week",
 ) => {
   svg
     .append("g")
@@ -31,7 +32,7 @@ export const setSparklineXAxis = (
   scale: d3.ScaleTime<number, number, never>,
   tickCount: number,
   height: number,
-  dateDomainBase: "week" | "month" | "year" = "week",
+  dateDomainBase: DataDomainBaseType = "week",
 ) => {
   svg
     .append("g")

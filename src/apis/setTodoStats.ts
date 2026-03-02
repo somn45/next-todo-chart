@@ -5,7 +5,7 @@ import {
   unwindContent,
 } from "./queries/queries";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
-import { TodoStat } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 
 export const setTodoStats = async () => {
   const db = (await connectDB).db("next-todo-chart-cluster");

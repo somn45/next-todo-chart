@@ -1,23 +1,10 @@
 import { GRAPH_LEGEND_PADDING_RIGHT } from "@/constants/graph";
+import {
+  D3ScaleType,
+  DataDomainBaseType,
+  GraphMargin,
+} from "@/types/graph/schema";
 import * as d3 from "d3";
-
-interface GraphMargin {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-}
-
-type dateDomainBaseType = "week" | "month" | "year";
-
-type linearScaleType = {
-  type: "linearScale";
-  linearScale: d3.ScaleLinear<number, number, never>;
-};
-type bandScaleType = {
-  type: "bandScale";
-  bandScale: d3.ScaleBand<string>;
-};
 
 export abstract class Graph {
   protected _svg:
@@ -30,7 +17,7 @@ export abstract class Graph {
     protected width: number,
     protected height: number,
     private graphMargin: GraphMargin,
-    protected dateDomainBase: dateDomainBaseType,
+    protected dateDomainBase: DataDomainBaseType,
     protected texts: string[],
     protected colors: string[],
   ) {
@@ -119,5 +106,5 @@ export abstract class Graph {
     innerHeight: number,
   ): void;
 
-  protected abstract setYAxis(scale: linearScaleType | bandScaleType): void;
+  protected abstract setYAxis(scale: D3ScaleType): void;
 }

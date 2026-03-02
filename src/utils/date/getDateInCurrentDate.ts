@@ -1,3 +1,4 @@
+import { DataDomainBaseType } from "@/types/graph/schema";
 import {
   createDatesOfCurrentMonth,
   createDatesOfCurrentWeek,
@@ -12,7 +13,7 @@ export const getCurrentDateSharp = () =>
     new Date().getDate(),
   );
 
-export const getStartOfPeriod = (periodType: "week" | "month" | "year") => {
+export const getStartOfPeriod = (periodType: DataDomainBaseType) => {
   if (periodType === "year") {
     return getCurrentYearStartDate();
   }
@@ -24,7 +25,7 @@ export const getStartOfPeriod = (periodType: "week" | "month" | "year") => {
   return currentWeekStartDate;
 };
 
-export const getEndOfPeriod = (periodType: "week" | "month" | "year") => {
+export const getEndOfPeriod = (periodType: DataDomainBaseType) => {
   if (periodType === "year") {
     return getCurrentYearEndDate();
   }

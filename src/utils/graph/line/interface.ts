@@ -1,40 +1,15 @@
-import { TodoStat } from "@/types/graph/schema";
+import {
+  DatDataPoint,
+  LegendMarkerLayout,
+  LegendMarkerType,
+  LegendUnitInitCoord,
+} from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 import * as d3 from "d3";
-
-type D3MarkerType = "circle" | "rect";
-
-interface GraphMargin {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-}
-
-interface D3Layout {
-  width: number;
-  height: number;
-  margin: GraphMargin;
-}
-
-interface legendAttr extends D3Layout {
-  radius: number;
-}
-
-interface D3Coord {
-  x: number;
-  y: number;
-  textX: number;
-  textY: number;
-}
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
   data: T[];
-}
-
-interface DataPoint {
-  date: Date;
-  count: number;
 }
 
 export interface GraphMainContent {
@@ -49,7 +24,7 @@ export interface GraphMainContent {
   setLineDataset(
     groupedData: d3.InternMap<string, TodoStat[]>,
     color: d3.ScaleOrdinal<string, string, never>,
-    lineGenerator: d3.Line<DataPoint>,
+    lineGenerator: d3.Line<DatDataPoint>,
   ): void;
 }
 
@@ -59,9 +34,9 @@ export interface GraphSubContent {
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined>;
   setLegendItems(
-    markerType: D3MarkerType,
+    markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    markerLayout: Partial<Omit<legendAttr, "margin">>,
-    initCoord: D3Coord,
+    markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
+    initCoord: LegendUnitInitCoord,
   ): void;
 }

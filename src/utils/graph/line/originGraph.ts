@@ -2,52 +2,19 @@ import * as d3 from "d3";
 import { Graph } from "../graphCore/graphCore";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { caculateTickCount } from "../caculateTickCount";
-import { TodoStat } from "@/types/graph/schema";
-
-type D3MarkerType = "circle" | "rect";
-
-interface GraphMargin {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-}
-
-interface D3Layout {
-  width: number;
-  height: number;
-  margin: GraphMargin;
-}
-
-interface legendAttr extends D3Layout {
-  radius: number;
-}
-
-interface D3Coord {
-  x: number;
-  y: number;
-  textX: number;
-  textY: number;
-}
+import { TodoStat } from "@/types/stats/schema";
+import {
+  D3ScaleType,
+  DatDataPoint,
+  LegendMarkerLayout,
+  LegendMarkerType,
+  LegendUnitInitCoord,
+} from "@/types/graph/schema";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
   data: T[];
 }
-
-interface DataPoint {
-  date: Date;
-  count: number;
-}
-
-type linearScaleType = {
-  type: "linearScale";
-  linearScale: d3.ScaleLinear<number, number, never>;
-};
-type bandScaleType = {
-  type: "bandScale";
-  bandScale: d3.ScaleBand<string>;
-};
 
 export class LineGraph extends Graph {
   protected setXAxis(
@@ -72,7 +39,7 @@ export class LineGraph extends Graph {
       );
   }
 
-  protected setYAxis(scale: linearScaleType | bandScaleType): void {
+  protected setYAxis(scale: D3ScaleType): void {
     if ("linearScale" in scale) {
       this.graphGroup
         .append("g")
@@ -110,7 +77,7 @@ export class LineGraph extends Graph {
   private setLineDataset(
     groupedData: d3.InternMap<string, TodoStat[]>,
     color: d3.ScaleOrdinal<string, string, never>,
-    lineGenerator: d3.Line<DataPoint>,
+    lineGenerator: d3.Line<DatDataPoint>,
   ): void {
     this.graphGroup
       .selectAll(".line")
@@ -147,10 +114,10 @@ export class LineGraph extends Graph {
   }
 
   private setLegendRectMarker(
-    markerType: D3MarkerType,
+    markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    markerLayout: Omit<D3Layout, "margin" | "radius">,
-    coord: Pick<D3Coord, "x" | "y">,
+    markerLayout: Omit<LegendMarkerLayout, "margin" | "radius">,
+    coord: Pick<LegendUnitInitCoord, "x" | "y">,
     color: string,
   ): void {
     const { width, height } = markerLayout;
@@ -169,7 +136,7 @@ export class LineGraph extends Graph {
 
   private setLegendText(
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    coord: Pick<D3Coord, "x" | "y">,
+    coord: Pick<LegendUnitInitCoord, "x" | "y">,
     text: string,
   ): void {
     const { x, y } = coord;
@@ -184,10 +151,10 @@ export class LineGraph extends Graph {
   }
 
   private setLegendItems(
-    markerType: D3MarkerType,
+    markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    markerLayout: Partial<Omit<legendAttr, "margin">>,
-    initCoord: D3Coord,
+    markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
+    initCoord: LegendUnitInitCoord,
   ): void {
     const markerWidth = markerLayout.width ?? 0;
     const markerHeight = markerLayout.height ?? 0;
@@ -263,7 +230,7 @@ export class LineGraph extends Graph {
     this.setYAxis({ type: "linearScale", linearScale: y_scale });
 
     const lineGenerator = d3
-      .line<DataPoint>()
+      .line<DatDataPoint>()
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
 

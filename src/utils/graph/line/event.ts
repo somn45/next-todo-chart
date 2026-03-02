@@ -6,7 +6,7 @@ import {
 } from "@/app/(private)/stats/_utils/lineGraphMouseEvent";
 import { createFollowMouseFocus } from "../eventElement";
 import { caculateGraphLayout } from "../caculateGraphLayout";
-import { TodoStat } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 
 interface GraphMargin {
   left: number;

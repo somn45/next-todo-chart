@@ -10,11 +10,12 @@ import {
   SPARKLINE_HEIGHT,
   SPARKLINE_WIDTH,
 } from "@/constants/graph";
-import { TodoStat } from "@/types/graph/schema";
+import { DataDomainBaseType } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 
 interface LineGraphSparklineProps {
   stats: TodoStat[];
-  dateDomainBase?: "week" | "month" | "year";
+  dateDomainBase?: DataDomainBaseType;
 }
 
 export default function LineGraphSparkline({
