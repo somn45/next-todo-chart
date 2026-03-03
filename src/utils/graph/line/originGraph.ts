@@ -10,6 +10,7 @@ import {
   LegendMarkerType,
   LegendUnitInitCoord,
 } from "@/types/graph/schema";
+import { caculateGraphLayout } from "../caculateGraphLayout";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
@@ -199,7 +200,7 @@ export class LineGraph extends Graph {
     | undefined {
     this.createSvgContainer(graphContainer);
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
-      this.caculateGraphLayout();
+      caculateGraphLayout(this.width, this.height, this.graphMargin);
 
     const groupedStats = d3.group(data, d => d.state);
 

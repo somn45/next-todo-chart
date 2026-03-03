@@ -7,6 +7,7 @@ import {
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import { D3ScaleType } from "@/types/graph/schema";
+import { caculateGraphLayout } from "../caculateGraphLayout";
 
 interface createTimeScaleParams {
   rangeMax: number;
@@ -107,7 +108,11 @@ export class BandSparkline extends Graph {
     graphContainer: HTMLDivElement,
     data: Array<TodosType & SerializedTodo>,
   ) {
-    const { innerWidth, innerHeight } = this.caculateGraphLayout();
+    const { innerWidth, innerHeight } = caculateGraphLayout(
+      this.width,
+      this.height,
+      this.graphMargin,
+    );
 
     this.createSvgContainer(graphContainer);
 

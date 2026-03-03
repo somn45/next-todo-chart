@@ -3,6 +3,7 @@ import { Graph } from "../graphCore/graphCore";
 import { caculateTickCount } from "../caculateTickCount";
 import { TodoStat } from "@/types/stats/schema";
 import { D3ScaleType, DatDataPoint } from "@/types/graph/schema";
+import { caculateGraphLayout } from "../caculateGraphLayout";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
@@ -97,7 +98,11 @@ export class LineSparkline extends Graph {
       data.length,
     );
 
-    const { innerWidth, innerHeight } = this.caculateGraphLayout();
+    const { innerWidth, innerHeight } = caculateGraphLayout(
+      this.width,
+      this.height,
+      this.graphMargin,
+    );
 
     const x_scale = this.createTimeScale({
       rangeMax: innerWidth,

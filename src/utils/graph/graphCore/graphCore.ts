@@ -1,4 +1,3 @@
-import { GRAPH_LEGEND_PADDING_RIGHT } from "@/constants/graph";
 import {
   D3ScaleType,
   DataDomainBaseType,
@@ -16,7 +15,7 @@ export abstract class Graph {
   constructor(
     protected width: number,
     protected height: number,
-    private graphMargin: GraphMargin,
+    protected graphMargin: GraphMargin,
     protected dateDomainBase: DataDomainBaseType,
     protected texts: string[],
     protected colors: string[],
@@ -71,29 +70,6 @@ export abstract class Graph {
       );
     this.svg = svg;
     this.graphGroup = groupGroup;
-  };
-
-  // 그래프 컨테이너 내의 그룹 레이아웃과 title, legend 좌표 계산
-  protected caculateGraphLayout = () => {
-    // graph inner
-    const graphInnerWidth =
-      this.width - this.graphMargin.left - this.graphMargin.right;
-    const graphInnerHeight =
-      this.height - this.graphMargin.top - this.graphMargin.bottom;
-
-    // title 시작 위치
-    const titleStartOffset =
-      this.width - this.graphMargin.left + this.graphMargin.right;
-
-    // legend 시작 위치
-    const legendStartOffset = this.width - GRAPH_LEGEND_PADDING_RIGHT;
-
-    return {
-      innerWidth: graphInnerWidth,
-      innerHeight: graphInnerHeight,
-      titleStartOffset,
-      legendStartOffset,
-    };
   };
 
   // 특정 상태와 매칭되는 그래프 마커(라인, 밴드 등)의 색상 스케일 반환

@@ -13,6 +13,7 @@ import {
   LegendMarkerType,
   LegendUnitInitCoord,
 } from "@/types/graph/schema";
+import { caculateGraphLayout } from "../caculateGraphLayout";
 
 interface createTimeScaleParams {
   rangeMax: number;
@@ -203,7 +204,7 @@ export class BandGraph extends Graph {
     this.createSvgContainer(graphContainer);
 
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
-      this.caculateGraphLayout();
+      caculateGraphLayout(this.width, this.height, this.graphMargin);
 
     this.addTitle(titleStartOffset, "금주 투두 진행 타임라인");
 
