@@ -1,6 +1,6 @@
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";
 import LineGraphContainer from "@/app/(private)/dashboard/@graph/line-graph/LineGraphContainer";
-import { mockStats } from "../../../../__mocks__/stats";
+import { mockTodoStats } from "../../../../__mocks__/stats";
 import { render } from "@testing-library/react";
 import LineGraphSparkline from "@/app/(private)/dashboard/@graph/line-graph/Sparkline";
 
@@ -14,13 +14,13 @@ jest.mock("@/app/(private)/dashboard/@graph/line-graph/Sparkline", () =>
 describe("@graph line-graph LineGraphContainer", () => {
   it("getIntegratedTodos API에서 받은 todo stats를 가공해 스파크라인 그래프를 그리는 컴포넌트에 전달한다.", async () => {
     (getIntegratedTodos as jest.Mock).mockResolvedValue({
-      todoStats: mockStats,
+      todoStats: mockTodoStats,
     });
     const LineGraphContainerComponent = await LineGraphContainer({
       userid: "mockuser",
       searchRange: "month",
     });
-    const lineGraphDatas = mockStats;
+    const lineGraphDatas = mockTodoStats;
 
     render(LineGraphContainerComponent);
     expect(LineGraphSparkline).toHaveBeenCalledWith(

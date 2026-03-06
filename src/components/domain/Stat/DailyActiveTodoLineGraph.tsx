@@ -57,7 +57,7 @@ export default function DailyActiveTodoLineGraph({
       <div style={{ position: "relative" }}>
         <div
           ref={toolTipRef}
-          className="tooltip"
+          data-testid="tooltip"
           style={{
             position: "absolute",
             opacity: 0,

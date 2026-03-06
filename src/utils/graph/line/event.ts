@@ -60,45 +60,71 @@ export class LineGraphMouseEvent {
     return this._tooltipSelection;
   }
 
-  createDatasetFocus(
+  private createDatasetFocus(
     svg: d3.Selection<SVGGElement, unknown, null, undefined>,
     radius: number,
   ) {
     const focus = svg
       .append("g")
       .append("circle")
-      .attr("class", "focus")
+      .attr("data-testid", "focus")
       .attr("fill", "none")
       .attr("stroke", "black")
       .attr("r", radius)
       .style("opacity", 0);
 
+    console.log(focus);
+
     this.focus = focus;
   }
 
+  private getDataPointClosetMousePointer(
+    groupedData: d3.InternMap<string, TodoStat[]>,
+    event: MouseEvent,
+  ) {
+    const [mouseXCoord, mouseYCoord] = d3.pointer(event, this);
+
+    const dateMatchedMouseXCoord = this.scale.x.invert(mouseXCoord);
+
+    const stats = Array.from(groupedData)[0][1];
+    const xAxisKeys = stats.map(stat => stat.date);
+
+    // 마우스 포인터의 x 축과 가장 가까운 데이터셋 index
+    const indexOfMouseYCoord = d3.bisectCenter(
+      xAxisKeys,
+      dateMatchedMouseXCoord,
+    );
+
+    const distancesMouseYCoord = Array.from(groupedData).map(data => {
+      const dataPoint = data[1][indexOfMouseYCoord];
+      return Math.abs(this.scale.y(dataPoint.count) - mouseYCoord);
+    });
+
+    const dataPointClosedYCoord = distancesMouseYCoord.indexOf(
+      Math.min(...distancesMouseYCoord),
+    );
+
+    const target =
+      Array.from(groupedData)[dataPointClosedYCoord][1][indexOfMouseYCoord];
+    return { ...target, y_pixel: this.scale.y(target.count) };
+  }
+
   /** focus와 tooltip이 그래프 스케치 영역으로 들어왔다면 표시 */
-  displayFollowElements(
+  private displayFollowElements(
     tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
   ) {
     [this.focus, tooltip].forEach(element => element.style("opacity", 1));
   }
 
   /** focus와 tooltip의 위치값 설정 */
-  setCoordFocusAndToolTip(
+  private setCoordFocusAndToolTip(
     groupedData: d3.InternMap<string, TodoStat[]>,
     graphScale: TimeBasedLinearScale,
     event: MouseEvent,
   ) {
     const { x_scale, y_scale } = graphScale;
 
-    const target = getDataPointClosetMousePointer(
-      groupedData,
-      {
-        x_scale,
-        y_scale,
-      },
-      event,
-    );
+    const target = this.getDataPointClosetMousePointer(groupedData, event);
     const dateISO8601Type = formatByISO8601(target.date);
 
     this.focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
@@ -111,7 +137,7 @@ export class LineGraphMouseEvent {
   }
 
   /** focus와 tooltip이 그래프 스케치 영역으로 나갔다면 숨김 */
-  hiddenFollowElements(
+  private hiddenFollowElements(
     tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
   ) {
     [this.focus, tooltip].forEach(element => element.style("opacity", 0));

@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { getClosestYOffset } from "./getClosestYOffset";
-import { TodoStat } from "@/types/graph/schema";
+import { TodoStat } from "@/types/stats/schema";
 
 interface TimeBasedLinearScale {
   x_scale: d3.ScaleTime<number, number, never>;
@@ -27,19 +27,17 @@ export const getDataPointClosetMousePointer = (
     dateMatchedMouseXCoord,
   );
 
-  const statsByArray = Array.from(groupedData);
-
-  // bisect 메서드를 통해 마우스 포인터와 가장 가까운 데이터와 y축 좌표를 구한다.
-  const dataPoints = statsByArray.map(stats => {
-    const dataPoint = stats[1][xAxisKeyClosestMouseXCoord];
-    return {
-      date: dataPoint.date,
-      count: dataPoint.count,
-      state: dataPoint.state,
-      y_pixel: y_scale(dataPoint.count),
-    };
+  // 마우스 포인터의 x 축과 가장 가까운 데이터셋 index
+  const statsByDate = Array.from(groupedData).map(data => {
+    const dataPoint = data[1][xAxisKeyClosestMouseXCoord];
+    return Math.abs(y_scale(dataPoint.count) - mouseYCoord);
   });
 
-  const target = getClosestYOffset(dataPoints, mouseYCoord);
-  return target;
+  const dataPointClosedYCoord = statsByDate.indexOf(Math.min(...statsByDate));
+
+  const target =
+    Array.from(groupedData)[dataPointClosedYCoord][1][
+      xAxisKeyClosestMouseXCoord
+    ];
+  return { ...target, y_pixel: y_scale(target.count) };
 };

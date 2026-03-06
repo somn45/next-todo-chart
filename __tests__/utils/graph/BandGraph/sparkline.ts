@@ -26,7 +26,6 @@ describe("BandSparkline Class", () => {
     bandGraph.drowBandSparkline(mockGraphContainer, mockTodos);
 
     const svg = within(mockGraphContainer).getByTestId("svg container");
-    screen.debug(svg);
     expect(svg).toBeTruthy();
     expect(svg).toHaveAttribute("width", SPARKLINE_WIDTH.toString());
     expect(svg).toHaveAttribute("height", SPARKLINE_HEIGHT.toString());

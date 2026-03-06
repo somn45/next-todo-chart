@@ -26,7 +26,6 @@ describe("BandGraph Class", () => {
     bandGraph.drowBandGraph(mockGraphContainer, mockTodos);
 
     const svg = within(mockGraphContainer).getByTestId("svg container");
-    screen.debug(svg);
     expect(svg).toBeTruthy();
     expect(svg).toHaveAttribute("width", GRAPH_WIDTH.toString());
     expect(svg).toHaveAttribute("height", GRAPH_HEIGHT.toString());

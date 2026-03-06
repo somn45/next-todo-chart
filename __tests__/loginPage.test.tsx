@@ -32,7 +32,6 @@ describe("<LoginPage />", () => {
 
     const useridInput = screen.getByLabelText("아이디 입력칸");
     const passwordInput = screen.getByLabelText("비밀번호 입력칸");
-    screen.debug(passwordInput);
 
     await user.type(useridInput, "abc123");
     await user.type(passwordInput, "pasword123");
