@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 import { caculateGraphLayout } from "../caculateGraphLayout";
 import { TodoStat } from "@/types/stats/schema";
-import { getDataPointClosetMousePointer } from "@/app/(private)/stats/_utils/getDataPointClosetMousePointer";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 
 interface GraphMargin {
@@ -30,7 +29,7 @@ export class LineGraphMouseEvent {
       height: number;
       margin: GraphMargin;
     },
-    public svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+    public graphArea: d3.Selection<SVGGElement, unknown, null, undefined>,
     public scale: {
       x: d3.ScaleTime<number, number, never>;
       y: d3.ScaleLinear<number, number, never>;
@@ -73,12 +72,10 @@ export class LineGraphMouseEvent {
       .attr("r", radius)
       .style("opacity", 0);
 
-    console.log(focus);
-
     this.focus = focus;
   }
 
-  public getDataPointClosetMousePointer(
+  private getDataPointClosetMousePointer(
     groupedData: d3.InternMap<string, TodoStat[]>,
     event: MouseEvent,
   ) {
@@ -150,10 +147,11 @@ export class LineGraphMouseEvent {
       margin,
     );
 
-    this.createDatasetFocus(this.svg, 4);
+    this.createDatasetFocus(this.graphArea, 4);
 
-    this.svg
+    this.graphArea
       .append("rect")
+      .attr("data-testid", "event area")
       .attr("fill", "none")
       .style("pointer-events", "all")
       .attr("width", innerWidth)
