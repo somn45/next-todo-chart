@@ -78,11 +78,11 @@ export class LineGraphMouseEvent {
     this.focus = focus;
   }
 
-  private getDataPointClosetMousePointer(
+  public getDataPointClosetMousePointer(
     groupedData: d3.InternMap<string, TodoStat[]>,
     event: MouseEvent,
   ) {
-    const [mouseXCoord, mouseYCoord] = d3.pointer(event, this);
+    const [mouseXCoord, mouseYCoord] = d3.pointer(event, event.currentTarget);
 
     const dateMatchedMouseXCoord = this.scale.x.invert(mouseXCoord);
 
@@ -90,13 +90,10 @@ export class LineGraphMouseEvent {
     const xAxisKeys = stats.map(stat => stat.date);
 
     // 마우스 포인터의 x 축과 가장 가까운 데이터셋 index
-    const indexOfMouseYCoord = d3.bisectCenter(
-      xAxisKeys,
-      dateMatchedMouseXCoord,
-    );
+    const indexOfXAxisKey = d3.bisectCenter(xAxisKeys, dateMatchedMouseXCoord);
 
     const distancesMouseYCoord = Array.from(groupedData).map(data => {
-      const dataPoint = data[1][indexOfMouseYCoord];
+      const dataPoint = data[1][indexOfXAxisKey];
       return Math.abs(this.scale.y(dataPoint.count) - mouseYCoord);
     });
 
@@ -105,7 +102,7 @@ export class LineGraphMouseEvent {
     );
 
     const target =
-      Array.from(groupedData)[dataPointClosedYCoord][1][indexOfMouseYCoord];
+      Array.from(groupedData)[dataPointClosedYCoord][1][indexOfXAxisKey];
     return { ...target, y_pixel: this.scale.y(target.count) };
   }
 
