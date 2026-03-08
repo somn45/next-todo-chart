@@ -31,6 +31,8 @@ export const addTodo = async (
         completedAt: null,
       });
 
+    console.log(db.collection("todos"));
+
     if (!todo) {
       throw new Error("Todo not found");
     }
