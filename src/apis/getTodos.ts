@@ -8,7 +8,7 @@ export const getTodos = async (userid: string | undefined | null) => {
   cacheTag("todos");
 
   if (!userid) {
-    redirect("/login");
+    return redirect("/login");
   }
 
   const db = (await connectDB).db("next-todo-chart-cluster");

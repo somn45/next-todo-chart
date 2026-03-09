@@ -24,6 +24,7 @@ export const editTodo = async (
       throw new Error(`Invalid ObjectId Type ${todoid}`);
     }
 
+    console.log(typeof todoid, typeof new ObjectId(todoid));
     const db = (await connectDB).db("next-todo-chart-cluster");
     const todoDoc = await db
       .collection<WithId<RawTodo["content"]>>("todo")

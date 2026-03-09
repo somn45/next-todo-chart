@@ -2,35 +2,24 @@
  * @jest-environment node
  */
 
-import { updateTodoState } from "@/actions/updateTodoState";
-import { mockTodo } from "../../__mocks__/todos";
-import { connectDB } from "@/libs/database";
-import { revalidateTag } from "next/cache";
-import { ObjectId } from "mongodb";
-
 jest.mock("next/cache", () => ({
   revalidateTag: jest.fn(),
 }));
-jest.mock("@/libs/database", () => {
-  const mockTodo = {
-    _id: "123456789012345678901234",
-    userid: "mockuser",
-    textField: "기존 투두",
-  };
+jest.mock("@/libs/database");
 
-  const mockCollection = {
-    findOne: jest.fn().mockResolvedValue(mockTodo),
-    updateOne: jest.fn(),
-  };
-  const mockDb = {
-    db: jest.fn().mockReturnValue({
-      collection: jest.fn().mockReturnValue(mockCollection),
-    }),
-  };
-  return {
-    connectDB: Promise.resolve(mockDb),
-  };
-});
+import { updateTodoState } from "@/actions/updateTodoState";
+import { revalidateTag } from "next/cache";
+import { ObjectId } from "mongodb";
+import * as database from "@/libs/database";
+import { IMockDatabase } from "@/libs/__mocks__/database";
+
+const { mockCollection } = database as unknown as IMockDatabase;
+
+const mockTodo = {
+  _id: "123456789012345678901234",
+  userid: "mockuser",
+  textField: "기존 투두",
+};
 
 describe("투두의 상태 수정을 담당하는 서버 액션", () => {
   beforeEach(() => {
@@ -45,17 +34,17 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     jest.setSystemTime(MOCK_DATE);
     const updatedAt = MOCK_DATE;
 
+    (mockCollection.findOne as jest.Mock).mockResolvedValue(mockTodo);
+
     await updateTodoState(mockTodo._id, { message: "" }, formData);
 
-    const db = (await connectDB).db("next-todo-chart-cluster");
-
-    expect(db.collection("todo").findOne).toHaveBeenCalledTimes(1);
-    expect(db.collection("todo").findOne).toHaveBeenCalledWith({
+    expect(mockCollection.findOne).toHaveBeenCalledTimes(1);
+    expect(mockCollection.findOne).toHaveBeenCalledWith({
       _id: new ObjectId(mockTodo._id),
     });
 
-    expect(db.collection("todos").updateOne).toHaveBeenCalledTimes(2);
-    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+    expect(mockCollection.updateOne).toHaveBeenCalledTimes(2);
+    expect(mockCollection.updateOne).toHaveBeenCalledWith(
       { _id: new ObjectId(mockTodo._id) },
       {
         $set: {
@@ -64,7 +53,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
         },
       },
     );
-    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+    expect(mockCollection.updateOne).toHaveBeenCalledWith(
       { _id: new ObjectId(mockTodo._id) },
       {
         $set: {
@@ -90,17 +79,17 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     jest.setSystemTime(MOCK_DATE);
     const updatedAt = MOCK_DATE;
 
+    (mockCollection.findOne as jest.Mock).mockResolvedValue(mockTodo);
+
     await updateTodoState(mockTodo._id, { message: "" }, formData);
 
-    const db = (await connectDB).db("next-todo-chart-cluster");
-
-    expect(db.collection("todo").findOne).toHaveBeenCalledTimes(1);
-    expect(db.collection("todo").findOne).toHaveBeenCalledWith({
+    expect(mockCollection.findOne).toHaveBeenCalledTimes(1);
+    expect(mockCollection.findOne).toHaveBeenCalledWith({
       _id: new ObjectId(mockTodo._id),
     });
 
-    expect(db.collection("todos").updateOne).toHaveBeenCalledTimes(2);
-    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+    expect(mockCollection.updateOne).toHaveBeenCalledTimes(2);
+    expect(mockCollection.updateOne).toHaveBeenCalledWith(
       { _id: new ObjectId(mockTodo._id) },
       {
         $set: {
@@ -109,7 +98,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
         },
       },
     );
-    expect(db.collection("todos").updateOne).toHaveBeenCalledWith(
+    expect(mockCollection.updateOne).toHaveBeenCalledWith(
       { _id: new ObjectId(mockTodo._id) },
       {
         $set: {
@@ -134,19 +123,16 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
       formData,
     );
 
-    const db = (await connectDB).db("next-todo-chart-cluster");
-
     expect(updateTodoStateActionState.message).toEqual(
       "투두 상태 수정 과정 중 에러가 발생했습니다. Invalid ObjectId Type 22",
     );
-    expect(db.collection("todo").findOne).not.toHaveBeenCalled();
-    expect(db.collection("todo").updateOne).not.toHaveBeenCalled();
+    expect(mockCollection.findOne).not.toHaveBeenCalled();
+    expect(mockCollection.updateOne).not.toHaveBeenCalled();
     expect(revalidateTag).not.toHaveBeenCalled();
   });
 
   it("투두 문서 조회 결과가 null이나 undefined일 경우 Todo not found 에러를 던진다.", async () => {
-    const db = (await connectDB).db("next-todo-chart-cluster");
-    (db.collection("todo").findOne as jest.Mock).mockResolvedValue(null);
+    (mockCollection.findOne as jest.Mock).mockResolvedValue(null);
 
     const formData = new FormData();
     formData.set("state", "진행 중");
@@ -160,13 +146,12 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     expect(updateTodoStateActionState.message).toEqual(
       "투두 상태 수정 과정 중 에러가 발생했습니다. Todo not found",
     );
-    expect(db.collection("todo").updateOne).not.toHaveBeenCalled();
+    expect(mockCollection.updateOne).not.toHaveBeenCalled();
     expect(revalidateTag).not.toHaveBeenCalled();
   });
 
   it("변경된 투두의 상태와 이전 투두의 상태가 같은 경우 사용자에게 메세지를 반환한다.", async () => {
-    const db = (await connectDB).db("next-todo-chart-cluster");
-    (db.collection("todo").findOne as jest.Mock).mockResolvedValue({
+    (mockCollection.findOne as jest.Mock).mockResolvedValue({
       _id: mockTodo._id,
       state: "진행 중",
     });
@@ -183,7 +168,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     expect(updateTodoStateActionState.message).toEqual(
       "할 일의 상태가 이전과 다르지 않습니다.",
     );
-    expect(db.collection("todo").updateOne).not.toHaveBeenCalled();
+    expect(mockCollection.updateOne).not.toHaveBeenCalled();
     expect(revalidateTag).not.toHaveBeenCalled();
   });
 });

@@ -15,7 +15,7 @@ export interface TodoRefer {
 
 export interface RawTodo {
   content: {
-    _id: string;
+    _id: ObjectId;
     userid: string;
     textField: string;
     state: "할 일" | "진행 중" | "완료";

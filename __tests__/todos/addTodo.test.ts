@@ -6,8 +6,9 @@ jest.mock("@/libs/database.ts");
 import { addTodo } from "@/actions/addTodo";
 import { revalidateTag } from "next/cache";
 import * as database from "@/libs/database";
-// @ts-ignore
-const { mockCollection } = database;
+import { IMockDatabase } from "@/libs/__mocks__/database";
+
+const { mockCollection } = database as unknown as IMockDatabase;
 
 const mockTodo = {
   insertedId: "123456789012345678901234",

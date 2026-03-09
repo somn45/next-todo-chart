@@ -2,58 +2,51 @@
  * @jest-environment node
  */
 
+jest.mock("@/libs/database");
+jest.mock("next/navigation");
+
 import { getTodos } from "@/apis/getTodos";
-import { mockTodos } from "../../__mocks__/todos";
 import { redirect } from "next/navigation";
+import * as database from "@/libs/database";
+import { IMockDatabase } from "@/libs/__mocks__/database";
 
-jest.mock("@/libs/database", () => {
-  jest.mock("next/navigation");
+const { mockCollection } = database as unknown as IMockDatabase;
 
-  const mockAggregate = {
-    toArray: jest.fn().mockResolvedValue([
-      {
-        _id: "1",
-        author: "mockuser",
-        content: {
-          _id: "1",
-          userid: "mockuser",
-          textField: "mock text",
-          state: "완료",
-          createdAt: new Date(2025, 6, 10).toISOString(),
-          updatedAt: new Date(2025, 6, 12),
-          completedAt: new Date(2025, 6, 15),
-        },
-      },
-      {
-        _id: "2",
-        author: "mockuser",
-        content: {
-          _id: "2",
-          userid: "mockuser",
-          textField: "hello world",
-          state: "진행 중",
-          createdAt: new Date(2025, 6, 13).toISOString(),
-          updatedAt: new Date(2025, 6, 14),
-          completedAt: null,
-        },
-      },
-    ]),
-  };
-  const mockCollection = {
-    aggregate: jest.fn().mockReturnValue(mockAggregate),
-  };
-  const mockDb = {
-    db: jest.fn().mockReturnValue({
-      collection: jest.fn().mockReturnValue(mockCollection),
-    }),
-  };
-  return {
-    connectDB: Promise.resolve(mockDb),
-  };
-});
+const mockTodos = [
+  {
+    _id: "1",
+    author: "mockuser",
+    content: {
+      _id: "1",
+      userid: "mockuser",
+      textField: "mock text",
+      state: "완료",
+      createdAt: new Date(2025, 6, 10).toISOString(),
+      updatedAt: new Date(2025, 6, 12).toISOString(),
+      completedAt: new Date(2025, 6, 15).toISOString(),
+    },
+  },
+  {
+    _id: "2",
+    author: "mockuser",
+    content: {
+      _id: "2",
+      userid: "mockuser",
+      textField: "hello world",
+      state: "진행 중",
+      createdAt: new Date(2025, 6, 13).toISOString(),
+      updatedAt: new Date(2025, 6, 14).toISOString(),
+      completedAt: null,
+    },
+  },
+];
 
 describe("getTodos API", () => {
   it("getTodos API 함수는 로그인 중인 사용자의 전체 투두리스트 목록을 반환한다.", async () => {
+    (mockCollection.aggregate().toArray as jest.Mock).mockResolvedValue(
+      mockTodos,
+    );
+
     const todos = await getTodos("mockuser");
     expect(todos).toEqual(mockTodos);
   });
