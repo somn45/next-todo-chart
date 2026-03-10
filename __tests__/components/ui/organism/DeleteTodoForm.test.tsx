@@ -1,15 +1,11 @@
-import { deleteTodo } from "@/actions/deleteTodo";
-import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-
-jest.mock("@/libs/database", () => ({
-  connectDB: jest.fn().mockResolvedValue({
-    db: jest.fn(),
-  }),
-}));
+jest.mock("@/libs/database");
 jest.mock("@/actions/deleteTodo", () => ({
   deleteTodo: jest.fn(),
 }));
+
+import { deleteTodo } from "@/actions/deleteTodo";
+import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 describe("<DeleteForm />", () => {
   it("삭제 대상 todo에서 삭제 버튼을 누를 경우 deleteTodo 서버 액션이 호출된다.", () => {

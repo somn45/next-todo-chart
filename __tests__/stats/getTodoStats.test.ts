@@ -1,44 +1,33 @@
-import { getTodoStats } from "@/apis/getTodoStats";
-import { connectDB } from "@/libs/database";
-import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
-import { redirect } from "next/navigation";
-import { mockTodoStats } from "../../__mocks__/stats";
-
 jest.useFakeTimers();
 jest.setSystemTime(new Date(2025, 6, 8));
-jest.mock("@/libs/database", () => {
-  return {
-    connectDB: Promise.resolve({
-      db: jest.fn().mockReturnValue({
-        collection: jest.fn().mockReturnValue({
-          aggregate: jest.fn().mockReturnValue({
-            toArray: jest.fn(),
-          }),
-        }),
-      }),
-    }),
-  };
-});
+jest.mock("@/libs/database");
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
+
+import { getTodoStats } from "@/apis/getTodoStats";
+import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
+import { redirect } from "next/navigation";
+import { mockTodoStats } from "../../__mocks__/stats";
+import * as database from "@/libs/database";
+import { IMockDatabase } from "@/libs/__mocks__/database";
+
+const { mockCollection } = database as unknown as IMockDatabase;
 
 describe("getTodoStats API", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
   it("getTodoStats 함수가 실행될 경우 최근 7일에 해당하는 Todo Stat 목록을 반환한다.", async () => {
-    const db = (await connectDB).db("next-todo-chart-cluster");
-    const statCollection = db.collection("stat");
-    (statCollection.aggregate as jest.Mock).mockReturnValue({
+    (mockCollection.aggregate as jest.Mock).mockReturnValue({
       toArray: jest.fn().mockResolvedValue(mockTodoStats),
     });
 
     const todoStats = await getTodoStats("mockuser", "month");
     const searchRange = "month";
 
-    expect(statCollection.aggregate).toHaveBeenCalledTimes(1);
-    expect(statCollection.aggregate).toHaveBeenCalledWith([
+    expect(mockCollection.aggregate).toHaveBeenCalledTimes(1);
+    expect(mockCollection.aggregate).toHaveBeenCalledWith([
       {
         $match: { date: { $in: getDatesLastlyPeriod(searchRange) } },
       },
@@ -59,7 +48,6 @@ describe("getTodoStats 에러 핸들링 테스트", () => {
     expect(redirect).toHaveBeenCalledTimes(1);
     expect(redirect).toHaveBeenCalledWith("/login");
 
-    const db = (await connectDB).db("next-todo-chart-cluster");
-    expect(db.collection("stat").aggregate).not.toHaveBeenCalled();
+    expect(mockCollection.aggregate).not.toHaveBeenCalled();
   });
 });

@@ -1,20 +1,4 @@
-jest.mock("@/libs/database", () => {
-  const mockCollection = {
-    findOne: jest.fn().mockResolvedValue({
-      userid: "abc123",
-      password: "password123",
-    }),
-    findOneAndUpdate: jest.fn(),
-  };
-  const mockDb = {
-    collection: jest.fn().mockReturnValue(mockCollection),
-  };
-  return {
-    connectDB: Promise.resolve({
-      db: jest.fn().mockReturnValue(mockDb),
-    }),
-  };
-});
+jest.mock("@/libs/database");
 jest.mock("@/utils/validateUser");
 jest.mock("next/navigation", () => {
   const nextNavigationModule = jest.requireActual("next/navigation");
@@ -46,19 +30,26 @@ import { login } from "@/actions/login";
 import { validateUser } from "@/utils/validateUser";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import * as database from "@/libs/database";
+import { IMockDatabase } from "@/libs/__mocks__/database";
+
+const { mockCollection } = database as unknown as IMockDatabase;
 
 describe("login 서버 액션", () => {
   it("제출된 로그인 양식이 검증 통과 시 redirect를 호출한다.", async () => {
     (validateUser as jest.Mock).mockReturnValue("");
+    (mockCollection.findOne as jest.Mock).mockResolvedValue({
+      userid: "mockuser",
+    });
     const formData = new FormData();
-    formData.set("userid", "abc123");
-    formData.set("password", "password123");
+    formData.set("userid", "mockuser");
+    formData.set("password", "mockpassword");
     await login({ message: "" }, formData);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith("http://localhost:3000/api/token", {
       method: "POST",
-      body: JSON.stringify("abc123"),
+      body: JSON.stringify("mockuser"),
     });
     expect(redirect).toHaveBeenCalledTimes(1);
 

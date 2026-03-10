@@ -1,28 +1,9 @@
+jest.mock("@/libs/database");
 import { join } from "@/actions/join";
 import JoinForm from "@/components/ui/organisms/JoinForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("@/actions/join");
-jest.mock("@/libs/database", () => {
-  const mockCollection = {
-    find: jest.fn().mockReturnValue({
-      toArray: jest.fn().mockResolvedValue([]),
-    }),
-    findOne: jest.fn().mockReturnValue({
-      toArray: jest.fn().mockResolvedValue("mockuser"),
-    }),
-    insertOne: jest.fn().mockReturnValue({}),
-  };
-  const mockDb = {
-    db: jest.fn().mockReturnValue({
-      collection: jest.fn().mockReturnValue(mockCollection),
-      createCollection: jest.fn(),
-    }),
-  };
-  return {
-    connectDB: Promise.resolve(mockDb),
-  };
-});
 
 describe("<JoinPage />", () => {
   it("Form 제출 후 useActionState 인자에 할당된 서버 액션이 호출된다.", async () => {

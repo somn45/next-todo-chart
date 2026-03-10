@@ -1,25 +1,10 @@
+jest.mock("@/libs/database");
+jest.mock("@/actions/login");
+
 import { login } from "@/actions/login";
 import LoginForm from "@/components/ui/organisms/LoginForm";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-import { act } from "react";
-
-jest.mock("@/libs/database", () => {
-  const mockCollection = {
-    findOne: jest.fn().mockReturnValue("mockuser"),
-    findOneAndUpdate: jest.fn(),
-  };
-  const mockDb = {
-    db: jest.fn().mockReturnValue({
-      collection: jest.fn().mockReturnValue(mockCollection),
-      createCollection: jest.fn(),
-    }),
-  };
-  return {
-    connectDB: Promise.resolve(mockDb),
-  };
-});
-jest.mock("@/actions/login");
 
 describe("<LoginPage />", () => {
   it("로그인 양식 제출 후 검증 실패 사유 메세지가 출력된다.", async () => {

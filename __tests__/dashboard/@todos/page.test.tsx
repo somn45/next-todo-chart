@@ -1,8 +1,4 @@
-import { render } from "@testing-library/react";
-
-jest.mock("@/libs/database", () => ({
-  connectDB: jest.fn(),
-}));
+jest.mock("@/libs/database");
 jest.mock("@/apis/getIntegratedTodos", () => ({
   getIntegratedTodos: jest.fn().mockResolvedValue([]),
 }));
@@ -17,6 +13,8 @@ jest.mock("@/components/ui/organisms/AddTodoForm", () =>
 jest.mock("@/components/domain/Todo/TodoWrapper", () =>
   jest.fn(props => <div data-testid="todo-wrapper"></div>),
 );
+
+import { render } from "@testing-library/react";
 
 import DashBoardTodos from "@/app/(private)/dashboard/@todos/default";
 import { getIntegratedTodos } from "@/apis/getIntegratedTodos";

@@ -1,21 +1,4 @@
-jest.mock("@/libs/database", () => {
-  const mockCollection = {
-    find: jest.fn().mockReturnValue({
-      toArray: jest.fn().mockResolvedValue([]),
-    }),
-    insertOne: jest.fn().mockResolvedValue({}),
-    findOne: jest.fn().mockResolvedValue({}),
-  };
-  const mockDb = {
-    collection: jest.fn().mockReturnValue(mockCollection),
-    createCollection: jest.fn(),
-  };
-  return {
-    connectDB: Promise.resolve({
-      db: jest.fn().mockReturnValue(mockDb),
-    }),
-  };
-});
+jest.mock("@/libs/database");
 jest.mock("@/utils/validateUser");
 jest.mock("next/navigation", () => {
   const nextNavigationModule = jest.requireActual("next/navigation");

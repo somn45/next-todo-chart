@@ -1,5 +1,8 @@
 export interface IMockDatabase {
   mockCollection: {
+    find: () => {
+      toArray: jest.Mock;
+    };
     findOne: jest.Mock;
     findOneAndUpdate: jest.Mock;
     insertOne: jest.Mock;
@@ -13,6 +16,9 @@ export interface IMockDatabase {
 }
 
 export const mockCollection = {
+  find: jest.fn().mockReturnValue({
+    toArray: jest.fn(),
+  }),
   findOne: jest.fn(),
   findOneAndUpdate: jest.fn(),
   insertOne: jest.fn(),

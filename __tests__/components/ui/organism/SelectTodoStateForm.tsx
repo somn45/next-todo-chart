@@ -1,16 +1,12 @@
+jest.mock("@/libs/database");
+jest.mock("@/actions/updateTodoState", () => ({
+  updateTodoState: jest.fn(),
+}));
+
 import { fireEvent, render, screen } from "@testing-library/react";
 import { mockTodo } from "../../../../__mocks__/todos";
 import { updateTodoState } from "@/actions/updateTodoState";
 import SelectTodoStateForm from "@/components/ui/organisms/SelectTodoStateForm";
-
-jest.mock("@/libs/database", () => ({
-  connectDB: Promise.resolve({
-    db: jest.fn(),
-  }),
-}));
-jest.mock("@/actions/updateTodoState", () => ({
-  updateTodoState: jest.fn(),
-}));
 
 describe("<TodoStateForm />", () => {
   it("상태 버튼 클릭 시 상태 속성이 포함된 formData와 함께 서버 액션이 호출된다.", () => {

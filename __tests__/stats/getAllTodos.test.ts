@@ -1,8 +1,21 @@
+jest.mock("@/libs/database");
+jest.mock("next/headers", () => ({
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("mockuser"),
+  }),
+}));
+jest.mock("next/navigation", () => ({
+  redirect: jest.fn(),
+}));
+
 import { getAllTodos } from "@/apis/getAllTodos";
-import { connectDB } from "@/libs/database";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import * as database from "@/libs/database";
+import { IMockDatabase } from "@/libs/__mocks__/database";
+
+const { mockCollection } = database as unknown as IMockDatabase;
 
 const mockTodos: Array<TodosType & SerializedTodo> = [
   {
@@ -46,38 +59,13 @@ const mockTodos: Array<TodosType & SerializedTodo> = [
   },
 ];
 
-jest.mock("@/libs/database", () => {
-  const mockCollection = {
-    aggregate: jest.fn().mockReturnValue({
-      toArray: jest.fn().mockResolvedValue([]),
-    }),
-  };
-  const mockDb = {
-    db: jest.fn().mockReturnValue({
-      collection: jest.fn().mockReturnValue(mockCollection),
-    }),
-  };
-  return {
-    connectDB: Promise.resolve(mockDb),
-  };
-});
-jest.mock("next/headers", () => ({
-  headers: jest.fn().mockResolvedValue({
-    get: jest.fn().mockReturnValue("mockuser"),
-  }),
-}));
-jest.mock("next/navigation", () => ({
-  redirect: jest.fn(),
-}));
-
 describe("getAllTodos API", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("getAllTodos 함수가 실행될 경우 오늘 날짜에 해당되는 금주에 활성화된 투두 목록을 반환한다.", async () => {
-    const db = (await connectDB).db("next-todo-chart-cluster");
-    (db.collection("todos").aggregate as jest.Mock).mockReturnValue({
+    (mockCollection.aggregate as jest.Mock).mockReturnValue({
       toArray: jest.fn().mockResolvedValue(mockTodos),
     });
 
@@ -109,9 +97,8 @@ describe("getAllTodos API", () => {
 
     const todos = await getAllTodos("mockuser");
 
-    const todosCollection = db.collection("todos");
-    expect(todosCollection.aggregate).toHaveBeenCalledTimes(1);
-    expect(todosCollection.aggregate).toHaveBeenCalledWith([
+    expect(mockCollection.aggregate).toHaveBeenCalledTimes(1);
+    expect(mockCollection.aggregate).toHaveBeenCalledWith([
       {
         $match: {
           author: "mockuser",
@@ -166,7 +153,6 @@ describe("getAllTodos 에러 핸들링 테스트", () => {
     expect(redirect).toHaveBeenCalledTimes(1);
     expect(redirect).toHaveBeenCalledWith("/login");
 
-    const db = (await connectDB).db("next-todo-chart-cluster");
-    expect(db.collection("todos").aggregate).not.toHaveBeenCalled();
+    expect(mockCollection.aggregate).not.toHaveBeenCalled();
   });
 });

@@ -1,15 +1,11 @@
-import { addTodo } from "@/actions/addTodo";
-import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-
-jest.mock("@/libs/database", () => ({
-  connectDB: jest.fn().mockResolvedValue({
-    db: jest.fn(),
-  }),
-}));
+jest.mock("@/libs/database");
 jest.mock("@/actions/addTodo", () => ({
   addTodo: jest.fn(),
 }));
+
+import { addTodo } from "@/actions/addTodo";
+import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 describe("<TodosForm", () => {
   it("투두 입력 후 Form 제출 시 addTodo 서버 액션이 호출된다.", () => {

@@ -16,6 +16,8 @@ export const getTodoStats = async (
 
   const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);
 
+  console.log(dateListLastlyPeriod);
+
   const stats = (await db
     .collection("stats")
     .aggregate([

@@ -10,8 +10,8 @@ export const getDatesLastlyPeriod = (periodType: DataDomainBaseType) => {
 };
 
 /**
- * 최근 1주에 해당하는 날짜 배열 생성
- * 예: 오늘이 12/10이라면
+ * 최근 1주 범위의 날짜 배열 생성
+ * 예시: 오늘이 12/10이라면
  * 12/3 ~ 12/9 날짜가 포함된 배열을 return
  */
 export const createDatesLastlyWeek = () => {
@@ -25,6 +25,7 @@ export const createDatesLastlyWeek = () => {
   return dateListLastlyWeek;
 };
 
+/** 최근 1개월 범위의 날짜 배열 생성 */
 export const createDatesLastlyMonth = () => {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
@@ -41,6 +42,7 @@ export const createDatesLastlyMonth = () => {
   return dateListLastlyMonth;
 };
 
+/** 최근 1년 범위의 날짜 배열 생성 */
 export const createDatesLastlyYear = () => {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();

@@ -2,11 +2,7 @@ import { editTodo } from "@/actions/editTodo";
 import EditTodoForm from "@/components/ui/organisms/EditTodoForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-jest.mock("@/libs/database", () => ({
-  connectDB: jest.fn().mockResolvedValue({
-    db: jest.fn(),
-  }),
-}));
+jest.mock("@/libs/database");
 jest.mock("@/actions/editTodo", () => ({
   editTodo: jest.fn(),
 }));
