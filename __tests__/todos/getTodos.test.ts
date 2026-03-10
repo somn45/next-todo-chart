@@ -41,7 +41,7 @@ const mockTodos = [
   },
 ];
 
-describe("getTodos API", () => {
+describe("getTodos API 성공 테스트", () => {
   it("getTodos API 함수는 로그인 중인 사용자의 전체 투두리스트 목록을 반환한다.", async () => {
     (mockCollection.aggregate().toArray as jest.Mock).mockResolvedValue(
       mockTodos,
@@ -50,6 +50,9 @@ describe("getTodos API", () => {
     const todos = await getTodos("mockuser");
     expect(todos).toEqual(mockTodos);
   });
+});
+
+describe("getTodos API 엣지 케이스 테스트", () => {
   it("userid가 없을 경우 로그인 페이지로 리디렉션하는 함수를 호출한다", async () => {
     await getTodos(null);
     expect(redirect).toHaveBeenCalledTimes(1);

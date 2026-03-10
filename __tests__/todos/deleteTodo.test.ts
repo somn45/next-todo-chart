@@ -22,10 +22,7 @@ const mockTodo = {
   textField: "hello world!",
 };
 
-describe("deleteTodo 서버 액션", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+describe("deleteTodo Server Action 성공 테스트", () => {
   it("deleteTodo 서버 액션이 실행되면 DB 삭제 쿼리, todo 캐시 함수가 호출된다.", async () => {
     const formData = new FormData();
     formData.set("todo-id", mockTodo._id);
@@ -47,6 +44,12 @@ describe("deleteTodo 서버 액션", () => {
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
     expect(revalidateTag).toHaveBeenCalledWith("dashboard");
+  });
+});
+
+describe("deleteTodo Server Action 엣지 케이스 테스트", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {

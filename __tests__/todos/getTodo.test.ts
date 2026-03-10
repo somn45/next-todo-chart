@@ -18,15 +18,18 @@ const mockTodo = {
   textField: "hello world!",
 };
 
-describe("getTodo API", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+describe("getTodo API 성공 테스트", () => {
   it("getTodo API에서 todo ID를 받고 해당 ID와 매치되는 단일 투두 객체를 반환한다. ", async () => {
     (mockCollection.aggregate().next as jest.Mock).mockResolvedValue(mockTodo);
 
     const todo = await getTodo("mockuser", "123456789012345678901234");
     expect(todo).toEqual(mockTodo);
+  });
+});
+
+describe("getTodo API 엣지 케이스 테스트", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it("userid가 없을 경우 로그인 페이지로 리디렉션하는 함수를 호출한다.", async () => {

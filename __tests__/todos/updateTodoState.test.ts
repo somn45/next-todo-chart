@@ -21,17 +21,18 @@ const mockTodo = {
   textField: "기존 투두",
 };
 
-describe("투두의 상태 수정을 담당하는 서버 액션", () => {
+const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
+
+describe("updateTodoState Server Action 성공 테스트", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(MOCK_DATE);
     jest.clearAllMocks();
   });
   it("updateTodoState 서버 액션이 실행되면 formData로부터 받은 state를 투두 상태로 갱신된다.", async () => {
     const formData = new FormData();
     formData.set("state", "진행 중");
 
-    jest.useFakeTimers();
-    const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
-    jest.setSystemTime(MOCK_DATE);
     const updatedAt = MOCK_DATE;
 
     (mockCollection.findOne as jest.Mock).mockResolvedValue(mockTodo);
@@ -67,16 +68,12 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     expect(revalidateTag).toHaveBeenCalledWith("todos");
     expect(revalidateTag).toHaveBeenCalledWith("dashboard");
   });
-
   it("만약 FormData에 완료 상태가 담겨있다면 completedAt 속성을 변경하는 쓰기 함수가 호출된다.", async () => {
     const formData = new FormData();
     formData.set("state", "완료");
 
-    const AFTER_TEN_MINUTES = 1000 * 60 * 10;
+    const GRACE_PERIOD = 1000 * 60 * 10;
 
-    jest.useFakeTimers();
-    const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
-    jest.setSystemTime(MOCK_DATE);
     const updatedAt = MOCK_DATE;
 
     (mockCollection.findOne as jest.Mock).mockResolvedValue(mockTodo);
@@ -102,7 +99,7 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
       { _id: new ObjectId(mockTodo._id) },
       {
         $set: {
-          completedAt: new Date(Date.now() + AFTER_TEN_MINUTES),
+          completedAt: new Date(Date.now() + GRACE_PERIOD),
         },
       },
     );
@@ -111,6 +108,12 @@ describe("투두의 상태 수정을 담당하는 서버 액션", () => {
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
     expect(revalidateTag).toHaveBeenCalledWith("dashboard");
+  });
+});
+
+describe("updateTodoState Server Action 엣지 케이스 테스트", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it("인수로 받는 todoid가 없거나 ObjectId 타입 할당에 적절하지 않은 경우 에러를 던진다.", async () => {

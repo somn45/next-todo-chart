@@ -13,12 +13,14 @@ export interface TodoRefer {
   content: ObjectId[];
 }
 
+export type StateType = "할 일" | "진행 중" | "완료";
+
 export interface RawTodo {
   content: {
     _id: ObjectId;
     userid: string;
     textField: string;
-    state: "할 일" | "진행 중" | "완료";
+    state: StateType;
     createdAt: Date;
     updatedAt: Date;
     completedAt: Date | null;
@@ -30,7 +32,7 @@ export interface SerializedTodo {
     _id: string;
     userid: string;
     textField: string;
-    state: "할 일" | "진행 중" | "완료";
+    state: StateType;
     createdAt: string;
     updatedAt: string;
     completedAt: string | null;

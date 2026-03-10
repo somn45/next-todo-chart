@@ -8,7 +8,6 @@ jest.mock("next/cache", () => ({
 jest.mock("@/libs/database");
 
 import { editTodo } from "@/actions/editTodo";
-import { connectDB } from "@/libs/database";
 import { revalidateTag } from "next/cache";
 import { ObjectId } from "mongodb";
 
@@ -28,10 +27,15 @@ const mockEditedTodo = {
   textField: "수정된 투두",
 };
 
-describe("editTodo 서버 액션", () => {
+const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
+
+describe("editTodo Server Action 성공 테스트", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(MOCK_DATE);
     jest.clearAllMocks();
   });
+
   it("editTodo 서버 액션이 실행되면 DB 수정 쿼리, todo 캐시 함수가 호출된다.", async () => {
     const formData = new FormData();
     formData.set("todo", "수정된 투두");
@@ -39,9 +43,6 @@ describe("editTodo 서버 액션", () => {
     (mockCollection.findOne as jest.Mock).mockResolvedValue(mockTodo);
     (mockCollection.updateOne as jest.Mock).mockResolvedValue(mockEditedTodo);
 
-    jest.useFakeTimers();
-    const MOCK_DATE = new Date("2025-11-14T00:00:00.000Z");
-    jest.setSystemTime(MOCK_DATE);
     const updatedAt = MOCK_DATE;
 
     await editTodo(
@@ -70,6 +71,14 @@ describe("editTodo 서버 액션", () => {
     expect(revalidateTag).toHaveBeenCalledWith(`todo-${mockTodo._id}`);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
     expect(revalidateTag).toHaveBeenCalledWith("dashboard");
+  });
+});
+
+describe("editTodo Server Action 엣지 케이스 테스트", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(MOCK_DATE);
+    jest.clearAllMocks();
   });
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {

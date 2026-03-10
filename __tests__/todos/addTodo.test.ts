@@ -16,10 +16,7 @@ const mockTodo = {
   textField: "hello world!",
 };
 
-describe("addTodo 서버 액션", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+describe("addTodo Server Action 성공 테스트", () => {
   it("addTodo 서버 액션이 실행되면 todo 추가 쿼리, 캐시 함수가 호출된다.", async () => {
     const formData = new FormData();
     formData.set("newTodo", "새 투두");
@@ -54,6 +51,12 @@ describe("addTodo 서버 액션", () => {
     expect(revalidateTag).toHaveBeenCalledTimes(2);
     expect(revalidateTag).toHaveBeenCalledWith("todos");
     expect(revalidateTag).toHaveBeenCalledWith("dashboard");
+  });
+});
+
+describe("addTodo Server Action 엣지 케이스 테스트", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it("인수로 받은 userid가 없을 경우 에러 메세지를 반환한다.", async () => {
