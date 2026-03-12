@@ -59,8 +59,12 @@ const mockTodos: Array<TodosType & SerializedTodo> = [
   },
 ];
 
+const MOCK_DATE = new Date("2025-06-10T00:00:00.000Z");
+
 describe("getAllTodos API", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(MOCK_DATE);
     jest.clearAllMocks();
   });
 
@@ -69,14 +73,15 @@ describe("getAllTodos API", () => {
       toArray: jest.fn().mockResolvedValue(mockTodos),
     });
 
-    const currentDay = new Date().getDay();
+    const currentDate = MOCK_DATE;
+    const currentDay = currentDate.getDay();
     const currentWeekArray = Array.from(
       { length: 7 },
       (_, i) => i - currentDay,
     );
     const currentWeek = currentWeekArray.map(ele => {
       const ONE_DAY = 1000 * 60 * 60 * 24;
-      return new Date(Date.now() + ONE_DAY * ele);
+      return new Date(currentDate.getTime() + ONE_DAY * ele);
     });
 
     const currentWeekStartDate = new Date(
@@ -141,7 +146,7 @@ describe("getAllTodos API", () => {
   });
 });
 
-describe("getAllTodos 에러 핸들링 테스트", () => {
+describe("getAllTodos 엣지 케이스 테스트", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

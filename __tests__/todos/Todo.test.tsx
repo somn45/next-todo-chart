@@ -1,4 +1,3 @@
-import { getTodo } from "@/apis/getTodo";
 import TodoPage from "@/components/domain/Todo/Todo";
 import { SerializedTodo, StateType } from "@/types/todos/schema";
 import { render, screen } from "@testing-library/react";

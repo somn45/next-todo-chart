@@ -1,7 +1,4 @@
-import {
-  createDatesLastlyWeek,
-  getDatesLastlyPeriod,
-} from "@/utils/date/createDatesLastlyWeek";
+import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 
 jest.useFakeTimers();
 jest.setSystemTime(new Date(2025, 6, 10));

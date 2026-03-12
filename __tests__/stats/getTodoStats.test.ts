@@ -1,5 +1,5 @@
 jest.useFakeTimers();
-jest.setSystemTime(new Date(2025, 6, 8));
+jest.setSystemTime(new Date(2026, 0, 20));
 jest.mock("@/libs/database");
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
@@ -8,23 +8,144 @@ jest.mock("next/navigation", () => ({
 import { getTodoStats } from "@/apis/getTodoStats";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
-import { mockTodoStats } from "../../__mocks__/stats";
 import * as database from "@/libs/database";
 import { IMockDatabase } from "@/libs/__mocks__/database";
 
 const { mockCollection } = database as unknown as IMockDatabase;
+
+import { TodoStat } from "@/types/stats/schema";
+
+// 전체 통계 데이터
+export const mockTodoStats: TodoStat[] = [
+  {
+    date: new Date(2026, 0, 14),
+    state: "할 일",
+    count: 7,
+  },
+  {
+    date: new Date(2026, 0, 14),
+    state: "진행 중",
+    count: 3,
+  },
+  {
+    date: new Date(2026, 0, 14),
+    state: "완료",
+    count: 5,
+  },
+  {
+    date: new Date(2026, 0, 14),
+    state: "총합",
+    count: 14,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "할 일",
+    count: 7,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "진행 중",
+    count: 3,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "완료",
+    count: 5,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "총합",
+    count: 14,
+  },
+  {
+    date: new Date(2026, 0, 23),
+    state: "할 일",
+    count: 7,
+  },
+  {
+    date: new Date(2026, 0, 23),
+    state: "진행 중",
+    count: 3,
+  },
+  {
+    date: new Date(2026, 0, 23),
+    state: "완료",
+    count: 5,
+  },
+  {
+    date: new Date(2026, 0, 23),
+    state: "총합",
+    count: 14,
+  },
+];
+
+/*
+  mockTodoStats 중 2026-01-20 날짜에서 최근 7일 내 등록된 데이터 모음
+*/
+const expectedTodoStats: TodoStat[] = [
+  {
+    date: new Date(2026, 0, 14),
+    state: "할 일",
+    count: 7,
+  },
+  {
+    date: new Date(2026, 0, 14),
+    state: "진행 중",
+    count: 3,
+  },
+  {
+    date: new Date(2026, 0, 14),
+    state: "완료",
+    count: 5,
+  },
+  {
+    date: new Date(2026, 0, 14),
+    state: "총합",
+    count: 14,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "할 일",
+    count: 7,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "진행 중",
+    count: 3,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "완료",
+    count: 5,
+  },
+  {
+    date: new Date(2026, 0, 17),
+    state: "총합",
+    count: 14,
+  },
+];
 
 describe("getTodoStats API", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
   it("getTodoStats 함수가 실행될 경우 최근 7일에 해당하는 Todo Stat 목록을 반환한다.", async () => {
-    (mockCollection.aggregate as jest.Mock).mockReturnValue({
-      toArray: jest.fn().mockResolvedValue(mockTodoStats),
+    const searchRange = "week";
+    (mockCollection.aggregate as jest.Mock).mockImplementation(() => {
+      const datesLastlyPeriod = getDatesLastlyPeriod("week");
+      return {
+        toArray: () =>
+          Promise.resolve(
+            mockTodoStats.filter(todoStat =>
+              datesLastlyPeriod.some(
+                target => target.getTime() === todoStat.date.getTime(),
+              ),
+            ),
+          ),
+      };
     });
 
-    const todoStats = await getTodoStats("mockuser", "month");
-    const searchRange = "month";
+    const todoStats = await getTodoStats("mockuser", searchRange);
 
     expect(mockCollection.aggregate).toHaveBeenCalledTimes(1);
     expect(mockCollection.aggregate).toHaveBeenCalledWith([
@@ -34,11 +155,11 @@ describe("getTodoStats API", () => {
       { $project: { _id: 0 } },
     ]);
 
-    expect(todoStats).toEqual(mockTodoStats);
+    expect(todoStats).toEqual(expectedTodoStats);
   });
 });
 
-describe("getTodoStats 에러 핸들링 테스트", () => {
+describe("getTodoStats 엣지 케이스 테스트", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

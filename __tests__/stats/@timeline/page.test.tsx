@@ -14,7 +14,7 @@ jest.mock("next/headers", () => ({
   }),
 }));
 jest.mock("@/components/domain/Stat/TodoTimeline", () =>
-  jest.fn(props => <div data-testid="timeline"></div>),
+  jest.fn(() => <div data-testid="timeline"></div>),
 );
 
 import TodoTimeline from "@/components/domain/Stat/TodoTimeline";

@@ -2,7 +2,7 @@ import Dashboard from "@/app/(private)/dashboard/layout";
 import { render, screen } from "@testing-library/react";
 
 describe("Dashboard Layout 컴포넌트", () => {
-  it("@todos 슬롯과 @graph 슬롯 모두 layout 컴포넌트 페이지에 포함되어 있어야 한다.", () => {
+  it("@todos 슬롯과 @graph 슬롯 모두 layout 컴포넌트 페이지에 포함되어 있다..", () => {
     render(
       <Dashboard
         todos={<div data-testid="todos-slot">Todos 슬롯</div>}

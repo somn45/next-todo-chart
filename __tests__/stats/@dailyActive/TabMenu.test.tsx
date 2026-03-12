@@ -15,7 +15,7 @@ describe("<TabMenu />", () => {
   beforeEach(() => {
     render(<TabMenu />);
   });
-  const tabMenuItems = [
+  const mockTabMenuItems = [
     {
       text: "1 주",
       linkHref: "/stats?tl=week&da=week",
@@ -29,8 +29,8 @@ describe("<TabMenu />", () => {
       linkHref: "/stats?tl=week&da=year",
     },
   ];
-  it.each(tabMenuItems)(
-    "%s 이름으로 된 탭 메뉴는 %s 경로로 이동해야 한다.",
+  it.each(mockTabMenuItems)(
+    "%s 이름으로 된 탭 메뉴는 %s 경로로 이동한다.",
     ({ text, linkHref }) => {
       const link = screen.getByRole("link", { name: text });
       expect(link).toBeInTheDocument();

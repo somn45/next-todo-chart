@@ -4,9 +4,15 @@ import { mockTodoStats } from "../../../../__mocks__/stats";
 
 describe("line-graph Sparkline", () => {
   it("LineGraph 컴포넌트에서 커스텀 훅에서 받은 svg가 렌더링된다.", () => {
-    render(<LineGraphSparkline stats={mockTodoStats} dateDomainBase="month" />);
+    const { unmount, container } = render(
+      <LineGraphSparkline stats={mockTodoStats} dateDomainBase="month" />,
+    );
 
     const svgContainer = screen.getByTestId("svg container");
     expect(svgContainer).toBeInTheDocument();
+
+    unmount();
+
+    expect(container.innerHTML).toBe("");
   });
 });
