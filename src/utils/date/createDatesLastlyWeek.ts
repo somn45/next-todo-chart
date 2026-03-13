@@ -1,7 +1,6 @@
 import { DataDomainBaseType } from "@/types/graph/schema";
 import { getCurrentDateSharp } from "./getDateInCurrentDate";
-
-const ONE_DAY = 1000 * 60 * 60 * 24;
+import { ONE_DAY } from "@/constants/date";
 
 export const getDatesLastlyPeriod = (periodType: DataDomainBaseType) => {
   if (periodType === "year") return createDatesLastlyYear();

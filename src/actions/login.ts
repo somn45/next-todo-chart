@@ -5,6 +5,10 @@ import { validateUser } from "@/utils/validateUser";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
+import {
+  ACCESS_TOKEN_EXPIRES_TIME,
+  REFRESH_TOKEN_EXPIRES_TIME,
+} from "@/constants/date";
 
 interface LoginFormData {
   userid: string;
@@ -51,11 +55,11 @@ export const login = async (
   ).json();
   const cookieStore = await cookies();
   cookieStore.set("lc_at", accessToken, {
-    maxAge: 60 * 60,
+    maxAge: ACCESS_TOKEN_EXPIRES_TIME,
     httpOnly: true,
   });
   cookieStore.set("lc_rt", refreshToken, {
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: REFRESH_TOKEN_EXPIRES_TIME,
     httpOnly: true,
   });
 

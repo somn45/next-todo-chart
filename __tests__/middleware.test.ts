@@ -25,12 +25,15 @@ jest.mock("next/headers", () => ({
   }),
 }));
 
+import { ACCESS_TOKEN_EXPIRES_TIME } from "@/constants/date";
 import { middleware } from "@/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
+let currentDate = 0;
 describe("middleware", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    currentDate = Date.now() / 1000;
   });
   it("/login, /join 경로로 접속했을 경우 토큰 검증 과정 없이 라우팅을 지속한다.", async () => {
     const mockRequest = {
@@ -50,7 +53,7 @@ describe("middleware", () => {
     ) as jest.Mock;
     const payload = {
       id: "mockuser",
-      exp: Date.now() / 1000 + 60 * 60,
+      exp: currentDate + ACCESS_TOKEN_EXPIRES_TIME,
     };
     const accessToken = {
       name: "atk",
@@ -94,10 +97,12 @@ describe("middleware", () => {
           Promise.resolve({ accessToken: "accessToken", refreshToken: null }),
       }),
     ) as jest.Mock;
+    const accessTokenExpiredAt = currentDate - 1000;
     const payload = {
       id: "abc123",
-      exp: Date.now() / 1000 - 1000,
+      exp: accessTokenExpiredAt,
     };
+
     const accessToken = `header.${btoa(JSON.stringify(payload))}.signature`;
     const mockRequest = {
       nextUrl: {
@@ -112,18 +117,20 @@ describe("middleware", () => {
         delete: jest.fn(),
       },
     } as unknown as NextRequest;
+
     await middleware(mockRequest);
+
     expect(mockRequest.cookies.delete).toHaveBeenCalledTimes(1);
     expect(NextResponse.redirect).toHaveBeenCalledTimes(1);
   });
   it("accessToken, refreshToken 모두 만료되었다면 모든 쿠키 삭제 및 로그인 페이지로 리다이렉트한다.", async () => {
+    const accessTokenExpiredAt = currentDate - 1000;
     const payload = {
       id: "abc123",
-      exp: Date.now() / 1000 - 1000,
+      exp: accessTokenExpiredAt,
     };
     const accessToken = `header.${btoa(JSON.stringify(payload))}.signature`;
     const refreshToken = `header.${btoa(JSON.stringify(payload))}.signature`;
-
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve({ refreshToken }),
@@ -142,14 +149,16 @@ describe("middleware", () => {
         delete: jest.fn(),
       },
     } as unknown as NextRequest;
+
     await middleware(mockRequest);
+
     expect(mockRequest.cookies.delete).toHaveBeenCalledTimes(1);
     expect(NextResponse.redirect).toHaveBeenCalledTimes(1);
   });
   it("accessToken이 만료되었을 때 만료되지 않은 refreshToken이 있다면 토큰 재발급 함수를 호출한다", async () => {
     const refreshTokenPayload = {
       id: "abc123",
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      exp: Math.floor(currentDate) + ACCESS_TOKEN_EXPIRES_TIME,
     };
 
     const refreshToken = `header.${btoa(
@@ -189,7 +198,7 @@ describe("middleware", () => {
       value: "accessToken",
       path: "/",
       httpOnly: true,
-      maxAge: 60 * 60,
+      maxAge: ACCESS_TOKEN_EXPIRES_TIME,
     });
   });
 });

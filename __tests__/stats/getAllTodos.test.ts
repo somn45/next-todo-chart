@@ -14,6 +14,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import * as database from "@/libs/database";
 import { IMockDatabase } from "@/libs/__mocks__/database";
+import { ONE_DAY } from "@/constants/date";
 
 const { mockCollection } = database as unknown as IMockDatabase;
 
@@ -80,7 +81,6 @@ describe("getAllTodos API", () => {
       (_, i) => i - currentDay,
     );
     const currentWeek = currentWeekArray.map(ele => {
-      const ONE_DAY = 1000 * 60 * 60 * 24;
       return new Date(currentDate.getTime() + ONE_DAY * ele);
     });
 
