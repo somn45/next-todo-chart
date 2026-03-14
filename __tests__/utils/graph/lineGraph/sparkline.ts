@@ -21,38 +21,17 @@ describe("LineGraph Class", () => {
   it("lineGraph 메서드를 활용해 그래프를 그린다.", () => {
     const mockGraphContainer = document.createElement("div");
     lineGraph.drowLineGraph(mockGraphContainer, mockTodoStats);
-
     const svg = within(mockGraphContainer).getByTestId("svg container");
-    expect(svg).toBeTruthy();
-    expect(svg).toHaveAttribute("width", SPARKLINE_WIDTH.toString());
-    expect(svg).toHaveAttribute("height", SPARKLINE_HEIGHT.toString());
-
     const g = within(svg).getByTestId("graph area");
-    expect(g).toBeTruthy();
-    expect(g).toHaveAttribute(
-      "transform",
-      `translate(${DAT_GRAPH_MARGIN.left}, ${DAT_GRAPH_MARGIN.top})`,
-    );
-
-    const innerHeight =
-      SPARKLINE_HEIGHT - DAT_GRAPH_MARGIN.top - DAT_GRAPH_MARGIN.bottom;
-
-    const x_scale = within(g).getByTestId("x axis");
-    expect(x_scale).toBeTruthy();
-    expect(x_scale).toHaveAttribute(
-      "transform",
-      `translate(0, ${innerHeight})`,
-    );
-
-    const y_scale = within(g).getByTestId("y axis");
-    expect(y_scale).toBeTruthy();
 
     const lines = within(g).getAllByTestId("line");
+    expect(lines).toHaveLength(DAT_LEGEND_TEXTS.length);
     lines.forEach(line => {
       expect(line).toBeTruthy();
-
       const lineStroke = line.getAttribute("stroke");
       expect(DAT_LEGEND_COLORS).toContain(lineStroke);
     });
+
+    expect(svg).toMatchSnapshot();
   });
 });

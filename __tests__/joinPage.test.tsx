@@ -11,7 +11,7 @@ describe("<JoinPage />", () => {
       await new Promise(resolve => setTimeout(resolve, 50));
       return { message: "회원가입 완료" };
     });
-    render(<JoinForm />);
+    const { container } = render(<JoinForm />);
 
     // screen.logTestingPlaygroundURL();
 
@@ -34,6 +34,8 @@ describe("<JoinPage />", () => {
       expect(join).toHaveBeenCalledTimes(1);
       const validateMessageSpan = screen.getByTestId("validate-message");
       expect(validateMessageSpan).toHaveTextContent("회원가입 완료");
+
+      expect(container).toMatchSnapshot();
     });
   });
 });

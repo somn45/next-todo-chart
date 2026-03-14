@@ -15,7 +15,6 @@ export const deleteTodo = async (
   }
 
   const todoid = formData.get("todo-id") as string;
-  console.log(todoid);
 
   try {
     if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {

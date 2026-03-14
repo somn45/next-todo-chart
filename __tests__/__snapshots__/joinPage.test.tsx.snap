@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`<JoinPage /> Form 제출 후 useActionState 인자에 할당된 서버 액션이 호출된다. 1`] = `
+<div>
+  <form
+    action="javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')"
+    aria-label="회원가입 양식"
+    role="form"
+  >
+    <input
+      aria-label="아이디 입력칸"
+      name="userid"
+      placeholder="회원 아이디"
+      type="text"
+    />
+    <input
+      aria-label="비밀번호 입력칸"
+      name="password"
+      placeholder="비밀번호"
+      type="password"
+    />
+    <input
+      aria-label="비밀번호 확인 입력칸"
+      name="confirm-password"
+      placeholder="비밀번호 확인"
+      type="password"
+    />
+    <input
+      aria-label="이메일 입력칸"
+      name="email"
+      placeholder="이메일"
+      type="email"
+    />
+    <button
+      type="submit"
+    >
+      회원가입
+    </button>
+    <p
+      data-testid="validate-message"
+    >
+      회원가입 완료
+    </p>
+  </form>
+</div>
+`;

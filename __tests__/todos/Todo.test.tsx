@@ -51,28 +51,55 @@ describe("<Todo />", () => {
 
   it("Todos 컴포넌트로부터 todo의 id와 userid를 받아 단일 todo를 가져온 후 페이지에 출력한다.", async () => {
     const mockTodo: SerializedTodo["content"] = selectMockTodo("할 일");
-    render(<TodoPage todo={mockTodo} />);
-
-    const textFieldSpan = screen.getByTestId("todo-textfield");
-    const todoStateSpan = screen.getByTestId("todo-state");
-    const editTodoForm = screen.getByTestId("edit-form");
-    const deleteTodoForm = screen.getByTestId("delete-form");
-    expect(textFieldSpan).toHaveTextContent("mock text");
-    expect(todoStateSpan).toHaveTextContent("할 일");
-    expect(editTodoForm).toBeInTheDocument();
-    expect(deleteTodoForm).toBeInTheDocument();
+    const { container } = render(<TodoPage todo={mockTodo} />);
+    expect(container).toMatchInlineSnapshot(`
+<div>
+  <li
+    style="display: flex; flex-direction: column;"
+  >
+    <p />
+    <span
+      data-testid="todo-textfield"
+    >
+      mock text
+    </span>
+    <span
+      data-testid="todo-state"
+    >
+      현재 상태 할 일
+    </span>
+    <div
+      data-testid="todo-state-form"
+    >
+      update todo state Form
+    </div>
+    <div
+      data-testid="edit-form"
+    >
+      Edit Form
+    </div>
+    <div
+      data-testid="delete-form"
+    >
+      Delete Form
+    </div>
+  </li>
+</div>
+`);
   });
   it("만약 투두의 상태가 '완료'라면 유예 시간 알림 메세지를 출력하고 유예 시간이 지나면 해당 요소가 표시되지 않는다.", () => {
     const mockTodo: SerializedTodo["content"] = selectMockTodo("완료");
 
     render(<TodoPage todo={mockTodo} />);
 
-    const alertGracePeriodMessage = /이 할 일은 완료 상태입니다./i;
-    const alertGracePeriodMessageParagraph = screen.getByText(
-      alertGracePeriodMessage,
-    );
+    const gracePeriodMessage = /이 할 일은 완료 상태입니다./i;
+    const gracePeriodMessageBox = screen.getByText(gracePeriodMessage);
 
-    expect(alertGracePeriodMessageParagraph).toBeInTheDocument();
+    expect(gracePeriodMessageBox).toMatchInlineSnapshot(`
+<p>
+  이 할 일은 완료 상태입니다. 2025-11-16T00:10:00.000Z 까지 완료 상태 지속 시 영구히 완료 상태가 됩니다.
+</p>
+`);
 
     act(() => {
       jest.advanceTimersByTime(1000 * 60 * 11);

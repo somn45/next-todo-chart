@@ -69,8 +69,6 @@ describe("login 서버 액션", () => {
     formData.set("password", "password123");
     const loginFormValidateResponse = await login({ message: "" }, formData);
 
-    expect(loginFormValidateResponse.message).toEqual(
-      "비밀번호는 숫자와 소문자가 적어도 1개 이상 포함되어야 합니다.",
-    );
+    expect(loginFormValidateResponse.message).toMatchInlineSnapshot(`"비밀번호는 숫자와 소문자가 적어도 1개 이상 포함되어야 합니다."`);
   });
 });

@@ -31,8 +31,6 @@ describe("join 서버 액션", () => {
     const formData = new FormData();
     const validateErrorResponse = await join({ message: "" }, formData);
     expect(redirect).not.toHaveBeenCalled();
-    expect(validateErrorResponse.message).toEqual(
-      "아이디는 6자 ~ 20자 이내로 입력해야 합니다.",
-    );
+    expect(validateErrorResponse.message).toMatchInlineSnapshot(`"아이디는 6자 ~ 20자 이내로 입력해야 합니다."`);
   });
 });

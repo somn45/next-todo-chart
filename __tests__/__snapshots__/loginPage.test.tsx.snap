@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`<LoginPage /> 로그인 실패 시 검증 실패 사유 메세지가 출력된다. 1`] = `
+<div>
+  <form
+    action="javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')"
+    aria-label="로그인 양식"
+    role="form"
+  >
+    <input
+      aria-label="아이디 입력칸"
+      name="userid"
+      placeholder="회원 아이디"
+      type="text"
+    />
+    <input
+      aria-label="비밀번호 입력칸"
+      name="password"
+      placeholder="비밀번호"
+      type="password"
+    />
+    <button
+      type="submit"
+    >
+      로그인
+    </button>
+    <p
+      data-testid="validate-message"
+    >
+      아이디 또는 비밀번호가 일치하지 않습니다.
+    </p>
+  </form>
+</div>
+`;

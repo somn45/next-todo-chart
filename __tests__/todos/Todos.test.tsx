@@ -66,11 +66,20 @@ describe("<Todos />", () => {
 
   it("getTodos API에서 가져오는 todos가 null이나 undefined인 경우 대체 UI를 렌더링한다.", async () => {
     (getTodos as jest.Mock).mockResolvedValue(null);
+    const { container } = render(await Todos());
 
-    waitFor(() => {
-      const alternativeUISection = screen.getByTestId("todos-alternative-ui");
-
-      expect(alternativeUISection).toBeInTheDocument();
+    await waitFor(() => {
+      expect(container).toMatchInlineSnapshot(`
+<div>
+  <section>
+    <span
+      data-testid="todos-alternative-ui"
+    >
+      오늘 할 일이 아직 정해지지 않았어요. 어서 할 일을 생성해 봐요!
+    </span>
+  </section>
+</div>
+`);
     });
   });
 });
