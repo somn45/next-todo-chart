@@ -13,5 +13,7 @@ const config: Config = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js",
   },
+  collectCoverageFrom: ["src/**/*.{ts,tsx}"],
+  coveragePathIgnorePatterns: ["src/instrumentation.ts"],
 };
 export default createJestConfig(config);
