@@ -42,5 +42,18 @@ exports[`<JoinPage /> Form 제출 후 useActionState 인자에 할당된 서버 
       회원가입 완료
     </p>
   </form>
+  <nav>
+    <ul
+      style="display: flex; gap: 20px; list-style-type: none;"
+    >
+      <li>
+        <a
+          href="/login"
+        >
+          로그인 페이지로 가기
+        </a>
+      </li>
+    </ul>
+  </nav>
 </div>
 `;

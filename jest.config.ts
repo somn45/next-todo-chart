@@ -14,6 +14,10 @@ const config: Config = {
     "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js",
   },
   collectCoverageFrom: ["src/**/*.{ts,tsx}"],
-  coveragePathIgnorePatterns: ["src/instrumentation.ts"],
+  coveragePathIgnorePatterns: [
+    "src/instrumentation.ts",
+    "src/libs/database.ts",
+    "src/types/MongoClient.ts",
+  ],
 };
 export default createJestConfig(config);

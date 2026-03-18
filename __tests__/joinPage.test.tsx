@@ -1,6 +1,6 @@
 jest.mock("@/libs/database");
 import { join } from "@/actions/join";
-import JoinForm from "@/components/ui/organisms/JoinForm";
+import JoinPage from "@/app/(global)/join/page";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("@/actions/join");
@@ -11,7 +11,7 @@ describe("<JoinPage />", () => {
       await new Promise(resolve => setTimeout(resolve, 50));
       return { message: "회원가입 완료" };
     });
-    const { container } = render(<JoinForm />);
+    const { container } = render(<JoinPage />);
 
     // screen.logTestingPlaygroundURL();
 

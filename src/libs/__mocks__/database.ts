@@ -6,6 +6,7 @@ export interface IMockDatabase {
     findOne: jest.Mock;
     findOneAndUpdate: jest.Mock;
     insertOne: jest.Mock;
+    insertMany: jest.Mock;
     updateOne: jest.Mock;
     deleteOne: jest.Mock;
     aggregate: () => {
@@ -22,6 +23,7 @@ export const mockCollection = {
   findOne: jest.fn(),
   findOneAndUpdate: jest.fn(),
   insertOne: jest.fn(),
+  insertMany: jest.fn(),
   updateOne: jest.fn(),
   deleteOne: jest.fn(),
   aggregate: jest.fn().mockReturnValue({

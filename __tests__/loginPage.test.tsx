@@ -3,7 +3,7 @@ jest.mock("@/actions/login");
 jest.mock("next/navigation");
 
 import { login } from "@/actions/login";
-import LoginForm from "@/components/ui/organisms/LoginForm";
+import LoginPage from "@/app/(global)/login/page";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
@@ -17,7 +17,7 @@ describe("<LoginPage />", () => {
       return { message: "" };
     });
 
-    render(<LoginForm />);
+    render(<LoginPage />);
 
     const useridInput = screen.getByLabelText("아이디 입력칸");
     const passwordInput = screen.getByLabelText("비밀번호 입력칸");
@@ -36,7 +36,7 @@ describe("<LoginPage />", () => {
     (login as jest.Mock).mockImplementation(async (state, formData) => {
       return { message: "아이디 또는 비밀번호가 일치하지 않습니다." };
     });
-    const { container } = render(<LoginForm />);
+    const { container } = render(<LoginPage />);
 
     const useridInput = screen.getByLabelText("아이디 입력칸");
     const passwordInput = screen.getByLabelText("비밀번호 입력칸");
