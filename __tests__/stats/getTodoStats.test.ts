@@ -6,7 +6,6 @@ jest.mock("next/navigation", () => ({
 }));
 
 import { getTodoStats } from "@/apis/getTodoStats";
-import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 import * as database from "@/libs/database";
 import { IMockDatabase } from "@/libs/__mocks__/database";
@@ -131,13 +130,19 @@ describe("getTodoStats API", () => {
   });
   it("getTodoStats 함수가 실행될 경우 최근 7일에 해당하는 Todo Stat 목록을 반환한다.", async () => {
     const searchRange = "week";
+    const fakeLastlyWeekDates = Array.from(
+      { length: 7 },
+      (v, i) => new Date(2026, 0, 20 - 7 + i),
+    );
+
+    // 최근 1주 내에 포함된 날짜 배열을 가져오는 역할 모의
+
     (mockCollection.aggregate as jest.Mock).mockImplementation(() => {
-      const datesLastlyPeriod = getDatesLastlyPeriod("week");
       return {
         toArray: () =>
           Promise.resolve(
             mockTodoStats.filter(todoStat =>
-              datesLastlyPeriod.some(
+              fakeLastlyWeekDates.some(
                 target => target.getTime() === todoStat.date.getTime(),
               ),
             ),
@@ -150,7 +155,7 @@ describe("getTodoStats API", () => {
     expect(mockCollection.aggregate).toHaveBeenCalledTimes(1);
     expect(mockCollection.aggregate).toHaveBeenCalledWith([
       {
-        $match: { date: { $in: getDatesLastlyPeriod(searchRange) } },
+        $match: { date: { $in: fakeLastlyWeekDates } },
       },
       { $project: { _id: 0 } },
     ]);
