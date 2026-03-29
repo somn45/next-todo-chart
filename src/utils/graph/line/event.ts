@@ -1,7 +1,8 @@
-import * as d3 from "d3";
 import { caculateGraphLayout } from "../caculateGraphLayout";
 import { TodoStat } from "@/types/stats/schema";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
+import { select, pointer } from "d3-selection";
+import { bisectCenter, group } from "d3-array";
 
 interface GraphMargin {
   left: number;
@@ -37,7 +38,7 @@ export class LineGraphMouseEvent {
     public data: TodoStat[],
     private tooltipElement: HTMLDivElement,
   ) {
-    this._tooltipSelection = d3.select(this.tooltipElement) as d3.Selection<
+    this._tooltipSelection = select(this.tooltipElement) as d3.Selection<
       HTMLDivElement,
       unknown,
       null,
@@ -79,7 +80,7 @@ export class LineGraphMouseEvent {
     groupedData: d3.InternMap<string, TodoStat[]>,
     event: MouseEvent,
   ) {
-    const [mouseXCoord, mouseYCoord] = d3.pointer(event, event.currentTarget);
+    const [mouseXCoord, mouseYCoord] = pointer(event, event.currentTarget);
 
     const dateMatchedMouseXCoord = this.scale.x.invert(mouseXCoord);
 
@@ -87,7 +88,7 @@ export class LineGraphMouseEvent {
     const xAxisKeys = stats.map(stat => stat.date);
 
     // 마우스 포인터의 x 축과 가장 가까운 데이터셋 index
-    const indexOfXAxisKey = d3.bisectCenter(xAxisKeys, dateMatchedMouseXCoord);
+    const indexOfXAxisKey = bisectCenter(xAxisKeys, dateMatchedMouseXCoord);
 
     const distancesMouseYCoord = Array.from(groupedData).map(data => {
       const dataPoint = data[1][indexOfXAxisKey];
@@ -116,7 +117,7 @@ export class LineGraphMouseEvent {
     graphScale: TimeBasedLinearScale,
     event: MouseEvent,
   ) {
-    const { x_scale, y_scale } = graphScale;
+    const { x_scale } = graphScale;
 
     const target = this.getDataPointClosetMousePointer(groupedData, event);
     const dateISO8601Type = formatByISO8601(target.date);
@@ -138,7 +139,7 @@ export class LineGraphMouseEvent {
   }
 
   handleGraphMouseEvent() {
-    const groupedStats = d3.group(this.data, d => d.state);
+    const groupedStats = group(this.data, d => d.state);
 
     const { width, height, margin } = this.graphLayout;
     const { innerWidth, innerHeight } = caculateGraphLayout(

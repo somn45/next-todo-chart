@@ -3,7 +3,8 @@ import {
   DataDomainBaseType,
   GraphMargin,
 } from "@/types/graph/schema";
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import { scaleOrdinal } from "d3-scale";
 
 export abstract class Graph {
   protected _svg:
@@ -52,8 +53,7 @@ export abstract class Graph {
   protected createSvgContainer = (
     graphContainerElement: HTMLDivElement | null,
   ) => {
-    const svg = d3
-      .select(graphContainerElement)
+    const svg = select(graphContainerElement)
       .append("svg")
       .attr("data-testid", "svg container")
       .attr("width", this.width)
@@ -74,7 +74,7 @@ export abstract class Graph {
 
   // 특정 상태와 매칭되는 그래프 마커(라인, 밴드 등)의 색상 스케일 반환
   protected createColorScale = () =>
-    d3.scaleOrdinal<string>().domain(this.texts).range(this.colors);
+    scaleOrdinal<string>().domain(this.texts).range(this.colors);
 
   protected abstract setXAxis(
     scale: d3.ScaleTime<number, number, never>,

@@ -5,7 +5,6 @@ import {
   LegendUnitInitCoord,
 } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
-import * as d3 from "d3";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;

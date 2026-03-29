@@ -1,7 +1,7 @@
 "use client";
 
+import { select } from "d3-selection";
 import { useEffect, useRef } from "react";
-import * as d3 from "d3";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { LineGraphMouseEvent } from "@/utils/graph/line/event";
 import { DataDomainBaseType } from "@/types/graph/schema";
@@ -48,7 +48,7 @@ export default function DailyActiveTodoLineGraph({
     lineGraphMouseEvent.handleGraphMouseEvent();
 
     return () => {
-      d3.select(graphContainer).selectAll("*").remove();
+      select(graphContainer).selectAll("*").remove();
     };
   }, [dateDomainBase]);
 

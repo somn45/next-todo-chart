@@ -1,4 +1,7 @@
-import * as d3 from "d3";
+import { scaleTime, scaleLinear } from "d3-scale";
+import { axisLeft, axisBottom } from "d3-axis";
+import { max, extent, group } from "d3-array";
+import { line } from "d3-shape";
 import { Graph } from "../graphCore/graphCore";
 import { caculateTickCount } from "../caculateTickCount";
 import { TodoStat } from "@/types/stats/schema";
@@ -22,8 +25,7 @@ export class LineSparkline extends Graph {
       .attr("data-testid", "x axis")
       .attr("transform", `translate(0, ${innerHeight})`)
       .call(
-        d3
-          .axisBottom(scale)
+        axisBottom(scale)
           .ticks(tickCount)
           .tickFormat(d =>
             this.dateDomainBase === "year"
@@ -38,12 +40,12 @@ export class LineSparkline extends Graph {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(d3.axisLeft(scale.linearScale));
+        .call(axisLeft(scale.linearScale));
     } else {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(d3.axisLeft(scale.bandScale));
+        .call(axisLeft(scale.bandScale));
     }
   }
 
@@ -51,9 +53,8 @@ export class LineSparkline extends Graph {
     rangeMax,
     data,
   }: createTimeScaleParams<T>): d3.ScaleTime<number, number, never> {
-    return d3
-      .scaleTime()
-      .domain(d3.extent(data, d => d.date) as [Date, Date])
+    return scaleTime()
+      .domain(extent(data, d => d.date) as [Date, Date])
       .range([0, rangeMax]);
   }
 
@@ -61,9 +62,8 @@ export class LineSparkline extends Graph {
     data: T[],
     rangeMax: number,
   ): d3.ScaleLinear<number, number, never> {
-    return d3
-      .scaleLinear()
-      .domain([0, d3.max(data, d => d.count)] as [number, number])
+    return scaleLinear()
+      .domain([0, max(data, d => d.count)] as [number, number])
       .range([rangeMax, 0])
       .nice(1);
   }
@@ -88,7 +88,7 @@ export class LineSparkline extends Graph {
   drowLineSparkline(graphContainer: HTMLDivElement, data: TodoStat[]) {
     this.createSvgContainer(graphContainer);
 
-    const groupedStats = d3.group(data, d => d.state);
+    const groupedStats = group(data, d => d.state);
 
     const statsKeys = groupedStats.keys();
     const count = statsKeys.toArray().length;
@@ -115,8 +115,7 @@ export class LineSparkline extends Graph {
 
     const color_scale = this.createColorScale();
 
-    const lineGenerator = d3
-      .line<DatDataPoint>()
+    const lineGenerator = line<DatDataPoint>()
       .defined(d => d.count !== null)
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));

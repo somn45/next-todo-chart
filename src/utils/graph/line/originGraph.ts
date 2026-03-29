@@ -1,4 +1,7 @@
-import * as d3 from "d3";
+import { scaleTime, scaleLinear } from "d3-scale";
+import { axisLeft, axisBottom } from "d3-axis";
+import { max, extent, group } from "d3-array";
+import { line } from "d3-shape";
 import { Graph } from "../graphCore/graphCore";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { caculateTickCount } from "../caculateTickCount";
@@ -29,8 +32,7 @@ export class LineGraph extends Graph {
       .attr("data-testid", "x axis")
       .attr("transform", `translate(0, ${innerHeight})`)
       .call(
-        d3
-          .axisBottom(scale)
+        axisBottom(scale)
           .ticks(tickCount)
           .tickFormat(d =>
             this.dateDomainBase === "year"
@@ -45,12 +47,12 @@ export class LineGraph extends Graph {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(d3.axisLeft(scale.linearScale));
+        .call(axisLeft(scale.linearScale));
     } else {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(d3.axisLeft(scale.bandScale));
+        .call(axisLeft(scale.bandScale));
     }
   }
 
@@ -58,9 +60,8 @@ export class LineGraph extends Graph {
     rangeMax,
     data,
   }: createTimeScaleParams<T>): d3.ScaleTime<number, number, never> {
-    return d3
-      .scaleTime()
-      .domain(d3.extent(data, d => d.date) as [Date, Date])
+    return scaleTime()
+      .domain(extent(data, d => d.date) as [Date, Date])
       .range([0, rangeMax]);
   }
 
@@ -68,9 +69,8 @@ export class LineGraph extends Graph {
     data: T[],
     rangeMax: number,
   ): d3.ScaleLinear<number, number, never> {
-    return d3
-      .scaleLinear()
-      .domain([0, d3.max(data, d => d.count)] as [number, number])
+    return scaleLinear()
+      .domain([0, max(data, d => d.count)] as [number, number])
       .range([rangeMax, 0])
       .nice(1);
   }
@@ -202,7 +202,7 @@ export class LineGraph extends Graph {
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
       caculateGraphLayout(this.width, this.height, this.graphMargin);
 
-    const groupedStats = d3.group(data, d => d.state);
+    const groupedStats = group(data, d => d.state);
 
     this.addTitle(titleStartOffset, "최근 1주간 등록된 투두 합계");
 
@@ -230,8 +230,7 @@ export class LineGraph extends Graph {
     const y_scale = this.createLinearScale(data, innerHeight);
     this.setYAxis({ type: "linearScale", linearScale: y_scale });
 
-    const lineGenerator = d3
-      .line<DatDataPoint>()
+    const lineGenerator = line<DatDataPoint>()
       .x(d => x_scale(d.date))
       .y(d => y_scale(d.count));
 

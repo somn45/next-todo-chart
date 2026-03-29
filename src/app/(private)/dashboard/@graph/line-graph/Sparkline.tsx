@@ -1,6 +1,6 @@
 "use client";
 
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { useEffect, useRef } from "react";
 import { LineSparkline } from "@/utils/graph/line/sparkline";
 import {
@@ -40,7 +40,7 @@ export default function LineGraphSparkline({
     lineSparkline.drowLineSparkline(container, stats);
 
     return () => {
-      d3.select(container).selectAll("*").remove();
+      select(container).selectAll("*").remove();
     };
   }, []);
 

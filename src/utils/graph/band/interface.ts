@@ -1,6 +1,5 @@
 import { LegendMarkerType } from "@/types/graph/schema";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
-import * as d3 from "d3";
 
 interface GraphMargin {
   left: number;

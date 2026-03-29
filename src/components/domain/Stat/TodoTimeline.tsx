@@ -1,6 +1,6 @@
 "use client";
 
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { useEffect, useRef } from "react";
 import { BandGraph } from "@/utils/graph/band/originGraph";
 import {
@@ -40,7 +40,7 @@ export default function TodoTimeline({
     bandGraph.drowBandGraph(graphContainer, todos);
 
     return () => {
-      d3.select(graphContainer).selectAll("*").remove();
+      select(graphContainer).selectAll("*").remove();
     };
   }, [dateDomainBase]);
 

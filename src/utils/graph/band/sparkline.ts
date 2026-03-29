@@ -1,4 +1,5 @@
-import * as d3 from "d3";
+import { scaleTime, scaleBand } from "d3-scale";
+import { axisLeft, axisBottom } from "d3-axis";
 import { Graph } from "../graphCore/graphCore";
 import {
   getEndOfPeriod,
@@ -26,8 +27,7 @@ export class BandSparkline extends Graph {
       .attr("data-testid", "x axis")
       .attr("transform", `translate(0, ${innerHeight})`)
       .call(
-        d3
-          .axisBottom(scale)
+        axisBottom(scale)
           .ticks(tickCount)
           .tickFormat(d =>
             this.dateDomainBase === "year"
@@ -42,12 +42,12 @@ export class BandSparkline extends Graph {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(d3.axisLeft(scale.linearScale));
+        .call(axisLeft(scale.linearScale));
     } else {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(d3.axisLeft(scale.bandScale));
+        .call(axisLeft(scale.bandScale));
     }
   }
 
@@ -55,7 +55,7 @@ export class BandSparkline extends Graph {
     rangeMax,
     timeScaleDomain,
   }: createTimeScaleParams): d3.ScaleTime<number, number, never> {
-    return d3.scaleTime().domain(timeScaleDomain).range([0, rangeMax]);
+    return scaleTime().domain(timeScaleDomain).range([0, rangeMax]);
   }
 
   private createBandScale<T extends { text: string }>(
@@ -63,8 +63,7 @@ export class BandSparkline extends Graph {
     rangeMax: number,
     padding: number,
   ): d3.ScaleBand<string> {
-    return d3
-      .scaleBand()
+    return scaleBand()
       .domain(data.map(content => content.text))
       .range([0, rangeMax])
       .padding(padding);

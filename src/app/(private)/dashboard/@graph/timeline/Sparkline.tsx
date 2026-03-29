@@ -1,6 +1,6 @@
 "use client";
 
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { useEffect, useRef } from "react";
 import { BandSparkline } from "@/utils/graph/band/sparkline";
 import {
@@ -40,7 +40,7 @@ export default function TimeLineSparkline({
     bandSparkline.drowBandSparkline(container, todos);
 
     return () => {
-      d3.select(container).selectAll("*").remove();
+      select(container).selectAll("*").remove();
     };
   }, []);
 

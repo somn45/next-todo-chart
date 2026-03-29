@@ -1,4 +1,6 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import { scaleTime, scaleLinear } from "d3-scale";
+import { max } from "d3-array";
 
 /**
  * 테스트가 필요한 사항
@@ -93,8 +95,7 @@ describe("DAT Graph Event Class", () => {
     };
     const svg = document.createElement("svg");
 
-    const fakeGSelection = d3
-      .select(svg)
+    const fakeGSelection = select(svg)
       .append("g")
       .attr("data-testid", "graph area")
       .attr("width", width)
@@ -103,14 +104,12 @@ describe("DAT Graph Event Class", () => {
 
     const fakeTooltip = document.createElement("div");
     fakeTooltip.setAttribute("data-testid", "tooltip");
-    const fakeXScale = d3
-      .scaleTime()
+    const fakeXScale = scaleTime()
       .domain([new Date(2025, 6, 11), new Date(2025, 6, 13)])
       .range([0, height]);
-    d3.scaleLinear();
-    const fakeYScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(fakeTodoStat, d => d.count)] as [number, number])
+    scaleLinear();
+    const fakeYScale = scaleLinear()
+      .domain([0, max(fakeTodoStat, d => d.count)] as [number, number])
       .range([width, 0]);
 
     const gElement = fakeGSelection.node() as unknown as HTMLElement;
