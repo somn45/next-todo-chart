@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Navigation from "./Navigation";
 
 export default function TimeLineLayout({
@@ -7,7 +8,9 @@ export default function TimeLineLayout({
 }) {
   return (
     <div>
-      <Navigation />
+      <Suspense fallback={<p>...Loading</p>}>
+        <Navigation />
+      </Suspense>
       {children}
     </div>
   );

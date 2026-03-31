@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Navigation from "./Navigation";
 
 export default function DailyActiveLayout({
@@ -7,7 +8,9 @@ export default function DailyActiveLayout({
 }) {
   return (
     <div>
-      <Navigation />
+      <Suspense fallback={<p>...Loading</p>}>
+        <Navigation />
+      </Suspense>
       {children}
     </div>
   );
