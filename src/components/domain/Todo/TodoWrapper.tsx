@@ -1,5 +1,3 @@
-"use client";
-
 import { ErrorBoundary } from "react-error-boundary";
 import TodoFallback from "./TodoFallback";
 import Todo from "./Todo";
