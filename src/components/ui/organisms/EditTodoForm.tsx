@@ -7,12 +7,22 @@ import Input from "@/components/ui/atoms/Input";
 import useEditMode from "@/hooks/useEditMode";
 import { useActionState } from "react";
 
+type EditTodoOptimisticType = {
+  type: "edit";
+  textField: string;
+};
+
 interface EditFormProps {
   todoid: string;
   userid: string;
+  editTodoOptimsiticAction: (action: EditTodoOptimisticType) => void;
 }
 
-export default function EditTodoForm({ todoid, userid }: EditFormProps) {
+export default function EditTodoForm({
+  todoid,
+  userid,
+  editTodoOptimsiticAction,
+}: EditFormProps) {
   const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
     todoid,
     userid,
@@ -22,10 +32,21 @@ export default function EditTodoForm({ todoid, userid }: EditFormProps) {
   });
   const [isEditMode, setEditMode, setReadMode] = useEditMode(state.message);
 
+  const handleSubmit = async (FormData: FormData) => {
+    const editedTextField = FormData.get("todo") as string;
+    try {
+      editTodoOptimsiticAction({ type: "edit", textField: editedTextField });
+
+      editTodoAction(FormData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (!isEditMode)
     return <Button type="button" value="수정" onClick={setEditMode} />;
   return (
-    <form role="form" action={editTodoAction}>
+    <form role="form" action={handleSubmit}>
       <ErrorMessage message={state.message} successSignal={"투두 수정 성공"} />
       <Input
         type="text"

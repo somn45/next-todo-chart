@@ -6,22 +6,39 @@ import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import { useActionState } from "react";
 
+type DeleteTodoOptimisticType = {
+  type: "delete";
+};
+
 export default function DeleteTodoform({
   todoid,
   userid,
   showDeleteSection = true,
+  deleteTodoOptimisticAction,
 }: {
   todoid: string;
   userid: string;
   showDeleteSection?: boolean;
+  deleteTodoOptimisticAction: (action: DeleteTodoOptimisticType) => void;
 }) {
   const deleteTodoWithUserId = deleteTodo.bind(null, userid);
   const [state, formAction] = useActionState(deleteTodoWithUserId, {
     message: "",
   });
   if (!showDeleteSection) return null;
+
+  const handleSubmit = (formData: FormData) => {
+    try {
+      deleteTodoOptimisticAction({ type: "delete" });
+
+      formAction(formData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <form role="form" action={formAction}>
+    <form role="form" action={handleSubmit}>
       <ErrorMessage message={state.message} />
       <Input
         type="text"

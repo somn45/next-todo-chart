@@ -48,7 +48,7 @@ const useGraceTimeAlertMessage: useGraceTimeAlertMessageType = (
         gracePeriod,
       );
     }
-  }, [todoCompletedAt, state]);
+  }, [state]);
 
   return { hasGracePeriod, alertMessage };
 };

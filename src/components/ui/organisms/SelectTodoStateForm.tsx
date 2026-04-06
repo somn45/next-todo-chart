@@ -3,11 +3,18 @@
 import { updateTodoState } from "@/actions/updateTodoState";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import SelectField from "@/components/ui/molecules/SelectField";
+import { StateType } from "@/types/todos/schema";
 import { useActionState } from "react";
+
+type UpdateTodoStateOptimisticType = {
+  type: "state";
+  updatedState: StateType;
+};
 
 interface TodoStateFormProps {
   todoid: string;
   currentTodoState: "할 일" | "진행 중" | "완료";
+  updateStateOptimisticAction: (action: UpdateTodoStateOptimisticType) => void;
 }
 
 const TODO_STATE_TYPES = ["할 일", "진행 중", "완료"];
@@ -15,11 +22,24 @@ const TODO_STATE_TYPES = ["할 일", "진행 중", "완료"];
 export default function SelectTodoStateForm({
   todoid,
   currentTodoState,
+  updateStateOptimisticAction,
 }: TodoStateFormProps) {
   const updateTodoStateWithTodoId = updateTodoState.bind(null, todoid);
   const [actionState, formAction] = useActionState(updateTodoStateWithTodoId, {
     message: "",
   });
+
+  const handleSubmit = async (formData: FormData) => {
+    const updatedState = formData.get("state") as StateType;
+    try {
+      updateStateOptimisticAction({ type: "state", updatedState });
+
+      formAction(formData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
       <ErrorMessage message={actionState.message} />
@@ -27,7 +47,7 @@ export default function SelectTodoStateForm({
         <li key={todoStateType}>
           <SelectField
             formAttr={{
-              action: formAction,
+              action: handleSubmit,
               ariaLabel: `${todoStateType}이 포함된 양식`,
               isHidden: todoStateType === currentTodoState,
             }}
