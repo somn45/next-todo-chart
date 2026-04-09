@@ -26,7 +26,7 @@ export default function ProtectedLayout({
   return (
     <>
       <header className="flex h-20 w-full">
-        <Nav NavLinks={mainNavLinks} />
+        <Nav NavLinks={mainNavLinks} variant="header" />
       </header>
       <main className="wrapper">
         <div></div>

@@ -7,6 +7,8 @@
   --color-2nd-light: #8b5cf6;
   --color-border-light: #f8fafc;
   --color-text-light: #1e293b;
+  --color-bg-disabled: #f3f4f6;
+  --color-text-disabled: #9ca3af;
 
   /* 다크 모드 */
   --color-bg-dark: #0f172a;
@@ -14,6 +16,10 @@
   --color-2nd-dark: #a78bfa;
   --color-border-dark: #1e293b;
   --color-text-dark: #f1f5f9;
+
+  --text-base: "14px";
+  --text-lg: "16px";
+  --text-heading: "24px";
 }
 
 @utility global-wrapper {
