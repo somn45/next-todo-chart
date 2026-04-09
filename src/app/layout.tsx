@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ margin: 0 }}>
+      <body className="m-0 flex flex-col-reverse rounded-none">
         <section>{modal}</section>
         {children}
       </body>

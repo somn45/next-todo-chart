@@ -33,7 +33,7 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
   );
 
   return (
-    <section>
+    <section className="container flex-col">
       <h2>Todos 페이지</h2>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
       <ul>

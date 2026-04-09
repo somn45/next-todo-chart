@@ -9,7 +9,12 @@ import { join } from "@/actions/join";
 export default function JoinForm() {
   const [state, formAction] = useActionState(join, { message: "" });
   return (
-    <form role="form" action={formAction} aria-label="회원가입 양식">
+    <form
+      role="form"
+      action={formAction}
+      aria-label="회원가입 양식"
+      className="container flex-col"
+    >
       <Input
         type="text"
         placeholder="회원 아이디"

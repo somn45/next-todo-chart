@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+@theme {
+  /* 라이트 모드 */
+  --color-bg-light: #ffffff;
+  --color-1st-light: #3b82f6;
+  --color-2nd-light: #8b5cf6;
+  --color-border-light: #f8fafc;
+  --color-text-light: #1e293b;
+
+  /* 다크 모드 */
+  --color-bg-dark: #0f172a;
+  --color-1st-dark: #60a5fa;
+  --color-2nd-dark: #a78bfa;
+  --color-border-dark: #1e293b;
+  --color-text-dark: #f1f5f9;
+}
+
+@utility global-wrapper {
+  @apply bg-bg-light flex h-screen w-full items-center justify-center;
+}
+
+@utility wrapper {
+  @apply bg-bg-light flex h-[calc(100vh-80px)] w-full items-center justify-center;
+}
+
+@utility container {
+  @apply flex w-full max-w-3xl bg-blue-200 px-8 py-4;
+}

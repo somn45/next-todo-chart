@@ -17,7 +17,7 @@ export default function StatsLayout({
 }>) {
   return (
     <>
-      <section style={{ display: "flex", gap: "50px" }}>
+      <section className="wrapper gap-16">
         {dailyActive}
         {timeline}
       </section>

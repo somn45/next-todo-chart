@@ -9,8 +9,12 @@ import { login } from "@/actions/login";
 export default function LoginForm() {
   const [state, formAction] = useActionState(login, { message: "" });
   return (
-    <form role="form" action={formAction} aria-label="로그인 양식"
-    className="bg-blue-300">
+    <form
+      role="form"
+      action={formAction}
+      aria-label="로그인 양식"
+      className="container flex-col"
+    >
       <Input
         type="text"
         placeholder="회원 아이디"

@@ -25,10 +25,10 @@ export default function ProtectedLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      <header>
+      <header className="flex h-20 w-full">
         <Nav NavLinks={mainNavLinks} />
       </header>
-      <main>
+      <main className="wrapper">
         <div></div>
         {children}
       </main>
