@@ -11,5 +11,9 @@ export default function Button({ type, value, onClick }: ButtonProps) {
         {value}
       </button>
     );
-  return <button type={type}>{value}</button>;
+  return (
+    <button type={type} className="submit-default">
+      {value}
+    </button>
+  );
 }

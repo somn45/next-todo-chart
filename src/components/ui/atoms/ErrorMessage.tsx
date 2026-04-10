@@ -13,5 +13,12 @@ export default function ErrorMessage({
 
   if (successSignal)
     return <p data-testid={dataTestId}>{isShowErrorMessage ? message : ""}</p>;
-  return <p data-testid={dataTestId}>{message}</p>;
+  return (
+    <p
+      data-testid={dataTestId}
+      className="text-error-light text-sm font-semibold"
+    >
+      {message}
+    </p>
+  );
 }

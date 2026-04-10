@@ -13,7 +13,7 @@ export default function LoginForm() {
       role="form"
       action={formAction}
       aria-label="로그인 양식"
-      className="container flex-col"
+      className="container"
     >
       <Input
         type="text"
@@ -27,8 +27,8 @@ export default function LoginForm() {
         name="password"
         ariaLabel="비밀번호 입력칸"
       />
-      <Button type="submit" value="로그인" />
       <ErrorMessage message={state.message} dataTestId="validate-message" />
+      <Button type="submit" value="로그인" />
     </form>
   );
 }

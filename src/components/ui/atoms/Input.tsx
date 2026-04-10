@@ -20,6 +20,7 @@ export default function Input({
       data-testid={dataTestId}
       readOnly={isReadOnly}
       hidden={isHidden}
+      className="input-default"
     />
   );
 }

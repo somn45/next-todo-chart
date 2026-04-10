@@ -4,11 +4,14 @@
   /* 라이트 모드 */
   --color-bg-light: #ffffff;
   --color-1st-light: #3b82f6;
+  --color-1st-darker-light: #0056b3;
   --color-2nd-light: #8b5cf6;
-  --color-border-light: #f8fafc;
+  --color-surface-light: #f8fafc;
   --color-text-light: #1e293b;
+  --color-text-on-primary: #ffffff;
   --color-bg-disabled: #f3f4f6;
   --color-text-disabled: #9ca3af;
+  --color-error-light: #ff3b30;
 
   /* 다크 모드 */
   --color-bg-dark: #0f172a;
@@ -16,10 +19,12 @@
   --color-2nd-dark: #a78bfa;
   --color-border-dark: #1e293b;
   --color-text-dark: #f1f5f9;
+  --color-error-dark: #ff453a;
 
-  --text-base: "14px";
-  --text-lg: "16px";
-  --text-heading: "24px";
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-heading: 24px;
 }
 
 @utility global-wrapper {
@@ -31,5 +36,13 @@
 }
 
 @utility container {
-  @apply flex w-full max-w-3xl bg-blue-200 px-8 py-4;
+  @apply flex w-full max-w-3xl flex-col gap-5 px-8 py-4;
+}
+
+@utility input-default {
+  @apply border-1st-light focus:border-2nd-light bg-surface-light text-text-light placeholder:text-text-disabled h-12 rounded-md border-2 py-1 pl-2 text-sm outline-0;
+}
+
+@utility submit-default {
+  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary h-12 rounded-md text-base font-semibold;
 }
