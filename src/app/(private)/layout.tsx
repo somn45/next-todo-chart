@@ -28,7 +28,7 @@ export default function ProtectedLayout({
       <header className="flex h-20 w-full">
         <Nav NavLinks={mainNavLinks} variant="header" />
       </header>
-      <main className="wrapper">
+      <main className="wrapper overflow-x-auto">
         <div></div>
         {children}
       </main>

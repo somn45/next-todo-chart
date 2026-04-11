@@ -9,7 +9,12 @@ export default function Input({
   dataTestId,
   isReadOnly = false,
   isHidden = false,
+  variant = "default",
 }: InputProps) {
+  const variants: { [key: string]: string } = {
+    default: "input-default",
+    searchBar: "input-default w-full max-w-lg",
+  };
   return (
     <input
       type={type}
@@ -20,7 +25,7 @@ export default function Input({
       data-testid={dataTestId}
       readOnly={isReadOnly}
       hidden={isHidden}
-      className="input-default"
+      className={variants[variant]}
     />
   );
 }

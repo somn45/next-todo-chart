@@ -4,6 +4,7 @@ import { addTodo } from "@/actions/addTodo";
 import { useActionState, useEffect, useState } from "react";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
+import { Search } from "lucide-react";
 
 interface AddTodoFormProps {
   userId: string;
@@ -39,15 +40,20 @@ export default function AddTodoForm({
   };
 
   return (
-    <form role="form" action={handleSubmit}>
+    <form
+      role="form"
+      action={handleSubmit}
+      className="relative h-16 max-w-lg py-2"
+    >
       <span>{error}</span>
       <Input
         type="text"
         placeholder="새 투두리스트 추가"
         name="newTodo"
         ariaLabel="새 투두리스트 입력칸"
+        variant="searchBar"
       />
-      <Button type="submit" value="새 투두리스트 추가" />
+      <Button type="submit" value={<Search />} variant="searchBar" />
     </form>
   );
 }

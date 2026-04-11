@@ -16,4 +16,5 @@ export interface InputProps {
   dataTestId?: string;
   isReadOnly?: boolean;
   isHidden?: boolean;
+  variant?: "default" | "searchBar";
 }

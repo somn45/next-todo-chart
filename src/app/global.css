@@ -32,7 +32,7 @@
 }
 
 @utility wrapper {
-  @apply bg-bg-light flex h-[calc(100vh-80px)] w-full items-center justify-center;
+  @apply bg-bg-light flex h-[calc(100vh-80px)] w-full justify-center;
 }
 
 @utility container {
@@ -44,5 +44,5 @@
 }
 
 @utility submit-default {
-  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary h-12 rounded-md text-base font-semibold;
+  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary flex h-12 cursor-pointer items-center justify-center rounded-md text-base font-semibold;
 }

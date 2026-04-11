@@ -33,10 +33,10 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
   );
 
   return (
-    <section className="container flex-col">
+    <section className="container">
       <h2>Todos 페이지</h2>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
-      <ul>
+      <ul className="flex flex-col gap-8">
         {optimisiticTodos.map(todo => (
           <TodoWrapper key={todo.content._id} todo={todo.content} />
         ))}
