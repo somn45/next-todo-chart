@@ -34,7 +34,7 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
 
   return (
     <section className="container">
-      <h2>Todos 페이지</h2>
+      <h2 className="text-heading">TodoList</h2>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
       <ul className="flex flex-col gap-8">
         {optimisiticTodos.map(todo => (

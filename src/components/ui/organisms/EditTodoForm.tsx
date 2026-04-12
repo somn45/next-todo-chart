@@ -5,6 +5,7 @@ import Button from "@/components/ui/atoms/Button";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
 import useEditMode from "@/hooks/useEditMode";
+import { SquarePen } from "lucide-react";
 import { useActionState } from "react";
 
 type EditTodoOptimisticType = {
@@ -44,7 +45,11 @@ export default function EditTodoForm({
   };
 
   if (!isEditMode)
-    return <Button type="button" value="수정" onClick={setEditMode} />;
+    return (
+      <div className="flex items-center justify-center rounded-md p-1 hover:bg-mauve-400">
+        <Button type="button" value={<SquarePen />} onClick={setEditMode} />
+      </div>
+    );
   return (
     <form role="form" action={handleSubmit}>
       <ErrorMessage message={state.message} successSignal={"투두 수정 성공"} />

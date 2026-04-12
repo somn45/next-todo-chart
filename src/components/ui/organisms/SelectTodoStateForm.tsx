@@ -41,7 +41,7 @@ export default function SelectTodoStateForm({
   };
 
   return (
-    <ul style={{ display: "flex", gap: "20px", listStyleType: "none" }}>
+    <ul className="flex list-none gap-5">
       <ErrorMessage message={actionState.message} />
       {TODO_STATE_TYPES.map(todoStateType => (
         <li key={todoStateType}>
@@ -58,6 +58,7 @@ export default function SelectTodoStateForm({
               ariaLabel: `${todoStateType} 투두 상태`,
             }}
             buttonAttr={{ value: todoStateType }}
+            state={todoStateType as StateType}
           />
         </li>
       ))}

@@ -4,5 +4,12 @@ interface TextProps {
 }
 
 export default function Text({ content, dataTestId }: TextProps) {
-  return <span data-testid={dataTestId}>{content}</span>;
+  return (
+    <span
+      data-testid={dataTestId}
+      className="text-text-light text-base font-semibold"
+    >
+      {content}
+    </span>
+  );
 }

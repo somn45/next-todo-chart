@@ -8,6 +8,7 @@
   --color-2nd-light: #8b5cf6;
   --color-surface-light: #f8fafc;
   --color-text-light: #1e293b;
+  --color-text-2nd: #60625a;
   --color-text-on-primary: #ffffff;
   --color-bg-disabled: #f3f4f6;
   --color-text-disabled: #9ca3af;
@@ -24,7 +25,7 @@
   --text-sm: 12px;
   --text-base: 14px;
   --text-lg: 16px;
-  --text-heading: 24px;
+  --text-xl: 24px;
 }
 
 @utility global-wrapper {
@@ -36,7 +37,7 @@
 }
 
 @utility container {
-  @apply flex w-full max-w-3xl flex-col gap-5 px-8 py-4;
+  @apply flex w-full max-w-3xl flex-col gap-5 px-8 py-6;
 }
 
 @utility input-default {
@@ -45,4 +46,16 @@
 
 @utility submit-default {
   @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary flex h-12 cursor-pointer items-center justify-center rounded-md text-base font-semibold;
+}
+
+@utility text-heading {
+  @apply text-text-light text-xl font-semibold;
+}
+
+@utility text-regular {
+  @apply text-text-light text-base font-semibold;
+}
+
+@utility text-caption {
+  @apply text-text-2nd text-sm;
 }

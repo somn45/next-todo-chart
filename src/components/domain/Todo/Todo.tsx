@@ -8,6 +8,7 @@ import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
 import SelectTodoStateForm from "@/components/ui/organisms/SelectTodoStateForm";
 import useGraceTimeAlertMessage from "@/hooks/useGraceTimeAlertMessage";
 import { SerializedTodo, StateType } from "@/types/todos/schema";
+import { SquarePen, Trash } from "lucide-react";
 
 // 캐시 무효화가 되지 않아 완료 상태면서 유예 시간이 지난 투두가 보이는 현상 발생
 
@@ -73,34 +74,31 @@ export default function Todo({
     optimisticTodo.completedAt,
   );
 
+  const todoDisplayStyle =
+    hasGracePeriod || todo.state !== "완료" ? "flex" : "none";
+
   return (
-    <li
-      style={{
-        display: hasGracePeriod || todo.state !== "완료" ? "flex" : "none",
-        flexDirection: "column",
-      }}
-    >
+    <li className={`${todoDisplayStyle} flex-col gap-2`}>
       <ErrorMessage message={alertMessage} />
-      <Text content={optimisticTodo.textField} dataTestId="todo-textfield" />
-      <Text
-        content={`현재 상태 ${optimisticTodo.state}`}
-        dataTestId="todo-state"
-      />
+      <span className="text-regular">{optimisticTodo.textField}</span>
+      <div className="flex items-center gap-4">
+        <span className="text-caption">{optimisticTodo.createdAt}</span>
+        <EditTodoForm
+          todoid={optimisticTodo._id}
+          userid={optimisticTodo.userid}
+          editTodoOptimsiticAction={optimisticTodoAction}
+        />
+        <DeleteTodoform
+          todoid={optimisticTodo._id}
+          userid={optimisticTodo.userid}
+          showDeleteSection={showDeleteSection}
+          deleteTodoOptimisticAction={optimisticTodoAction}
+        />
+      </div>
       <SelectTodoStateForm
         todoid={optimisticTodo._id}
         currentTodoState={optimisticTodo.state}
         updateStateOptimisticAction={optimisticTodoAction}
-      />
-      <EditTodoForm
-        todoid={optimisticTodo._id}
-        userid={optimisticTodo.userid}
-        editTodoOptimsiticAction={optimisticTodoAction}
-      />
-      <DeleteTodoform
-        todoid={optimisticTodo._id}
-        userid={optimisticTodo.userid}
-        showDeleteSection={showDeleteSection}
-        deleteTodoOptimisticAction={optimisticTodoAction}
       />
     </li>
   );

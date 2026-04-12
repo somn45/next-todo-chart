@@ -14,11 +14,12 @@ export default function Button({
   const variants: { [key: string]: string } = {
     default: "",
     searchBar: "submit-default size-12 absolute top-2 right-0",
+
     submit: "submit-default",
   };
   if (type === "button")
     return (
-      <button type="button" onClick={onClick} style={{ maxWidth: "80px" }}>
+      <button type="button" onClick={onClick} className="cursor-pointer">
         {value}
       </button>
     );
