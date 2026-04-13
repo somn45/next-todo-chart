@@ -26,20 +26,29 @@ export class LineGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    this.graphGroup
-      .append("g")
-      .attr("class", "xAxis")
-      .attr("data-testid", "x axis")
-      .attr("transform", `translate(0, ${innerHeight})`)
-      .call(
-        axisBottom(scale)
-          .ticks(tickCount)
-          .tickFormat(d =>
-            this.dateDomainBase === "year"
-              ? (new Date(d.toString()).getMonth() + 1).toString()
-              : formatByISO8601(d),
-          ),
-      );
+    if (this.isMobile) {
+      this.graphGroup
+        .append("g")
+        .attr("class", "xAxis")
+        .attr("data-testid", "x axis")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .call(axisBottom(scale).ticks(3));
+    } else {
+      this.graphGroup
+        .append("g")
+        .attr("class", "xAxis")
+        .attr("data-testid", "x axis")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .call(
+          axisBottom(scale)
+            .ticks(tickCount)
+            .tickFormat(d =>
+              this.dateDomainBase === "year"
+                ? (new Date(d.toString()).getMonth() + 1).toString()
+                : formatByISO8601(d),
+            ),
+        );
+    }
   }
 
   protected setYAxis(scale: D3ScaleType): void {
@@ -96,7 +105,7 @@ export class LineGraph extends Graph {
     this.svg
       .append("text")
       .attr("aria-label", "graph title")
-      .attr("x", x / 2)
+      .attr("x", x)
       .attr("y", 30)
       .attr("text-anchor", "middle")
       .attr("font-size", "20px")
@@ -107,6 +116,9 @@ export class LineGraph extends Graph {
   private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
+    if (this.isMobile) {
+      return this.svg.append("g");
+    }
     return this.svg
       .append("g")
       .attr("data-testid", "legend list")
@@ -157,6 +169,8 @@ export class LineGraph extends Graph {
     markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
     initCoord: LegendUnitInitCoord,
   ): void {
+    if (this.isMobile) return;
+
     const markerWidth = markerLayout.width ?? 0;
     const markerHeight = markerLayout.height ?? 0;
 

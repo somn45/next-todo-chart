@@ -27,20 +27,29 @@ export class BandGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    this.graphGroup
-      .append("g")
-      .attr("class", "xAxis")
-      .attr("data-testid", "x axis")
-      .attr("transform", `translate(0, ${innerHeight})`)
-      .call(
-        axisBottom(scale)
-          .ticks(tickCount)
-          .tickFormat(d =>
-            this.dateDomainBase === "year"
-              ? (new Date(d.toString()).getMonth() + 1).toString()
-              : formatByISO8601(d),
-          ),
-      );
+    if (this.isMobile) {
+      this.graphGroup
+        .append("g")
+        .attr("class", "xAxis")
+        .attr("data-testid", "x axis")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .call(axisBottom(scale).ticks(3));
+    } else {
+      this.graphGroup
+        .append("g")
+        .attr("class", "xAxis")
+        .attr("data-testid", "x axis")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .call(
+          axisBottom(scale)
+            .ticks(tickCount)
+            .tickFormat(d =>
+              this.dateDomainBase === "year"
+                ? (new Date(d.toString()).getMonth() + 1).toString()
+                : formatByISO8601(d),
+            ),
+        );
+    }
   }
 
   protected setYAxis(scale: D3ScaleType): void {
@@ -53,7 +62,11 @@ export class BandGraph extends Graph {
       this.graphGroup
         .append("g")
         .attr("data-testid", "y axis")
-        .call(axisLeft(scale.bandScale));
+        .call(
+          axisLeft(scale.bandScale).tickFormat(d => {
+            return d.length > 5 ? `${d.slice(0, 5)}..` : d;
+          }),
+        );
     }
   }
 
@@ -113,7 +126,7 @@ export class BandGraph extends Graph {
     this.svg
       .append("text")
       .attr("aria-label", "graph title")
-      .attr("x", x / 2)
+      .attr("x", x)
       .attr("y", 30)
       .attr("text-anchor", "middle")
       .attr("font-size", "20px")
@@ -124,6 +137,9 @@ export class BandGraph extends Graph {
   private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
+    if (this.isMobile) {
+      return this.svg.append("g");
+    }
     return this.svg!.append("g")
       .attr("data-testid", "legend list")
       .attr("class", "legend")
@@ -171,6 +187,8 @@ export class BandGraph extends Graph {
     markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
     initCoord: LegendUnitInitCoord,
   ): void {
+    if (this.isMobile) return;
+
     const radius = markerLayout.radius ?? 0;
 
     const legendContents = this.colors.map((color, i) => [
@@ -225,6 +243,7 @@ export class BandGraph extends Graph {
       rangeMax: innerWidth,
       timeScaleDomain: [startOfPeriod, endOfPeriod],
     });
+    if (this.isMobile) this.setXAxis(x_scale, 2, innerHeight);
     this.setXAxis(x_scale, 8, innerHeight);
 
     const y_scale = this.createBandScale(

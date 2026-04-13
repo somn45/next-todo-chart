@@ -6,6 +6,15 @@ import { LineGraph } from "@/utils/graph/line/originGraph";
 import { LineGraphMouseEvent } from "@/utils/graph/line/event";
 import { DataDomainBaseType } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
+import {
+  DAT_GRAPH_MARGIN,
+  DAT_LEGEND_COLORS,
+  DAT_LEGEND_TEXTS,
+  DAT_MOBILE_GRAPH_MARGIN,
+  GRAPH_HEIGHT,
+  GRAPH_WIDTH,
+  MOBILE_GRAPH_WIDTH,
+} from "@/constants/graph";
 
 export default function DailyActiveTodoLineGraph({
   stats,
@@ -18,28 +27,40 @@ export default function DailyActiveTodoLineGraph({
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const GRAPH_WIDTH = 700;
-    const GRAPH_HEIGHT = 400;
-    const graphMargin = { top: 80, left: 30, bottom: 20, right: 100 };
-
-    const lineGraph = new LineGraph(
-      GRAPH_WIDTH,
-      GRAPH_HEIGHT,
-      graphMargin,
-      "week",
-      ["총합", "할 일", "진행 중", "완료"],
-      ["#000000", "#3498DB", "#FFA500", "#2ECC71"],
-    );
-
     const graphContainer = lineGraphWrapperRef.current;
     if (!graphContainer) return;
+
+    let lineGraph: LineGraph;
+
+    if (screen.width <= 767) {
+      lineGraph = new LineGraph(
+        MOBILE_GRAPH_WIDTH,
+        GRAPH_HEIGHT,
+        DAT_MOBILE_GRAPH_MARGIN,
+        "week",
+        DAT_LEGEND_TEXTS,
+        DAT_LEGEND_COLORS,
+        true,
+      );
+    } else {
+      lineGraph = new LineGraph(
+        GRAPH_WIDTH,
+        GRAPH_HEIGHT,
+        DAT_GRAPH_MARGIN,
+        "week",
+        DAT_LEGEND_TEXTS,
+        DAT_LEGEND_COLORS,
+        false,
+      );
+    }
+
     const scale = lineGraph.drowLineGraph(graphContainer, stats);
     if (!scale) return;
     const graphGroup = lineGraph.graphGroup;
     if (!toolTipRef.current) return;
 
     const lineGraphMouseEvent = new LineGraphMouseEvent(
-      { width: GRAPH_WIDTH, height: GRAPH_HEIGHT, margin: graphMargin },
+      { width: GRAPH_WIDTH, height: GRAPH_HEIGHT, margin: DAT_GRAPH_MARGIN },
       graphGroup,
       { x: scale.x, y: scale.y },
       stats,

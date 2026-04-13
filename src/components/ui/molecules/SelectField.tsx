@@ -22,7 +22,6 @@ export default function SelectField({
   buttonAttr,
   state,
 }: SelectFieldProps) {
-  console.log(formAttr.isHidden);
   return (
     <form action={formAttr.action} role="form" aria-label={formAttr.ariaLabel}>
       <Input

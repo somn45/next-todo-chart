@@ -20,6 +20,7 @@ export abstract class Graph {
     protected dateDomainBase: DataDomainBaseType,
     protected texts: string[],
     protected colors: string[],
+    protected isMobile?: boolean,
   ) {
     this.width = width;
     this.height = height;
@@ -27,6 +28,7 @@ export abstract class Graph {
     this.graphMargin = graphMargin;
     this.texts = texts;
     this.colors = colors;
+    this.isMobile = isMobile;
   }
 
   set svg(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) {

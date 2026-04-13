@@ -17,7 +17,7 @@ export default function StatsLayout({
 }>) {
   return (
     <>
-      <section className="wrapper gap-16">
+      <section className="flex flex-col gap-16 overflow-y-auto">
         {dailyActive}
         {timeline}
       </section>

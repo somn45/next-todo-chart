@@ -12,7 +12,8 @@ export const caculateGraphLayout = (
   const graphInnerHeight = outerHeight - graphMargin.top - graphMargin.bottom;
 
   // title 시작 위치
-  const titleStartOffset = outerWidth - graphMargin.left + graphMargin.right;
+  const titleStartOffset =
+    graphMargin.left + (outerWidth - graphMargin.left - graphMargin.right) / 2;
 
   // legend 시작 위치
   const legendStartOffset = outerWidth - GRAPH_LEGEND_PADDING_RIGHT;
@@ -24,3 +25,15 @@ export const caculateGraphLayout = (
     legendStartOffset,
   };
 };
+
+// 4    o
+// ooooooo
+
+// 4.5
+// Xoooooo
+
+// 3.5
+// 000000X
+
+//    o
+// XoooooX
