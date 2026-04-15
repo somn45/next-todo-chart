@@ -78,9 +78,11 @@ export class LineGraphMouseEvent {
 
   private getDataPointClosetMousePointer(
     groupedData: d3.InternMap<string, TodoStat[]>,
-    event: MouseEvent,
+    event: MouseEvent | TouchEvent,
   ) {
-    const [mouseXCoord, mouseYCoord] = pointer(event, event.currentTarget);
+    const touch = event instanceof TouchEvent ? event.touches[0] : event;
+
+    const [mouseXCoord, mouseYCoord] = pointer(touch, event.currentTarget);
 
     const dateMatchedMouseXCoord = this.scale.x.invert(mouseXCoord);
 
@@ -165,6 +167,15 @@ export class LineGraphMouseEvent {
           event,
         ),
       )
-      .on("mouseleave", () => this.hiddenFollowElements(this.tooltipSelection));
+      .on("mouseleave", () => this.hiddenFollowElements(this.tooltipSelection))
+      .on("touchstart", () => this.displayFollowElements(this.tooltipSelection))
+      .on("touchmove", (event: MouseEvent) =>
+        this.setCoordFocusAndToolTip(
+          groupedStats,
+          { x_scale: this.scale.x, y_scale: this.scale.y },
+          event,
+        ),
+      )
+      .on("touchend", () => this.hiddenFollowElements(this.tooltipSelection));
   }
 }

@@ -1,7 +1,7 @@
 export const GRAPH_WIDTH = 700;
 export const GRAPH_HEIGHT = 400;
 
-export const MOBILE_GRAPH_WIDTH = 300;
+export const MOBILE_GRAPH_MIN_WIDTH = 250;
 
 export const SPARKLINE_WIDTH = 400;
 export const SPARKLINE_HEIGHT = 300;
