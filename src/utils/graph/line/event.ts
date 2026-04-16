@@ -124,10 +124,22 @@ export class LineGraphMouseEvent {
     const target = this.getDataPointClosetMousePointer(groupedData, event);
     const dateISO8601Type = formatByISO8601(target.date);
 
+    const StateOptionColor: { [key: string]: string } = {
+      "할 일": "text-[#3498DB]",
+      "진행 중": "text-[#FFA500]",
+      완료: "text-[#2ECC71]",
+    };
+
     this.focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
     this.tooltipSelection
       .html(
-        `${dateISO8601Type} 일자에서<br/> ${target.state} 상태의 총합 : ${target.count}개`,
+        `
+        <span class="text-caption">${dateISO8601Type}</span>
+        <div>
+          <span class="text-reqular ${StateOptionColor[target.state]}">${target.state} </span>
+          <span class="text-regular"> 상태 : 총 ${target.count}개</span>
+        </div>
+        `,
       )
       .style("left", `${x_scale(target.date) - 25}px`)
       .style("top", `${target.y_pixel - 15}px`);

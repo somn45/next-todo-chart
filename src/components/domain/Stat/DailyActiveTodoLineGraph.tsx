@@ -88,21 +88,11 @@ export default function DailyActiveTodoLineGraph({
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div className="relative">
         <div
           ref={toolTipRef}
           data-testid="tooltip"
-          style={{
-            position: "absolute",
-            opacity: 0,
-            background: "white",
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            fontSize: "14px",
-            zIndex: 100,
-            pointerEvents: "none",
-          }}
+          className="bg-bg-light border-bg-light pointer-events-none absolute z-50 flex flex-col rounded-sm border p-2 text-center opacity-0"
         ></div>
         <div ref={lineGraphWrapperRef}></div>
       </div>
