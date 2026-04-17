@@ -40,14 +40,18 @@ export default function DailyActiveTodoLineGraph({
 
     let lineGraph: LineGraph;
 
+    let graphContainerWidth = GRAPH_WIDTH;
+    const graphContainerMargin =
+      windowSize <= 767 ? DAT_MOBILE_GRAPH_MARGIN : DAT_GRAPH_MARGIN;
+
     if (windowSize <= 767) {
-      const graphContainerWidth =
+      graphContainerWidth =
         windowSize !== 0 ? windowSize - 20 : MOBILE_GRAPH_MIN_WIDTH;
 
       lineGraph = new LineGraph(
         graphContainerWidth,
         GRAPH_HEIGHT,
-        DAT_MOBILE_GRAPH_MARGIN,
+        graphContainerMargin,
         "week",
         DAT_LEGEND_TEXTS,
         DAT_LEGEND_COLORS,
@@ -57,7 +61,7 @@ export default function DailyActiveTodoLineGraph({
       lineGraph = new LineGraph(
         GRAPH_WIDTH,
         GRAPH_HEIGHT,
-        DAT_GRAPH_MARGIN,
+        graphContainerMargin,
         "week",
         DAT_LEGEND_TEXTS,
         DAT_LEGEND_COLORS,
@@ -71,7 +75,11 @@ export default function DailyActiveTodoLineGraph({
     if (!toolTipRef.current) return;
 
     const lineGraphMouseEvent = new LineGraphMouseEvent(
-      { width: GRAPH_WIDTH, height: GRAPH_HEIGHT, margin: DAT_GRAPH_MARGIN },
+      {
+        width: graphContainerWidth,
+        height: GRAPH_HEIGHT,
+        margin: graphContainerMargin,
+      },
       graphGroup,
       { x: scale.x, y: scale.y },
       stats,
@@ -92,7 +100,7 @@ export default function DailyActiveTodoLineGraph({
         <div
           ref={toolTipRef}
           data-testid="tooltip"
-          className="bg-bg-light border-bg-light pointer-events-none absolute z-50 flex flex-col rounded-sm border p-2 text-center opacity-0"
+          className="bg-bg-light border-bg-light pointer-events-none absolute z-50 w-30 rounded-sm border p-2 opacity-0"
         ></div>
         <div ref={lineGraphWrapperRef}></div>
       </div>

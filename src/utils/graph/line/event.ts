@@ -3,6 +3,7 @@ import { TodoStat } from "@/types/stats/schema";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { select, pointer } from "d3-selection";
 import { bisectCenter, group } from "d3-array";
+import { moveTooltipPosition } from "../func/moveTooltipPosition";
 
 interface GraphMargin {
   left: number;
@@ -130,18 +131,24 @@ export class LineGraphMouseEvent {
       완료: "text-[#2ECC71]",
     };
 
+    const tooltipPositionLeft = moveTooltipPosition({
+      tooltipSelection: this.tooltipSelection,
+      graphArea: this.graphArea,
+      originPositionX: x_scale(target.date) - 25,
+    });
+
     this.focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
     this.tooltipSelection
       .html(
         `
         <span class="text-caption">${dateISO8601Type}</span>
         <div>
-          <span class="text-reqular ${StateOptionColor[target.state]}">${target.state} </span>
-          <span class="text-regular"> 상태 : 총 ${target.count}개</span>
+          <span class="text-caption ${StateOptionColor[target.state]}">${target.state} </span>
+          <span class="text-caption"> 상태 : 총 ${target.count}개</span>
         </div>
         `,
       )
-      .style("left", `${x_scale(target.date) - 25}px`)
+      .style("left", `${tooltipPositionLeft}px`)
       .style("top", `${target.y_pixel - 15}px`);
   }
 
