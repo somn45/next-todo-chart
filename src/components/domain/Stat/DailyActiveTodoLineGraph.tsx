@@ -85,7 +85,35 @@ export default function DailyActiveTodoLineGraph({
       stats,
       toolTipRef.current,
     );
-    lineGraphMouseEvent.handleGraphMouseEvent();
+    const groupedStats = lineGraphMouseEvent.handleGraphMouseEvent();
+
+    const { graphArea, tooltipSelection } = lineGraphMouseEvent;
+
+    let timer: NodeJS.Timeout | null;
+
+    graphArea
+      .on("mouseover", () =>
+        lineGraphMouseEvent.handleMouseOver(tooltipSelection),
+      )
+      .on("mousemove", (event: MouseEvent) => {
+        if (!timer) {
+          const latestEvent = event;
+          const target = event.currentTarget;
+          if (!target) return;
+          timer = setTimeout(() => {
+            lineGraphMouseEvent.handleMouseMove(
+              groupedStats,
+              { x_scale: scale.x, y_scale: scale.y },
+              latestEvent,
+              target,
+            );
+            timer = null;
+          }, 50);
+        }
+      })
+      .on("mouseleave", () =>
+        lineGraphMouseEvent.handleMouseLeave(tooltipSelection),
+      );
 
     window.addEventListener("resize", handleResize);
 

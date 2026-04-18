@@ -80,10 +80,11 @@ export class LineGraphMouseEvent {
   private getDataPointClosetMousePointer(
     groupedData: d3.InternMap<string, TodoStat[]>,
     event: MouseEvent | TouchEvent,
+    eventTarget: EventTarget,
   ) {
     const touch = event instanceof TouchEvent ? event.touches[0] : event;
 
-    const [mouseXCoord, mouseYCoord] = pointer(touch, event.currentTarget);
+    const [mouseXCoord, mouseYCoord] = pointer(touch, eventTarget);
 
     const dateMatchedMouseXCoord = this.scale.x.invert(mouseXCoord);
 
@@ -108,21 +109,26 @@ export class LineGraphMouseEvent {
   }
 
   /** focus와 tooltip이 그래프 스케치 영역으로 들어왔다면 표시 */
-  private displayFollowElements(
+  handleMouseOver(
     tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
   ) {
-    [this.focus, tooltip].forEach(element => element.style("opacity", 1));
+    [(this.focus, tooltip)].forEach(element => element.style("opacity", 1));
   }
 
   /** focus와 tooltip의 위치값 설정 */
-  private setCoordFocusAndToolTip(
+  handleMouseMove(
     groupedData: d3.InternMap<string, TodoStat[]>,
     graphScale: TimeBasedLinearScale,
     event: MouseEvent,
+    eventTarget: EventTarget,
   ) {
     const { x_scale } = graphScale;
 
-    const target = this.getDataPointClosetMousePointer(groupedData, event);
+    const target = this.getDataPointClosetMousePointer(
+      groupedData,
+      event,
+      eventTarget,
+    );
     const dateISO8601Type = formatByISO8601(target.date);
 
     const StateOptionColor: { [key: string]: string } = {
@@ -153,7 +159,7 @@ export class LineGraphMouseEvent {
   }
 
   /** focus와 tooltip이 그래프 스케치 영역으로 나갔다면 숨김 */
-  private hiddenFollowElements(
+  handleMouseLeave(
     tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
   ) {
     [this.focus, tooltip].forEach(element => element.style("opacity", 0));
@@ -177,24 +183,8 @@ export class LineGraphMouseEvent {
       .attr("fill", "none")
       .style("pointer-events", "all")
       .attr("width", innerWidth)
-      .attr("height", innerHeight)
-      .on("mouseover", () => this.displayFollowElements(this.tooltipSelection))
-      .on("mousemove", (event: MouseEvent) =>
-        this.setCoordFocusAndToolTip(
-          groupedStats,
-          { x_scale: this.scale.x, y_scale: this.scale.y },
-          event,
-        ),
-      )
-      .on("mouseleave", () => this.hiddenFollowElements(this.tooltipSelection))
-      .on("touchstart", () => this.displayFollowElements(this.tooltipSelection))
-      .on("touchmove", (event: MouseEvent) =>
-        this.setCoordFocusAndToolTip(
-          groupedStats,
-          { x_scale: this.scale.x, y_scale: this.scale.y },
-          event,
-        ),
-      )
-      .on("touchend", () => this.hiddenFollowElements(this.tooltipSelection));
+      .attr("height", innerHeight);
+
+    return groupedStats;
   }
 }
