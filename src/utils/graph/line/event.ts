@@ -3,7 +3,7 @@ import { TodoStat } from "@/types/stats/schema";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { select, pointer } from "d3-selection";
 import { bisectCenter, group } from "d3-array";
-import { moveTooltipPosition } from "../func/moveTooltipPosition";
+import { correctTooltipPosition } from "../func/correctTooltipPosition";
 
 interface GraphMargin {
   left: number;
@@ -69,7 +69,7 @@ export class LineGraphMouseEvent {
       .append("g")
       .append("circle")
       .attr("data-testid", "focus")
-      .attr("fill", "none")
+      .attr("fill", "black")
       .attr("stroke", "black")
       .attr("r", radius)
       .style("opacity", 0);
@@ -112,7 +112,7 @@ export class LineGraphMouseEvent {
   handleMouseOver(
     tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
   ) {
-    [(this.focus, tooltip)].forEach(element => element.style("opacity", 1));
+    [this.focus, tooltip].forEach(element => element.style("opacity", 1));
   }
 
   /** focus와 tooltip의 위치값 설정 */
@@ -137,10 +137,11 @@ export class LineGraphMouseEvent {
       완료: "text-[#2ECC71]",
     };
 
-    const tooltipPositionLeft = moveTooltipPosition({
+    correctTooltipPosition({
       tooltipSelection: this.tooltipSelection,
       graphArea: this.graphArea,
-      originPositionX: x_scale(target.date) - 25,
+      event,
+      eventTarget,
     });
 
     this.focus.attr("cx", x_scale(target.date)).attr("cy", target.y_pixel);
@@ -154,8 +155,8 @@ export class LineGraphMouseEvent {
         </div>
         `,
       )
-      .style("left", `${tooltipPositionLeft}px`)
-      .style("top", `${target.y_pixel - 15}px`);
+      .style("left", `${x_scale(target.date)}px`)
+      .style("top", `${target.y_pixel}px`);
   }
 
   /** focus와 tooltip이 그래프 스케치 영역으로 나갔다면 숨김 */

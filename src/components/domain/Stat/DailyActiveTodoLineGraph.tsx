@@ -113,6 +113,28 @@ export default function DailyActiveTodoLineGraph({
       })
       .on("mouseleave", () =>
         lineGraphMouseEvent.handleMouseLeave(tooltipSelection),
+      )
+      .on("touchstart", () =>
+        lineGraphMouseEvent.handleMouseOver(tooltipSelection),
+      )
+      .on("touchmove", (event: MouseEvent) => {
+        if (!timer) {
+          const latestEvent = event;
+          const target = event.currentTarget;
+          if (!target) return;
+          timer = setTimeout(() => {
+            lineGraphMouseEvent.handleMouseMove(
+              groupedStats,
+              { x_scale: scale.x, y_scale: scale.y },
+              latestEvent,
+              target,
+            );
+            timer = null;
+          }, 50);
+        }
+      })
+      .on("touchend", () =>
+        lineGraphMouseEvent.handleMouseLeave(tooltipSelection),
       );
 
     window.addEventListener("resize", handleResize);
@@ -128,7 +150,7 @@ export default function DailyActiveTodoLineGraph({
         <div
           ref={toolTipRef}
           data-testid="tooltip"
-          className="bg-bg-light border-bg-light pointer-events-none absolute z-50 w-30 rounded-sm border p-2 opacity-0"
+          className="bg-bg-light border-bg-light pointer-events-none absolute z-50 w-35 touch-none rounded-sm border p-2 opacity-0"
         ></div>
         <div ref={lineGraphWrapperRef}></div>
       </div>
