@@ -228,10 +228,10 @@ export class LineGraph extends Graph {
     this.setLegendItems("rect", legend, legendMarkerSize, legendInitCoord);
 
     const statsKeys = groupedStats.keys();
-    const count = statsKeys.toArray().length;
+    const stateTypeCount = statsKeys.toArray().length;
     const tickCount = caculateTickCount(
       this.dateDomainBase,
-      count,
+      stateTypeCount,
       data.length,
     );
 
