@@ -35,3 +35,6 @@ export const TL_LEGEND_INIT_COORD = {
   textX: 12,
   textY: 4,
 };
+
+export const WEEK_INTERVAL = 7;
+export const MONTH_INTERVAL = 30;

@@ -15,6 +15,7 @@ import {
   GRAPH_WIDTH,
   MOBILE_GRAPH_MIN_WIDTH,
 } from "@/constants/graph";
+import { MAX_MOBILE_SIZE } from "@/constants/media";
 
 export default function DailyActiveTodoLineGraph({
   stats,
@@ -33,20 +34,24 @@ export default function DailyActiveTodoLineGraph({
       setWindowSize(window.innerWidth);
     };
 
-    if (windowSize === 0) return setWindowSize(screen.width);
+    const isMounted = windowSize !== 0;
+    if (!isMounted) return setWindowSize(screen.width);
 
     const graphContainer = lineGraphWrapperRef.current;
     if (!graphContainer) return;
 
     let lineGraph: LineGraph;
-
     let graphContainerWidth = GRAPH_WIDTH;
-    const graphContainerMargin =
-      windowSize <= 767 ? DAT_MOBILE_GRAPH_MARGIN : DAT_GRAPH_MARGIN;
+    const isMobileSize = windowSize <= MAX_MOBILE_SIZE;
 
-    if (windowSize <= 767) {
-      graphContainerWidth =
-        windowSize !== 0 ? windowSize - 20 : MOBILE_GRAPH_MIN_WIDTH;
+    const graphContainerMargin = isMobileSize
+      ? DAT_MOBILE_GRAPH_MARGIN
+      : DAT_GRAPH_MARGIN;
+
+    if (isMobileSize) {
+      graphContainerWidth = isMounted
+        ? windowSize - 20
+        : MOBILE_GRAPH_MIN_WIDTH;
 
       lineGraph = new LineGraph(
         graphContainerWidth,
@@ -59,7 +64,7 @@ export default function DailyActiveTodoLineGraph({
       );
     } else {
       lineGraph = new LineGraph(
-        GRAPH_WIDTH,
+        graphContainerWidth,
         GRAPH_HEIGHT,
         graphContainerMargin,
         dateDomainBase,
@@ -90,6 +95,7 @@ export default function DailyActiveTodoLineGraph({
     const { graphArea, tooltipSelection } = lineGraphMouseEvent;
 
     let timer: NodeJS.Timeout | null;
+    const THORTTLING_DELAY = 50;
 
     graphArea
       .on("mouseover", () =>
@@ -108,7 +114,7 @@ export default function DailyActiveTodoLineGraph({
               target,
             );
             timer = null;
-          }, 50);
+          }, THORTTLING_DELAY);
         }
       })
       .on("mouseleave", () =>

@@ -14,6 +14,7 @@ import {
   LegendUnitInitCoord,
 } from "@/types/graph/schema";
 import { caculateGraphLayout } from "../caculateGraphLayout";
+import { DAT_LEGEND_INIT_COORD, GRAPH_LEGEND_MARKER_SIZE } from "@/constants/graph";
 
 interface createTimeScaleParams<T extends { date: Date }> {
   rangeMax: number;
@@ -223,9 +224,7 @@ export class LineGraph extends Graph {
     const legend = this.createLegend(legendStartOffset);
     if (!legend) return;
 
-    const legendMarkerSize = { width: 15, height: 2 };
-    const legendInitCoord = { x: 0, y: 0, textX: 22, textY: 6 };
-    this.setLegendItems("rect", legend, legendMarkerSize, legendInitCoord);
+    this.setLegendItems("rect", legend, GRAPH_LEGEND_MARKER_SIZE, DAT_LEGEND_INIT_COORD);
 
     const statsKeys = groupedStats.keys();
     const stateTypeCount = statsKeys.toArray().length;
