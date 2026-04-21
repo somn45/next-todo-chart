@@ -7,7 +7,7 @@ export default function TimeLineLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <Suspense fallback={<p>...Loading</p>}>
         <Navigation />
       </Suspense>

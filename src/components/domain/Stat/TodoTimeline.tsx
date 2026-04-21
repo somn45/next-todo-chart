@@ -14,6 +14,7 @@ import {
 } from "@/constants/graph";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import { DataDomainBaseType } from "@/types/graph/schema";
+import LegendList from "@/components/ui/molecules/LegendList";
 
 interface TimeLineProps {
   todos: Array<TodosType & SerializedTodo>;
@@ -75,6 +76,7 @@ export default function TodoTimeline({
 
   return (
     <>
+      <LegendList legendTexts={TL_LEGEND_TEXTS} categoryType="circle" />
       <div ref={bandGraphWrapperRef} className="flex justify-center"></div>
     </>
   );

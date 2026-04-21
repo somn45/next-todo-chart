@@ -15,7 +15,7 @@ interface TabMenuProps {
 export default function TabMenu({ tabMenuItems }: TabMenuProps) {
   return (
     <nav>
-      <ul className="flex list-none gap-5 px-4 py-2">
+      <ul className="flex list-none gap-5 py-2">
         {tabMenuItems.map(({ href, content, isActive }) => (
           <li
             key={content}

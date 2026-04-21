@@ -16,6 +16,7 @@ import {
   MOBILE_GRAPH_MIN_WIDTH,
 } from "@/constants/graph";
 import { MAX_MOBILE_SIZE } from "@/constants/media";
+import LegendList from "@/components/ui/molecules/LegendList";
 
 export default function DailyActiveTodoLineGraph({
   stats,
@@ -152,6 +153,7 @@ export default function DailyActiveTodoLineGraph({
 
   return (
     <>
+      <LegendList legendTexts={DAT_LEGEND_TEXTS} categoryType="rect" />
       <div className="relative">
         <div
           ref={toolTipRef}
