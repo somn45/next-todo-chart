@@ -41,27 +41,29 @@ export default function SelectTodoStateForm({
   };
 
   return (
-    <ul className="flex list-none gap-5">
+    <>
       <ErrorMessage message={actionState.message} />
-      {TODO_STATE_TYPES.map(todoStateType => (
-        <li key={todoStateType}>
-          <SelectField
-            formAttr={{
-              action: handleSubmit,
-              ariaLabel: `${todoStateType}이 포함된 양식`,
-              isHidden: todoStateType === currentTodoState,
-            }}
-            inputAttr={{
-              type: "text",
-              name: "state",
-              defaultValue: todoStateType,
-              ariaLabel: `${todoStateType} 투두 상태`,
-            }}
-            buttonAttr={{ value: todoStateType }}
-            state={todoStateType as StateType}
-          />
-        </li>
-      ))}
-    </ul>
+      <ul className="flex list-none gap-5">
+        {TODO_STATE_TYPES.map(todoStateType => (
+          <li key={todoStateType}>
+            <SelectField
+              formAttr={{
+                action: handleSubmit,
+                ariaLabel: `${todoStateType}이 포함된 양식`,
+                isHidden: todoStateType === currentTodoState,
+              }}
+              inputAttr={{
+                type: "text",
+                name: "state",
+                defaultValue: todoStateType,
+                ariaLabel: `${todoStateType} 투두 상태`,
+              }}
+              buttonAttr={{ value: todoStateType }}
+              state={todoStateType as StateType}
+            />
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

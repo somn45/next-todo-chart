@@ -1,14 +1,12 @@
 "use client";
 
 import { useOptimistic, useRef } from "react";
-import Text from "@/components/ui/atoms/Text";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import EditTodoForm from "@/components/ui/organisms/EditTodoForm";
 import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
 import SelectTodoStateForm from "@/components/ui/organisms/SelectTodoStateForm";
 import useGraceTimeAlertMessage from "@/hooks/useGraceTimeAlertMessage";
 import { SerializedTodo, StateType } from "@/types/todos/schema";
-import { SquarePen, Trash } from "lucide-react";
 
 // 캐시 무효화가 되지 않아 완료 상태면서 유예 시간이 지난 투두가 보이는 현상 발생
 
@@ -77,8 +75,16 @@ export default function Todo({
   const todoDisplayStyle =
     hasGracePeriod || todo.state !== "완료" ? "flex" : "none";
 
+  const TodoHighlistColor: { [key: string]: string } = {
+    "할 일": "border-[#3498DB]",
+    "진행 중": "border-[#FFA500]",
+    완료: "border-[#2ECC71]",
+  };
+
   return (
-    <li className={`${todoDisplayStyle} flex-col gap-2`}>
+    <li
+      className={`${todoDisplayStyle} ${TodoHighlistColor[todo.state]} flex-col gap-2 rounded-md border-l-4 pl-4`}
+    >
       <ErrorMessage message={alertMessage} />
       <span className="text-regular">{optimisticTodo.textField}</span>
       <div className="flex items-center gap-4">
