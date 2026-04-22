@@ -36,7 +36,7 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
     <section className="container">
       <h2 className="text-heading">TodoList</h2>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
-      <ul className="flex flex-col gap-8">
+      <ul className="flex flex-col gap-x-20 gap-y-8 lg:grid lg:grid-cols-2 2xl:grid-cols-3">
         {optimisiticTodos.map(todo => (
           <TodoWrapper key={todo.content._id} todo={todo.content} />
         ))}

@@ -37,7 +37,7 @@
 }
 
 @utility container {
-  @apply flex w-full max-w-3xl flex-col gap-5 px-8 py-6;
+  @apply flex w-full max-w-7xl flex-col gap-5 px-8 py-6;
 }
 
 @utility input-default {
@@ -45,7 +45,7 @@
 }
 
 @utility submit-default {
-  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary flex h-12 cursor-pointer items-center justify-center rounded-md text-base font-semibold;
+  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary flex h-12 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-base font-semibold;
 }
 
 @utility text-heading {

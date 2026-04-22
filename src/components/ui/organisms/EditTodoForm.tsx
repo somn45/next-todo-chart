@@ -4,8 +4,6 @@ import { editTodo } from "@/actions/editTodo";
 import Button from "@/components/ui/atoms/Button";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
-import useEditMode from "@/hooks/useEditMode";
-import { SquarePen } from "lucide-react";
 import { useActionState } from "react";
 
 type EditTodoOptimisticType = {
@@ -16,12 +14,14 @@ type EditTodoOptimisticType = {
 interface EditFormProps {
   todoid: string;
   userid: string;
+  hiddenEditForm: () => void;
   editTodoOptimsiticAction: (action: EditTodoOptimisticType) => void;
 }
 
 export default function EditTodoForm({
   todoid,
   userid,
+  hiddenEditForm,
   editTodoOptimsiticAction,
 }: EditFormProps) {
   const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
@@ -31,7 +31,6 @@ export default function EditTodoForm({
   const [state, editTodoAction] = useActionState(editTodoWithTodoIdAndUserId, {
     message: "",
   });
-  const [isEditMode, setEditMode, setReadMode] = useEditMode(state.message);
 
   const handleSubmit = async (FormData: FormData) => {
     const editedTextField = FormData.get("todo") as string;
@@ -44,14 +43,8 @@ export default function EditTodoForm({
     }
   };
 
-  if (!isEditMode)
-    return (
-      <div className="flex items-center justify-center rounded-md p-1 hover:bg-mauve-400">
-        <Button type="button" value={<SquarePen />} onClick={setEditMode} />
-      </div>
-    );
   return (
-    <form role="form" action={handleSubmit}>
+    <form role="form" action={handleSubmit} className="flex gap-2">
       <ErrorMessage message={state.message} successSignal={"투두 수정 성공"} />
       <Input
         type="text"
@@ -59,8 +52,8 @@ export default function EditTodoForm({
         name="todo"
         ariaLabel="수정될 투두 입력칸"
       />
-      <Button type="submit" value="수정 완료" />
-      <Button type="button" value="취소" onClick={setReadMode} />
+      <Button type="submit" variant="submit" value="수정 완료" />
+      <Button type="button" value="취소" onClick={hiddenEditForm} />
     </form>
   );
 }

@@ -50,7 +50,7 @@ export default function DeleteTodoform({
         isHidden={true}
       />
       <div className="flex items-center justify-center rounded-md bg-red-400 p-1 hover:bg-red-600">
-        <Button type="submit" value={<Trash size={24} />} />
+        <Button type="submit" value={<Trash size={16} />} />
       </div>
     </form>
   );

@@ -1,12 +1,15 @@
 "use client";
 
-import { useOptimistic, useRef } from "react";
+import { useOptimistic, useRef, useState } from "react";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import EditTodoForm from "@/components/ui/organisms/EditTodoForm";
 import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
 import SelectTodoStateForm from "@/components/ui/organisms/SelectTodoStateForm";
 import useGraceTimeAlertMessage from "@/hooks/useGraceTimeAlertMessage";
 import { SerializedTodo, StateType } from "@/types/todos/schema";
+import { EllipsisVertical, SquarePen } from "lucide-react";
+import Button from "@/components/ui/atoms/Button";
+import EditableText from "@/components/ui/organisms/EditableText";
 
 // 캐시 무효화가 되지 않아 완료 상태면서 유예 시간이 지난 투두가 보이는 현상 발생
 
@@ -81,19 +84,28 @@ export default function Todo({
     완료: "border-[#2ECC71]",
   };
 
+  const [displayedEditForm, setDisplayedEditForm] = useState(false);
+
   return (
     <li
       className={`${todoDisplayStyle} ${TodoHighlistColor[todo.state]} flex-col gap-2 rounded-md border-l-4 pl-4`}
     >
       <ErrorMessage message={alertMessage} />
-      <span className="text-regular">{optimisticTodo.textField}</span>
+      <EditableText
+        todo={optimisticTodo}
+        displayedEditForm={displayedEditForm}
+        hiddenEditForm={() => setDisplayedEditForm(false)}
+        optimisticTodoAction={optimisticTodoAction}
+      />
       <div className="flex items-center gap-4">
         <span className="text-caption">{optimisticTodo.createdAt}</span>
-        <EditTodoForm
-          todoid={optimisticTodo._id}
-          userid={optimisticTodo.userid}
-          editTodoOptimsiticAction={optimisticTodoAction}
-        />
+        <div className="flex items-center justify-center rounded-md p-1 hover:bg-mauve-400">
+          <Button
+            type="button"
+            value={<SquarePen size={16} />}
+            onClick={() => setDisplayedEditForm(true)}
+          />
+        </div>
         <DeleteTodoform
           todoid={optimisticTodo._id}
           userid={optimisticTodo.userid}
