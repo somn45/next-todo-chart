@@ -30,7 +30,7 @@ export default function Nav({ NavLinks, variant = "default" }: NavProps) {
       >
         {NavLinks.map(({ href, content }) => (
           <li
-            key={content}
+            key={href}
             className={`${listitemVariants[variant]} text-1st-light text-base font-semibold hover:underline`}
           >
             <NavLink href={href} content={content} />

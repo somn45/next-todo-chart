@@ -4,15 +4,16 @@ import TabMenu from "@/components/ui/molecules/TabMenu";
 import useQueryString from "@/hooks/useQueryString";
 import { NavLinkItem } from "@/types/ui";
 import getTabMenuItems from "@/utils/ui/getTabMenuItems";
+import { ChartGantt, ChartSpline } from "lucide-react";
 
 const navLinkItems: NavLinkItem[] = [
   {
     href: "/dashboard/line-graph",
-    content: "라인 그래프",
+    content: <ChartSpline />,
   },
   {
     href: "/dashboard/timeline",
-    content: "타임라인",
+    content: <ChartGantt />,
   },
 ];
 

@@ -17,30 +17,11 @@ export default function Dashboard({
   graph: React.ReactNode;
 }) {
   return (
-    <section
-      style={{
-        display: "flex",
-      }}
-    >
-      <section
-        style={{
-          width: "50%",
-          marginLeft: "100px",
-          alignSelf: "stretch",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    <section className="flex flex-col gap-10 lg:grid lg:grid-cols-2">
+      <section className="flex flex-col items-stretch gap-5 p-2.5">
         {todos}
       </section>
-      <section
-        style={{
-          width: "50%",
-          alignSelf: "stretch",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <section className="flex flex-col items-stretch gap-5 p-2.5">
         {graph}
       </section>
       <div>{children}</div>

@@ -36,15 +36,17 @@ export default function DashboardTodosPage({
   );
 
   return (
-    <div>
+    <>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
-      {optimisiticTodos.map(todo => (
-        <TodoWrapper
-          key={todo.content._id}
-          todo={todo.content}
-          showDeleteSection={false}
-        />
-      ))}
-    </div>
+      <ul className="flex flex-col items-center justify-center gap-5">
+        {optimisiticTodos.map(todo => (
+          <TodoWrapper
+            key={todo.content._id}
+            todo={todo.content}
+            showDeleteSection={false}
+          />
+        ))}
+      </ul>
+    </>
   );
 }

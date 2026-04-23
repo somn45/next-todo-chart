@@ -18,11 +18,11 @@ export default function TabMenu({ tabMenuItems }: TabMenuProps) {
       <ul className="flex list-none gap-5 py-2">
         {tabMenuItems.map(({ href, content, isActive }) => (
           <li
-            key={content}
+            key={href}
             className={
               isActive
-                ? "bg-2nd-light text-text-dark w-16 rounded-md px-4 py-1 text-center font-semibold"
-                : "bg-bg-disabled hover:bg-1st-light text-text-disabled hover:text-text-dark w-16 rounded-md px-4 py-1 text-center font-normal hover:font-semibold"
+                ? "bg-2nd-light text-text-dark flex w-16 items-center justify-center rounded-md px-4 py-1 text-center font-semibold"
+                : "bg-bg-disabled hover:bg-1st-light text-text-disabled hover:text-text-dark flex w-16 items-center justify-center rounded-md px-4 py-1 text-center font-normal hover:font-semibold"
             }
           >
             <NavLink href={href} content={content} />
