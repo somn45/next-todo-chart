@@ -54,25 +54,29 @@ export default function DailyActiveTodoLineGraph({
         ? windowSize - 20
         : MOBILE_GRAPH_MIN_WIDTH;
 
-      lineGraph = new LineGraph(
-        graphContainerWidth,
-        GRAPH_HEIGHT,
-        graphContainerMargin,
+      const graphOptions = {
+        width: graphContainerWidth,
+        height: GRAPH_HEIGHT,
+        margin: graphContainerMargin,
         dateDomainBase,
-        DAT_LEGEND_TEXTS,
-        DAT_LEGEND_COLORS,
-        true,
-      );
+        texts: DAT_LEGEND_TEXTS,
+        colors: DAT_LEGEND_COLORS,
+        isMobileSize: true,
+      };
+
+      lineGraph = new LineGraph(graphOptions, stats);
     } else {
-      lineGraph = new LineGraph(
-        graphContainerWidth,
-        GRAPH_HEIGHT,
-        graphContainerMargin,
+      const graphOptions = {
+        width: graphContainerWidth,
+        height: GRAPH_HEIGHT,
+        margin: graphContainerMargin,
         dateDomainBase,
-        DAT_LEGEND_TEXTS,
-        DAT_LEGEND_COLORS,
-        false,
-      );
+        texts: DAT_LEGEND_TEXTS,
+        colors: DAT_LEGEND_COLORS,
+        isMobileSize: false,
+      };
+
+      lineGraph = new LineGraph(graphOptions, stats);
     }
 
     const scale = lineGraph.drowLineGraph(graphContainer, stats);

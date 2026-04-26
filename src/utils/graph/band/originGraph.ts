@@ -1,4 +1,4 @@
-import { scaleTime, scaleBand } from "d3-scale";
+import { scaleTime, scaleBand, ScaleTime, ScaleBand } from "d3-scale";
 import { axisLeft, axisBottom } from "d3-axis";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { Graph } from "../graphCore/graphCore";
@@ -7,14 +7,26 @@ import {
   getStartOfPeriod,
 } from "@/utils/date/getDateInCurrentDate";
 import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength";
-import { SerializedTodo, TodosType } from "@/types/todos/schema";
+import { SerializedTodo, StateType, TodosType } from "@/types/todos/schema";
 import {
   D3ScaleType,
+  DataDomainBaseType,
+  GraphMargin,
   LegendMarkerLayout,
   LegendMarkerType,
   LegendUnitInitCoord,
 } from "@/types/graph/schema";
 import { caculateGraphLayout } from "../caculateGraphLayout";
+
+interface GraphOptions {
+  width: number;
+  height: number;
+  margin: GraphMargin;
+  dateDomainBase: DataDomainBaseType;
+  texts: StateType[];
+  colors: string[];
+  isMobile?: boolean;
+}
 
 interface createTimeScaleParams {
   rangeMax: number;
@@ -22,12 +34,43 @@ interface createTimeScaleParams {
 }
 
 export class BandGraph extends Graph {
+  private _xScale: ScaleTime<number, number, never> | undefined = undefined;
+  private _yScale: ScaleBand<string> | undefined = undefined;
+
+  constructor(
+    options: GraphOptions,
+    private data: Array<TodosType & SerializedTodo>,
+  ) {
+    super(options);
+    this.data = data;
+  }
+
+  set xScale(timeScale: ScaleTime<number, number, never>) {
+    this._xScale = timeScale;
+  }
+
+  get xScale(): ScaleTime<number, number, never> {
+    if (!this._xScale)
+      throw new Error("생성된 시간 기반 스케일이 존재하지 않습니다.");
+    return this._xScale;
+  }
+
+  set yScale(bandScale: ScaleBand<string>) {
+    this._yScale = bandScale;
+  }
+
+  get yScale() {
+    if (!this._yScale)
+      throw new Error("생성된 밴드 기반 스케일이 존재하지 않습니다.");
+    return this._yScale;
+  }
+
   protected setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.isMobile) {
+    if (this.options.isMobile) {
       this.graphGroup
         .append("g")
         .attr("class", "xAxis")
@@ -44,7 +87,7 @@ export class BandGraph extends Graph {
           axisBottom(scale)
             .ticks(tickCount)
             .tickFormat(d =>
-              this.dateDomainBase === "year"
+              this.options.dateDomainBase === "year"
                 ? (new Date(d.toString()).getMonth() + 1).toString()
                 : formatByISO8601(d),
             ),
@@ -70,56 +113,35 @@ export class BandGraph extends Graph {
     }
   }
 
-  private createTimeScale({
-    rangeMax,
-    timeScaleDomain,
-  }: createTimeScaleParams): d3.ScaleTime<number, number, never> {
-    return scaleTime().domain(timeScaleDomain).range([0, rangeMax]);
-  }
-
-  private createBandScale<T extends { text: string }>(
-    data: T[],
-    rangeMax: number,
-    padding: number,
-  ): d3.ScaleBand<string> {
-    return scaleBand()
-      .domain(data.map(content => content.text))
-      .range([0, rangeMax])
-      .padding(padding);
-  }
-
-  private setBandDataset(
-    scale: {
-      x: d3.ScaleTime<number, number, never>;
-      y: d3.ScaleBand<string>;
-      color: d3.ScaleOrdinal<string, string, never>;
-    },
-    data: Array<TodosType & SerializedTodo>,
-  ) {
-    const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
-    const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
+  private setBandDataset(scale: {
+    color: d3.ScaleOrdinal<string, string, never>;
+  }) {
+    const startOfPeriod = getStartOfPeriod(
+      this.options.dateDomainBase || "week",
+    );
+    const endOfPeriod = getEndOfPeriod(this.options.dateDomainBase || "week");
 
     this.graphGroup
       .selectAll("rect")
-      .data(data)
+      .data(this.data)
       .join("rect")
       .attr("data-testid", "band")
       .attr("fill", d => scale.color(d.content.state))
       .attr("x", d => {
         if (startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()) {
-          return scale.x(startOfPeriod);
+          return this.xScale(startOfPeriod);
         }
-        return scale.x(new Date(d.content.createdAt));
+        return this.xScale(new Date(d.content.createdAt));
       })
-      .attr("y", d => scale.y(d.content.textField)!)
+      .attr("y", d => this.yScale(d.content.textField)!)
       .attr("width", d =>
         caculateBandLength(
           d.content,
-          { x_scale: scale.x },
+          { x_scale: this.xScale },
           { domainStart: startOfPeriod, domainEnd: endOfPeriod },
         ),
       )
-      .attr("height", scale.y.bandwidth());
+      .attr("height", this.yScale.bandwidth());
   }
 
   private addTitle(x: number, title: string): void {
@@ -137,7 +159,7 @@ export class BandGraph extends Graph {
   private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
-    if (this.isMobile) {
+    if (this.options.isMobile) {
       return this.svg.append("g");
     }
     return this.svg!.append("g")
@@ -187,13 +209,13 @@ export class BandGraph extends Graph {
     markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
     initCoord: LegendUnitInitCoord,
   ): void {
-    if (this.isMobile) return;
+    if (this.options.isMobile) return;
 
     const radius = markerLayout.radius ?? 0;
 
-    const legendContents = this.colors.map((color, i) => [
+    const legendContents = this.options.colors.map((color, i) => [
       color,
-      this.texts[i],
+      this.options.texts[i],
     ]);
     legendContents.forEach((content, i) => {
       const [color, text] = content;
@@ -214,14 +236,15 @@ export class BandGraph extends Graph {
     });
   }
 
-  drowBandGraph(
-    graphContainer: HTMLDivElement,
-    data: Array<TodosType & SerializedTodo>,
-  ) {
+  drowBandGraph(graphContainer: HTMLDivElement) {
     this.createSvgContainer(graphContainer);
 
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
-      caculateGraphLayout(this.width, this.height, this.graphMargin);
+      caculateGraphLayout(
+        this.options.width,
+        this.options.height,
+        this.options.margin,
+      );
 
     this.addTitle(titleStartOffset, "금주 투두 진행 타임라인");
 
@@ -236,34 +259,33 @@ export class BandGraph extends Graph {
     if (!legend) return;
     this.setLegendItems("circle", legend, { radius: 5 }, legendInitCoord);
 
-    const startOfPeriod = getStartOfPeriod(this.dateDomainBase || "week");
-    const endOfPeriod = getEndOfPeriod(this.dateDomainBase || "week");
-
-    const x_scale = this.createTimeScale({
-      rangeMax: innerWidth,
-      timeScaleDomain: [startOfPeriod, endOfPeriod],
-    });
-    if (this.isMobile) this.setXAxis(x_scale, 2, innerHeight);
-    this.setXAxis(x_scale, 8, innerHeight);
-
-    const y_scale = this.createBandScale(
-      data.map(todo => ({ text: todo.content.textField })),
-      innerHeight,
-      0.2,
+    const startOfPeriod = getStartOfPeriod(
+      this.options.dateDomainBase || "week",
     );
+    const endOfPeriod = getEndOfPeriod(this.options.dateDomainBase || "week");
+
+    this.xScale = scaleTime()
+      .domain([startOfPeriod, endOfPeriod])
+      .range([0, innerWidth]);
+    if (this.options.isMobile) this.setXAxis(this.xScale, 2, innerHeight);
+    this.setXAxis(this.xScale, 8, innerHeight);
+
+    this.yScale = scaleBand()
+      .domain(
+        this.data
+          .map(todo => ({ text: todo.content.textField }))
+          .map(content => content.text),
+      )
+      .range([0, innerHeight])
+      .padding(0.2);
     this.setYAxis({
       type: "bandScale",
-      bandScale: y_scale,
+      bandScale: this.yScale,
     });
 
     const color_scale = this.createColorScale();
-    this.setBandDataset(
-      {
-        x: x_scale,
-        y: y_scale,
-        color: color_scale,
-      },
-      data,
-    );
+    this.setBandDataset({
+      color: color_scale,
+    });
   }
 }

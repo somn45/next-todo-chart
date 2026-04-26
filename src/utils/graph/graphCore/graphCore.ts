@@ -5,6 +5,17 @@ import {
 } from "@/types/graph/schema";
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
+import { StateType } from "@/types/todos/schema";
+
+interface GraphOptions {
+  width: number;
+  height: number;
+  margin: GraphMargin;
+  dateDomainBase: DataDomainBaseType;
+  texts: StateType[];
+  colors: string[];
+  isMobile?: boolean;
+}
 
 export abstract class Graph {
   protected _svg:
@@ -13,22 +24,8 @@ export abstract class Graph {
   protected _graphGroup:
     | d3.Selection<SVGGElement, unknown, null, undefined>
     | undefined = undefined;
-  constructor(
-    protected width: number,
-    protected height: number,
-    protected graphMargin: GraphMargin,
-    protected dateDomainBase: DataDomainBaseType,
-    protected texts: string[],
-    protected colors: string[],
-    protected isMobile?: boolean,
-  ) {
-    this.width = width;
-    this.height = height;
-    this.dateDomainBase = dateDomainBase;
-    this.graphMargin = graphMargin;
-    this.texts = texts;
-    this.colors = colors;
-    this.isMobile = isMobile;
+  constructor(protected options: GraphOptions) {
+    this.options = options;
   }
 
   set svg(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) {
@@ -58,17 +55,17 @@ export abstract class Graph {
     const svg = select(graphContainerElement)
       .append("svg")
       .attr("data-testid", "svg container")
-      .attr("width", this.width)
-      .attr("height", this.height);
+      .attr("width", this.options.width)
+      .attr("height", this.options.height);
 
     const groupGroup = svg
       .append("g")
       .attr("data-testid", "graph area")
-      .attr("width", this.width)
-      .attr("height", this.height)
+      .attr("width", this.options.width)
+      .attr("height", this.options.height)
       .attr(
         "transform",
-        `translate(${this.graphMargin.left}, ${this.graphMargin.top})`,
+        `translate(${this.options.margin.left}, ${this.options.margin.top})`,
       );
     this.svg = svg;
     this.graphGroup = groupGroup;
@@ -76,7 +73,9 @@ export abstract class Graph {
 
   // 특정 상태와 매칭되는 그래프 마커(라인, 밴드 등)의 색상 스케일 반환
   protected createColorScale = () =>
-    scaleOrdinal<string>().domain(this.texts).range(this.colors);
+    scaleOrdinal<string>()
+      .domain(this.options.texts)
+      .range(this.options.colors);
 
   protected abstract setXAxis(
     scale: d3.ScaleTime<number, number, never>,

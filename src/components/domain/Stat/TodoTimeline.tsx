@@ -15,6 +15,7 @@ import {
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import { DataDomainBaseType } from "@/types/graph/schema";
 import LegendList from "@/components/ui/molecules/LegendList";
+import { MAX_MOBILE_SIZE } from "@/constants/media";
 
 interface TimeLineProps {
   todos: Array<TodosType & SerializedTodo>;
@@ -33,38 +34,49 @@ export default function TodoTimeline({
       setWindowSize(window.innerWidth);
     };
 
-    if (windowSize === 0) return setWindowSize(screen.width);
+    const isMounted = windowSize !== 0;
+    if (!isMounted) return setWindowSize(screen.width);
 
     const graphContainer = bandGraphWrapperRef.current;
     if (!graphContainer) return;
 
+    const isMobileSize = windowSize <= MAX_MOBILE_SIZE;
+    const graphContainerMargin = isMobileSize
+      ? TL_MOBILE_GRAPH_MARGIN
+      : TL_GRAPH_MARGIN;
+
     if (windowSize <= 767) {
-      const graphContainerWidth =
-        windowSize != 0 ? windowSize - 20 : MOBILE_GRAPH_MIN_WIDTH;
+      const graphContainerWidth = isMounted
+        ? windowSize - 20
+        : MOBILE_GRAPH_MIN_WIDTH;
 
-      const bandGraph = new BandGraph(
-        graphContainerWidth,
-        GRAPH_HEIGHT,
-        TL_MOBILE_GRAPH_MARGIN,
+      const graphOptions = {
+        width: graphContainerWidth,
+        height: GRAPH_HEIGHT,
+        margin: graphContainerMargin,
         dateDomainBase,
-        TL_LEGEND_TEXTS,
-        TL_LEGEND_COLORS,
-        true,
-      );
+        texts: TL_LEGEND_TEXTS,
+        colors: TL_LEGEND_COLORS,
+        isMobileSize: true,
+      };
 
-      bandGraph.drowBandGraph(graphContainer, todos);
+      const bandGraph = new BandGraph(graphOptions, todos);
+
+      bandGraph.drowBandGraph(graphContainer);
     } else {
-      const bandGraph = new BandGraph(
-        GRAPH_WIDTH,
-        GRAPH_HEIGHT,
-        TL_GRAPH_MARGIN,
+      const graphOptions = {
+        width: GRAPH_WIDTH,
+        height: GRAPH_HEIGHT,
+        margin: graphContainerMargin,
         dateDomainBase,
-        TL_LEGEND_TEXTS,
-        TL_LEGEND_COLORS,
-        false,
-      );
+        texts: TL_LEGEND_TEXTS,
+        colors: TL_LEGEND_COLORS,
+        isMobileSize: false,
+      };
 
-      bandGraph.drowBandGraph(graphContainer, todos);
+      const bandGraph = new BandGraph(graphOptions, todos);
+
+      bandGraph.drowBandGraph(graphContainer);
     }
 
     window.addEventListener("resize", handleResize);

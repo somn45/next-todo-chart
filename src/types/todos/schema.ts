@@ -13,7 +13,7 @@ export interface TodoRefer {
   content: ObjectId[];
 }
 
-export type StateType = "할 일" | "진행 중" | "완료";
+export type StateType = "총합" | "할 일" | "진행 중" | "완료";
 
 export interface RawTodo {
   content: {

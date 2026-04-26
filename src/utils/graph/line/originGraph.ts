@@ -1,4 +1,4 @@
-import { scaleTime, scaleLinear } from "d3-scale";
+import { scaleTime, scaleLinear, ScaleTime, ScaleLinear } from "d3-scale";
 import { axisLeft, axisBottom } from "d3-axis";
 import { max, extent, group } from "d3-array";
 import { line } from "d3-shape";
@@ -7,27 +7,78 @@ import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { caculateTickCount } from "../caculateTickCount";
 import { TodoStat } from "@/types/stats/schema";
 import {
-  D3ScaleType,
+  DataDomainBaseType,
   DatDataPoint,
+  GraphMargin,
   LegendMarkerLayout,
   LegendMarkerType,
   LegendUnitInitCoord,
 } from "@/types/graph/schema";
 import { caculateGraphLayout } from "../caculateGraphLayout";
-import { DAT_LEGEND_INIT_COORD, GRAPH_LEGEND_MARKER_SIZE } from "@/constants/graph";
+import {
+  DAT_LEGEND_INIT_COORD,
+  GRAPH_LEGEND_MARKER_SIZE,
+} from "@/constants/graph";
+import { StateType } from "@/types/todos/schema";
 
-interface createTimeScaleParams<T extends { date: Date }> {
-  rangeMax: number;
-  data: T[];
+interface GraphOptions {
+  width: number;
+  height: number;
+  margin: GraphMargin;
+  dateDomainBase: DataDomainBaseType;
+  texts: StateType[];
+  colors: string[];
+  isMobile?: boolean;
 }
 
 export class LineGraph extends Graph {
+  private _xScale: ScaleTime<number, number, never> | undefined = undefined;
+  private _yScale: ScaleLinear<number, number, never> | undefined = undefined;
+  private _lineGenerator: d3.Line<DatDataPoint> | undefined = undefined;
+  constructor(
+    options: GraphOptions,
+    private data: TodoStat[],
+  ) {
+    super(options);
+    this.data = data;
+  }
+
+  set xScale(timeScale: ScaleTime<number, number, never>) {
+    this._xScale = timeScale;
+  }
+
+  set yScale(linearScale: ScaleLinear<number, number, never>) {
+    this._yScale = linearScale;
+  }
+
+  get xScale(): ScaleTime<number, number, never> {
+    if (!this._xScale)
+      throw new Error("생성된 시간 기반 스케일이 존재하지 않습니다.");
+    return this._xScale;
+  }
+
+  get yScale() {
+    if (!this._yScale)
+      throw new Error("생성된 선형 기반 스케일이 존재하지 않습니다.");
+    return this._yScale;
+  }
+
+  set lineGenerator(d3Line: d3.Line<DatDataPoint>) {
+    this._lineGenerator = d3Line;
+  }
+
+  get lineGenerator() {
+    if (!this._lineGenerator)
+      throw new Error("생성된 라인 생성 객체가 존재하지 않습니다.");
+    return this._lineGenerator;
+  }
+
   protected setXAxis(
     scale: d3.ScaleTime<number, number, never>,
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.isMobile) {
+    if (this.options.isMobile) {
       this.graphGroup
         .append("g")
         .attr("class", "xAxis")
@@ -44,7 +95,7 @@ export class LineGraph extends Graph {
           axisBottom(scale)
             .ticks(tickCount)
             .tickFormat(d =>
-              this.dateDomainBase === "year"
+              this.options.dateDomainBase === "year"
                 ? (new Date(d.toString()).getMonth() + 1).toString()
                 : formatByISO8601(d),
             ),
@@ -52,43 +103,16 @@ export class LineGraph extends Graph {
     }
   }
 
-  protected setYAxis(scale: D3ScaleType): void {
-    if ("linearScale" in scale) {
-      this.graphGroup
-        .append("g")
-        .attr("data-testid", "y axis")
-        .call(axisLeft(scale.linearScale));
-    } else {
-      this.graphGroup
-        .append("g")
-        .attr("data-testid", "y axis")
-        .call(axisLeft(scale.bandScale));
-    }
-  }
-
-  private createTimeScale<T extends { date: Date }>({
-    rangeMax,
-    data,
-  }: createTimeScaleParams<T>): d3.ScaleTime<number, number, never> {
-    return scaleTime()
-      .domain(extent(data, d => d.date) as [Date, Date])
-      .range([0, rangeMax]);
-  }
-
-  private createLinearScale<T extends { count: number }>(
-    data: T[],
-    rangeMax: number,
-  ): d3.ScaleLinear<number, number, never> {
-    return scaleLinear()
-      .domain([0, max(data, d => d.count)] as [number, number])
-      .range([rangeMax, 0])
-      .nice(1);
+  protected setYAxis(): void {
+    this.graphGroup
+      .append("g")
+      .attr("data-testid", "y axis")
+      .call(axisLeft(this.yScale));
   }
 
   private setLineDataset(
     groupedData: d3.InternMap<string, TodoStat[]>,
     color: d3.ScaleOrdinal<string, string, never>,
-    lineGenerator: d3.Line<DatDataPoint>,
   ): void {
     this.graphGroup
       .selectAll(".line")
@@ -99,7 +123,7 @@ export class LineGraph extends Graph {
       .attr("fill", "none")
       .attr("stroke", d => color(d[0]))
       .attr("stroke-width", 2.5)
-      .attr("d", d => lineGenerator(d[1]));
+      .attr("d", d => this.lineGenerator(d[1]));
   }
 
   private addTitle(x: number, title: string): void {
@@ -117,7 +141,7 @@ export class LineGraph extends Graph {
   private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
-    if (this.isMobile) {
+    if (this.options.isMobile) {
       return this.svg.append("g");
     }
     return this.svg
@@ -170,14 +194,14 @@ export class LineGraph extends Graph {
     markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
     initCoord: LegendUnitInitCoord,
   ): void {
-    if (this.isMobile) return;
+    if (this.options.isMobile) return;
 
     const markerWidth = markerLayout.width ?? 0;
     const markerHeight = markerLayout.height ?? 0;
 
-    const legendContents = this.colors.map((color, i) => [
+    const legendContents = this.options.colors.map((color, i) => [
       color,
-      this.texts[i],
+      this.options.texts[i],
     ]);
     legendContents.forEach((content, i) => {
       const [color, text] = content;
@@ -215,41 +239,52 @@ export class LineGraph extends Graph {
     | undefined {
     this.createSvgContainer(graphContainer);
     const { innerWidth, innerHeight, titleStartOffset, legendStartOffset } =
-      caculateGraphLayout(this.width, this.height, this.graphMargin);
+      caculateGraphLayout(
+        this.options.width,
+        this.options.height,
+        this.options.margin,
+      );
 
-    const groupedStats = group(data, d => d.state);
+    const groupedStats = group(this.data, d => d.state);
 
     this.addTitle(titleStartOffset, "최근 1주간 등록된 투두 합계");
 
     const legend = this.createLegend(legendStartOffset);
     if (!legend) return;
 
-    this.setLegendItems("rect", legend, GRAPH_LEGEND_MARKER_SIZE, DAT_LEGEND_INIT_COORD);
+    this.setLegendItems(
+      "rect",
+      legend,
+      GRAPH_LEGEND_MARKER_SIZE,
+      DAT_LEGEND_INIT_COORD,
+    );
 
     const statsKeys = groupedStats.keys();
     const stateTypeCount = statsKeys.toArray().length;
     const tickCount = caculateTickCount(
-      this.dateDomainBase,
+      this.options.dateDomainBase,
       stateTypeCount,
-      data.length,
+      this.data.length,
     );
 
-    const x_scale = this.createTimeScale({
-      rangeMax: innerWidth,
-      data,
-    });
-    this.setXAxis(x_scale, tickCount, innerHeight);
+    this.xScale = scaleTime()
+      .domain(extent(this.data, d => d.date) as [Date, Date])
+      .range([0, innerWidth]);
+    this.setXAxis(this.xScale, tickCount, innerHeight);
 
-    const y_scale = this.createLinearScale(data, innerHeight);
-    this.setYAxis({ type: "linearScale", linearScale: y_scale });
+    this.yScale = scaleLinear()
+      .domain([0, max(data, d => d.count)] as [number, number])
+      .range([innerHeight, 0])
+      .nice(1);
+    this.setYAxis();
 
-    const lineGenerator = line<DatDataPoint>()
-      .x(d => x_scale(d.date))
-      .y(d => y_scale(d.count));
+    this.lineGenerator = line<DatDataPoint>()
+      .x(d => this.xScale(d.date))
+      .y(d => this.yScale(d.count));
 
     const color = this.createColorScale();
 
-    this.setLineDataset(groupedStats, color, lineGenerator);
-    return { x: x_scale, y: y_scale };
+    this.setLineDataset(groupedStats, color);
+    return { x: this.xScale, y: this.yScale };
   }
 }
