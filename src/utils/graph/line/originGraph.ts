@@ -1,3 +1,4 @@
+import { select } from "d3-selection";
 import { scaleTime, scaleLinear, ScaleTime, ScaleLinear } from "d3-scale";
 import { axisLeft, axisBottom } from "d3-axis";
 import { max, extent, group } from "d3-array";
@@ -10,6 +11,7 @@ import {
   DataDomainBaseType,
   DatDataPoint,
   GraphMargin,
+  LegendCategoryLayout,
   LegendMarkerLayout,
   LegendMarkerType,
   LegendUnitInitCoord,
@@ -119,6 +121,7 @@ export class LineGraph extends Graph {
       .data(groupedData.entries())
       .enter()
       .append("path")
+      .attr("class", "line")
       .attr("data-testid", "line")
       .attr("fill", "none")
       .attr("stroke", d => color(d[0]))
@@ -154,19 +157,19 @@ export class LineGraph extends Graph {
   private setLegendRectMarker(
     markerType: LegendMarkerType,
     legend: d3.Selection<SVGGElement, unknown, null, undefined>,
-    markerLayout: Omit<LegendMarkerLayout, "margin" | "radius">,
+    markerLayout: Omit<LegendCategoryLayout, "margin" | "categoryRadius">,
     coord: Pick<LegendUnitInitCoord, "x" | "y">,
     color: string,
   ): void {
-    const { width, height } = markerLayout;
+    const { categoryWidth, categoryHeight } = markerLayout;
     const { x, y } = coord;
 
     legend
       .append(markerType)
       .attr("class", "legendCategory")
       .attr("data-testid", "legend category")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", categoryWidth)
+      .attr("height", categoryHeight)
       .attr("x", x)
       .attr("y", y)
       .attr("fill", color);
@@ -219,13 +222,45 @@ export class LineGraph extends Graph {
       this.setLegendRectMarker(
         markerType,
         legend,
-        { width: markerWidth, height: markerHeight },
+        { categoryWidth: markerWidth, categoryHeight: markerHeight },
         coord,
         color,
       );
 
       this.setLegendText(legend, textCoord, text);
     });
+  }
+
+  resizeGraphWidth(resizedWidth: number) {
+    this.options.width = resizedWidth;
+    this.svg.attr("width", resizedWidth);
+    this.graphGroup.attr("width", resizedWidth);
+
+    const { innerWidth, titleStartOffset, legendStartOffset } =
+      caculateGraphLayout(
+        resizedWidth,
+        this.options.height,
+        this.options.margin,
+      );
+
+    this.xScale
+      .domain(extent(this.data, d => d.date) as [Date, Date])
+      .range([0, innerWidth]);
+    this.graphGroup
+      .select<SVGGElement>(".xAxis")
+      .call(axisBottom(this.xScale).ticks(3));
+
+    const groupedStats = group(this.data, d => d.state);
+
+    this.lineGenerator = line<DatDataPoint>()
+      .x(d => this.xScale(d.date))
+      .y(d => this.yScale(d.count));
+    this.graphGroup
+      .selectAll(".line")
+      .data(Array.from(groupedStats))
+      .join("path")
+      .attr("class", "line")
+      .attr("d", d => this.lineGenerator(d[1]));
   }
 
   drowLineGraph(

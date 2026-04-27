@@ -37,6 +37,13 @@ export interface DatDataPoint {
 export type LegendMarkerType = "circle" | "rect";
 
 /** 그래프 범례 마커의 레이아웃 타입 */
+export interface LegendCategoryLayout {
+  categoryWidth: number;
+  categoryHeight: number;
+  categoryRadius: number;
+}
+
+/** 그래프 범례 마커의 레이아웃 타입 */
 export interface LegendMarkerLayout extends GraphRootLayout {
   radius: number;
 }

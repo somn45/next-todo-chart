@@ -1,7 +1,7 @@
 "use client";
 
 import { select } from "d3-selection";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { LineGraphMouseEvent } from "@/utils/graph/line/event";
 import { DataDomainBaseType } from "@/types/graph/schema";
@@ -12,8 +12,6 @@ import {
   DAT_LEGEND_TEXTS,
   DAT_MOBILE_GRAPH_MARGIN,
   GRAPH_HEIGHT,
-  GRAPH_WIDTH,
-  MOBILE_GRAPH_MIN_WIDTH,
 } from "@/constants/graph";
 import { MAX_MOBILE_SIZE } from "@/constants/media";
 import LegendList from "@/components/ui/molecules/LegendList";
@@ -25,55 +23,43 @@ export default function DailyActiveTodoLineGraph({
   stats: TodoStat[];
   dateDomainBase?: DataDomainBaseType;
 }) {
-  const [windowSize, setWindowSize] = useState(0);
-
   const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);
   const toolTipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize(window.innerWidth);
-    };
-
-    const isMounted = windowSize !== 0;
-    if (!isMounted) return setWindowSize(screen.width);
-
     const graphContainer = lineGraphWrapperRef.current;
     if (!graphContainer) return;
 
+    const graphWidth = graphContainer.getBoundingClientRect().width;
+
     let lineGraph: LineGraph;
-    let graphContainerWidth = GRAPH_WIDTH;
-    const isMobileSize = windowSize <= MAX_MOBILE_SIZE;
+    const isMobileSize = graphWidth + 20 <= MAX_MOBILE_SIZE;
 
     const graphContainerMargin = isMobileSize
       ? DAT_MOBILE_GRAPH_MARGIN
       : DAT_GRAPH_MARGIN;
 
     if (isMobileSize) {
-      graphContainerWidth = isMounted
-        ? windowSize - 20
-        : MOBILE_GRAPH_MIN_WIDTH;
-
       const graphOptions = {
-        width: graphContainerWidth,
+        width: graphWidth,
         height: GRAPH_HEIGHT,
         margin: graphContainerMargin,
         dateDomainBase,
         texts: DAT_LEGEND_TEXTS,
         colors: DAT_LEGEND_COLORS,
-        isMobileSize: true,
+        isMobile: true,
       };
 
       lineGraph = new LineGraph(graphOptions, stats);
     } else {
       const graphOptions = {
-        width: graphContainerWidth,
+        width: graphWidth,
         height: GRAPH_HEIGHT,
         margin: graphContainerMargin,
         dateDomainBase,
         texts: DAT_LEGEND_TEXTS,
         colors: DAT_LEGEND_COLORS,
-        isMobileSize: false,
+        isMobile: false,
       };
 
       lineGraph = new LineGraph(graphOptions, stats);
@@ -86,7 +72,7 @@ export default function DailyActiveTodoLineGraph({
 
     const lineGraphMouseEvent = new LineGraphMouseEvent(
       {
-        width: graphContainerWidth,
+        width: graphWidth,
         height: GRAPH_HEIGHT,
         margin: graphContainerMargin,
       },
@@ -148,12 +134,18 @@ export default function DailyActiveTodoLineGraph({
         lineGraphMouseEvent.handleMouseLeave(tooltipSelection),
       );
 
+    const handleResize = () => {
+      if (!lineGraphWrapperRef.current) return;
+      const resizedWidth =
+        lineGraphWrapperRef.current.getBoundingClientRect().width;
+      lineGraph.resizeGraphWidth(resizedWidth);
+    };
     window.addEventListener("resize", handleResize);
 
     return () => {
       select(graphContainer).selectAll("*").remove();
     };
-  }, [dateDomainBase, windowSize]);
+  }, [dateDomainBase]);
 
   return (
     <>
@@ -164,7 +156,10 @@ export default function DailyActiveTodoLineGraph({
           data-testid="tooltip"
           className="bg-bg-light border-bg-light pointer-events-none absolute z-50 w-35 touch-none rounded-sm border p-2 opacity-0"
         ></div>
-        <div ref={lineGraphWrapperRef}></div>
+        <div
+          ref={lineGraphWrapperRef}
+          className="h-100 w-[calc(100vw-20px)] md:w-175"
+        ></div>
       </div>
     </>
   );
