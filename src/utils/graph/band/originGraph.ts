@@ -28,11 +28,6 @@ interface GraphOptions {
   isMobile?: boolean;
 }
 
-interface createTimeScaleParams {
-  rangeMax: number;
-  timeScaleDomain: [Date, Date];
-}
-
 export class BandGraph extends Graph {
   private _xScale: ScaleTime<number, number, never> | undefined = undefined;
   private _yScale: ScaleBand<string> | undefined = undefined;
@@ -125,6 +120,7 @@ export class BandGraph extends Graph {
       .selectAll("rect")
       .data(this.data)
       .join("rect")
+      .attr("class", "band")
       .attr("data-testid", "band")
       .attr("fill", d => scale.color(d.content.state))
       .attr("x", d => {
@@ -147,6 +143,7 @@ export class BandGraph extends Graph {
   private addTitle(x: number, title: string): void {
     this.svg
       .append("text")
+      .attr("class", "title")
       .attr("aria-label", "graph title")
       .attr("x", x)
       .attr("y", 30)
@@ -236,6 +233,55 @@ export class BandGraph extends Graph {
     });
   }
 
+  resizeGraphWidth(resizedWidth: number) {
+    this.options.width = resizedWidth;
+    this.svg.attr("width", resizedWidth);
+    this.graphGroup.attr("width", resizedWidth);
+
+    const { innerWidth, titleStartOffset, legendStartOffset } =
+      caculateGraphLayout(
+        resizedWidth,
+        this.options.height,
+        this.options.margin,
+      );
+
+    const startOfPeriod = getStartOfPeriod(
+      this.options.dateDomainBase || "week",
+    );
+    const endOfPeriod = getEndOfPeriod(this.options.dateDomainBase || "week");
+
+    this.xScale.domain([startOfPeriod, endOfPeriod]).range([0, innerWidth]);
+    this.graphGroup
+      .select<SVGGElement>(".xAxis")
+      .call(axisBottom(this.xScale).ticks(3));
+
+    const title = this.svg.select(".title");
+    title.attr("x", titleStartOffset);
+
+    const legend = this.svg.select(".legend");
+    legend
+      .attr("transform", "translate(0, 0)")
+      .attr("transform", `translate(${legendStartOffset}, 0)`);
+
+    this.graphGroup
+      .selectAll(".band")
+      .data(this.data)
+      .join("rect")
+      .attr("x", d => {
+        if (startOfPeriod.getTime() > new Date(d.content.createdAt).getTime()) {
+          return this.xScale(startOfPeriod);
+        }
+        return this.xScale(new Date(d.content.createdAt));
+      })
+      .attr("width", d =>
+        caculateBandLength(
+          d.content,
+          { x_scale: this.xScale },
+          { domainStart: startOfPeriod, domainEnd: endOfPeriod },
+        ),
+      );
+  }
+
   drowBandGraph(graphContainer: HTMLDivElement) {
     this.createSvgContainer(graphContainer);
 
@@ -268,7 +314,7 @@ export class BandGraph extends Graph {
       .domain([startOfPeriod, endOfPeriod])
       .range([0, innerWidth]);
     if (this.options.isMobile) this.setXAxis(this.xScale, 2, innerHeight);
-    this.setXAxis(this.xScale, 8, innerHeight);
+    else this.setXAxis(this.xScale, 8, innerHeight);
 
     this.yScale = scaleBand()
       .domain(

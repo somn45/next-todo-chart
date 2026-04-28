@@ -33,7 +33,7 @@ export default function DailyActiveTodoLineGraph({
     const graphWidth = graphContainer.getBoundingClientRect().width;
 
     let lineGraph: LineGraph;
-    const isMobileSize = graphWidth + 20 <= MAX_MOBILE_SIZE;
+    const isMobileSize = window.innerWidth + 20 <= MAX_MOBILE_SIZE;
 
     const graphContainerMargin = isMobileSize
       ? DAT_MOBILE_GRAPH_MARGIN

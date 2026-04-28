@@ -1,12 +1,10 @@
 "use client";
 
 import { select } from "d3-selection";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { BandGraph } from "@/utils/graph/band/originGraph";
 import {
   GRAPH_HEIGHT,
-  GRAPH_WIDTH,
-  MOBILE_GRAPH_MIN_WIDTH,
   TL_GRAPH_MARGIN,
   TL_LEGEND_COLORS,
   TL_LEGEND_TEXTS,
@@ -26,70 +24,72 @@ export default function TodoTimeline({
   todos,
   dateDomainBase = "week",
 }: TimeLineProps) {
-  const [windowSize, setWindowSize] = useState(0);
   const bandGraphWrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize(window.innerWidth);
-    };
-
-    const isMounted = windowSize !== 0;
-    if (!isMounted) return setWindowSize(screen.width);
-
     const graphContainer = bandGraphWrapperRef.current;
     if (!graphContainer) return;
 
-    const isMobileSize = windowSize <= MAX_MOBILE_SIZE;
+    const graphWidth = graphContainer.getBoundingClientRect().width;
+
+    const isMobileSize = graphWidth + 20 <= MAX_MOBILE_SIZE;
     const graphContainerMargin = isMobileSize
       ? TL_MOBILE_GRAPH_MARGIN
       : TL_GRAPH_MARGIN;
 
-    if (windowSize <= 767) {
-      const graphContainerWidth = isMounted
-        ? windowSize - 20
-        : MOBILE_GRAPH_MIN_WIDTH;
+    let bandGraph: BandGraph;
 
+    if (isMobileSize) {
       const graphOptions = {
-        width: graphContainerWidth,
+        width: graphWidth,
         height: GRAPH_HEIGHT,
         margin: graphContainerMargin,
         dateDomainBase,
         texts: TL_LEGEND_TEXTS,
         colors: TL_LEGEND_COLORS,
-        isMobileSize: true,
+        isMobile: true,
       };
 
-      const bandGraph = new BandGraph(graphOptions, todos);
+      bandGraph = new BandGraph(graphOptions, todos);
 
       bandGraph.drowBandGraph(graphContainer);
     } else {
       const graphOptions = {
-        width: GRAPH_WIDTH,
+        width: graphWidth,
         height: GRAPH_HEIGHT,
         margin: graphContainerMargin,
         dateDomainBase,
         texts: TL_LEGEND_TEXTS,
         colors: TL_LEGEND_COLORS,
-        isMobileSize: false,
+        isMobile: false,
       };
 
-      const bandGraph = new BandGraph(graphOptions, todos);
+      bandGraph = new BandGraph(graphOptions, todos);
 
       bandGraph.drowBandGraph(graphContainer);
     }
+
+    const handleResize = () => {
+      if (!bandGraphWrapperRef.current) return;
+      const resizedWidth =
+        bandGraphWrapperRef.current.getBoundingClientRect().width;
+      bandGraph.resizeGraphWidth(resizedWidth);
+    };
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       select(graphContainer).selectAll("*").remove();
     };
-  }, [dateDomainBase, windowSize]);
+  }, [dateDomainBase]);
 
   return (
     <>
       <LegendList legendTexts={TL_LEGEND_TEXTS} categoryType="circle" />
-      <div ref={bandGraphWrapperRef} className="flex justify-center"></div>
+      <div
+        ref={bandGraphWrapperRef}
+        className="h-100 w-[calc(100vw-20px)] md:w-175"
+      ></div>
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { select } from "d3-selection";
 import { scaleTime, scaleLinear, ScaleTime, ScaleLinear } from "d3-scale";
 import { axisLeft, axisBottom } from "d3-axis";
 import { max, extent, group } from "d3-array";
@@ -132,6 +131,7 @@ export class LineGraph extends Graph {
   private addTitle(x: number, title: string): void {
     this.svg
       .append("text")
+      .attr("class", "title")
       .attr("aria-label", "graph title")
       .attr("x", x)
       .attr("y", 30)
@@ -151,7 +151,8 @@ export class LineGraph extends Graph {
       .append("g")
       .attr("data-testid", "legend list")
       .attr("class", "legend")
-      .attr("transform", `translate(${legendStartOffset}, 0)`);
+      .attr("transform", `translate(${legendStartOffset}, 0)`)
+      .style("display", this.options.isMobile ? "none" : "block");
   }
 
   private setLegendRectMarker(
@@ -181,6 +182,7 @@ export class LineGraph extends Graph {
     text: string,
   ): void {
     const { x, y } = coord;
+
     legend
       .append("text")
       .attr("class", "legendText")
@@ -249,6 +251,14 @@ export class LineGraph extends Graph {
     this.graphGroup
       .select<SVGGElement>(".xAxis")
       .call(axisBottom(this.xScale).ticks(3));
+
+    const title = this.svg.select(".title");
+    title.attr("x", titleStartOffset);
+
+    const legend = this.svg.select(".legend");
+    legend
+      .attr("transform", "translate(0, 0)")
+      .attr("transform", `translate(${legendStartOffset}, 0)`);
 
     const groupedStats = group(this.data, d => d.state);
 
