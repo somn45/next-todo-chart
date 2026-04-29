@@ -138,7 +138,7 @@ export default function DailyActiveTodoLineGraph({
       if (!lineGraphWrapperRef.current) return;
       const resizedWidth =
         lineGraphWrapperRef.current.getBoundingClientRect().width;
-      lineGraph.resizeGraphWidth(resizedWidth);
+      lineGraph.resizeGraphWidth(resizedWidth, window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
 

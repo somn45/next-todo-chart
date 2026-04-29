@@ -14,7 +14,6 @@ interface GraphOptions {
   dateDomainBase: DataDomainBaseType;
   texts: StateType[];
   colors: string[];
-  isMobile?: boolean;
 }
 
 export abstract class Graph {
@@ -24,6 +23,7 @@ export abstract class Graph {
   protected _graphGroup:
     | d3.Selection<SVGGElement, unknown, null, undefined>
     | undefined = undefined;
+  protected _isMobile: boolean = false;
   constructor(protected options: GraphOptions) {
     this.options = options;
   }
@@ -36,6 +36,16 @@ export abstract class Graph {
     graphGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
   ) {
     this._graphGroup = graphGroup;
+  }
+
+  set isMobile(width: number | boolean) {
+    if (typeof width === "number") {
+      this._isMobile = width <= 768 ? true : false;
+    } else this._isMobile = false;
+  }
+
+  get isMobile() {
+    return this._isMobile;
   }
 
   get svg() {

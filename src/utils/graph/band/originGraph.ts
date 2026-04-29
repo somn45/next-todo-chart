@@ -65,7 +65,7 @@ export class BandGraph extends Graph {
     tickCount: number,
     innerHeight: number,
   ): void {
-    if (this.options.isMobile) {
+    if (this.isMobile) {
       this.graphGroup
         .append("g")
         .attr("class", "xAxis")
@@ -156,13 +156,12 @@ export class BandGraph extends Graph {
   private createLegend(
     legendStartOffset: number,
   ): d3.Selection<SVGGElement, unknown, null, undefined> {
-    if (this.options.isMobile) {
-      return this.svg.append("g");
-    }
-    return this.svg!.append("g")
+    return this.svg
+      .append("g")
       .attr("data-testid", "legend list")
       .attr("class", "legend")
-      .attr("transform", `translate(${legendStartOffset}, 0)`);
+      .attr("transform", `translate(${legendStartOffset}, 0)`)
+      .attr("display", this.isMobile ? "none" : "block");
   }
 
   private setLegendCircleMarker(
@@ -206,7 +205,7 @@ export class BandGraph extends Graph {
     markerLayout: Partial<Omit<LegendMarkerLayout, "margin">>,
     initCoord: LegendUnitInitCoord,
   ): void {
-    if (this.options.isMobile) return;
+    if (this.isMobile) return;
 
     const radius = markerLayout.radius ?? 0;
 
@@ -233,10 +232,11 @@ export class BandGraph extends Graph {
     });
   }
 
-  resizeGraphWidth(resizedWidth: number) {
+  resizeGraphWidth(resizedWidth: number, windowWidth: number) {
     this.options.width = resizedWidth;
     this.svg.attr("width", resizedWidth);
     this.graphGroup.attr("width", resizedWidth);
+    this.isMobile = windowWidth;
 
     const { innerWidth, titleStartOffset, legendStartOffset } =
       caculateGraphLayout(
@@ -251,9 +251,20 @@ export class BandGraph extends Graph {
     const endOfPeriod = getEndOfPeriod(this.options.dateDomainBase || "week");
 
     this.xScale.domain([startOfPeriod, endOfPeriod]).range([0, innerWidth]);
-    this.graphGroup
-      .select<SVGGElement>(".xAxis")
-      .call(axisBottom(this.xScale).ticks(3));
+
+    if (this.isMobile) {
+      this.graphGroup
+        .select<SVGGElement>(".xAxis")
+        .call(axisBottom(this.xScale).ticks(3));
+    } else {
+      axisBottom(this.xScale)
+        .ticks(7)
+        .tickFormat(d =>
+          this.options.dateDomainBase === "year"
+            ? (new Date(d.toString()).getMonth() + 1).toString()
+            : formatByISO8601(d),
+        );
+    }
 
     const title = this.svg.select(".title");
     title.attr("x", titleStartOffset);
@@ -261,7 +272,8 @@ export class BandGraph extends Graph {
     const legend = this.svg.select(".legend");
     legend
       .attr("transform", "translate(0, 0)")
-      .attr("transform", `translate(${legendStartOffset}, 0)`);
+      .attr("transform", `translate(${legendStartOffset}, 0)`)
+      .attr("display", this.isMobile ? "none" : "block");
 
     this.graphGroup
       .selectAll(".band")
@@ -313,7 +325,7 @@ export class BandGraph extends Graph {
     this.xScale = scaleTime()
       .domain([startOfPeriod, endOfPeriod])
       .range([0, innerWidth]);
-    if (this.options.isMobile) this.setXAxis(this.xScale, 2, innerHeight);
+    if (this.isMobile) this.setXAxis(this.xScale, 2, innerHeight);
     else this.setXAxis(this.xScale, 8, innerHeight);
 
     this.yScale = scaleBand()

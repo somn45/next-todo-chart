@@ -73,7 +73,7 @@ export default function TodoTimeline({
       if (!bandGraphWrapperRef.current) return;
       const resizedWidth =
         bandGraphWrapperRef.current.getBoundingClientRect().width;
-      bandGraph.resizeGraphWidth(resizedWidth);
+      bandGraph.resizeGraphWidth(resizedWidth, window.innerWidth);
     };
 
     window.addEventListener("resize", handleResize);
