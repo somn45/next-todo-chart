@@ -1,12 +1,10 @@
 "use client";
 
 import { select } from "d3-selection";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { BandSparkline } from "@/utils/graph/band/sparkline";
 import {
-  MOBILE_GRAPH_MIN_WIDTH,
   SPARKLINE_HEIGHT,
-  SPARKLINE_WIDTH,
   TL_GRAPH_MARGIN,
   TL_LEGEND_COLORS,
   TL_LEGEND_TEXTS,
@@ -27,62 +25,58 @@ export default function TimeLineSparkline({
 }: TimelineSparklineProps) {
   const bandSparklineRef = useRef<HTMLDivElement | null>(null);
 
-  const [windowSize, setWindowSize] = useState(0);
-
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize(window.innerWidth);
-    };
+    const graphContainer = bandSparklineRef.current;
+    if (!graphContainer) return;
 
-    const isMounted = windowSize !== 0;
-    if (!isMounted) setWindowSize(window.innerWidth);
-
-    const container = bandSparklineRef.current;
-    if (!container) return;
+    const graphWidth = graphContainer.getBoundingClientRect().width;
 
     let bandSparkline: BandSparkline;
-    const isMobileSize = windowSize <= MOBILE_LARGE_SIZE;
-    let sparklineContainerWidth = SPARKLINE_WIDTH;
-
-    const sparklineContainerMargin = isMobileSize
-      ? TL_MOBILE_GRAPH_MARGIN
-      : TL_GRAPH_MARGIN;
+    const isMobileSize = window.innerWidth + 20 <= MOBILE_LARGE_SIZE;
 
     if (isMobileSize) {
-      sparklineContainerWidth = isMounted
-        ? windowSize - 20
-        : MOBILE_GRAPH_MIN_WIDTH;
-
-      bandSparkline = new BandSparkline(
-        sparklineContainerWidth,
-        SPARKLINE_HEIGHT,
-        sparklineContainerMargin,
+      const graphOption = {
+        width: graphWidth,
+        height: SPARKLINE_HEIGHT,
+        margin: TL_MOBILE_GRAPH_MARGIN,
         dateDomainBase,
-        TL_LEGEND_TEXTS,
-        TL_LEGEND_COLORS,
-      );
+        texts: TL_LEGEND_TEXTS,
+        colors: TL_LEGEND_COLORS,
+      };
+      bandSparkline = new BandSparkline(graphOption, todos);
     } else {
-      bandSparkline = new BandSparkline(
-        sparklineContainerWidth,
-        SPARKLINE_HEIGHT,
-        sparklineContainerMargin,
+      const graphOption = {
+        width: graphWidth,
+        height: SPARKLINE_HEIGHT,
+        margin: TL_MOBILE_GRAPH_MARGIN,
         dateDomainBase,
-        TL_LEGEND_TEXTS,
-        TL_LEGEND_COLORS,
-      );
+        texts: TL_LEGEND_TEXTS,
+        colors: TL_LEGEND_COLORS,
+      };
+      bandSparkline = new BandSparkline(graphOption, todos);
     }
 
-    bandSparkline.drowBandSparkline(container, todos);
+    bandSparkline.drowBandSparkline(graphContainer, todos);
+
+    const handleResize = () => {
+      if (!bandSparklineRef.current) return;
+      const resizedWidth =
+        bandSparklineRef.current.getBoundingClientRect().width;
+      bandSparkline.resizeSparklineWidth(resizedWidth, window.innerWidth);
+    };
 
     window.addEventListener("resize", handleResize);
     return () => {
-      select(container).selectAll("*").remove();
+      select(graphContainer).selectAll("*").remove();
     };
-  }, [windowSize]);
+  }, []);
 
   return (
     <>
-      <div ref={bandSparklineRef}></div>
+      <div
+        ref={bandSparklineRef}
+        className="h-75 w-[calc(100vw-20px)] min-[425px]:w-100"
+      ></div>
     </>
   );
 }

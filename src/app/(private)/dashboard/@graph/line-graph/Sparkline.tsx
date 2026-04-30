@@ -1,16 +1,14 @@
 "use client";
 
 import { select } from "d3-selection";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { LineSparkline } from "@/utils/graph/line/sparkline";
 import {
   DAT_GRAPH_MARGIN,
   DAT_LEGEND_COLORS,
   DAT_LEGEND_TEXTS,
   DAT_MOBILE_GRAPH_MARGIN,
-  MOBILE_GRAPH_MIN_WIDTH,
   SPARKLINE_HEIGHT,
-  SPARKLINE_WIDTH,
 } from "@/constants/graph";
 import { DataDomainBaseType } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
@@ -27,57 +25,60 @@ export default function LineGraphSparkline({
 }: LineGraphSparklineProps) {
   const lineSparklineRef = useRef<HTMLDivElement | null>(null);
 
-  const [windowSize, setWindowSize] = useState(0);
-
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize(window.innerWidth);
-    };
+    const graphContainer = lineSparklineRef.current;
+    if (!graphContainer) return;
 
-    const isMounted = windowSize !== 0;
-    if (!isMounted) setWindowSize(window.innerWidth);
-
-    const container = lineSparklineRef.current;
-    if (!container) return;
+    const graphWidth = graphContainer.getBoundingClientRect().width;
 
     let lineSparkline: LineSparkline;
-    const isMobileSize = windowSize <= MOBILE_LARGE_SIZE;
-    let sparklineContainerWidth = SPARKLINE_WIDTH;
+    const isMobileSize = window.innerWidth + 20 <= MOBILE_LARGE_SIZE;
+
     const sparklineContainerMargin = isMobileSize
       ? DAT_MOBILE_GRAPH_MARGIN
       : DAT_GRAPH_MARGIN;
 
     if (isMobileSize) {
-      sparklineContainerWidth = isMounted
-        ? windowSize - 20
-        : MOBILE_GRAPH_MIN_WIDTH;
-
-      lineSparkline = new LineSparkline(
-        sparklineContainerWidth,
-        SPARKLINE_HEIGHT,
-        sparklineContainerMargin,
+      const graphOptions = {
+        width: graphWidth,
+        height: SPARKLINE_HEIGHT,
+        margin: sparklineContainerMargin,
         dateDomainBase,
-        DAT_LEGEND_TEXTS,
-        DAT_LEGEND_COLORS,
-      );
+        texts: DAT_LEGEND_TEXTS,
+        colors: DAT_LEGEND_COLORS,
+      };
+      lineSparkline = new LineSparkline(graphOptions, stats);
     } else {
-      lineSparkline = new LineSparkline(
-        sparklineContainerWidth,
-        SPARKLINE_HEIGHT,
-        sparklineContainerMargin,
+      const graphOptions = {
+        width: graphWidth,
+        height: SPARKLINE_HEIGHT,
+        margin: sparklineContainerMargin,
         dateDomainBase,
-        DAT_LEGEND_TEXTS,
-        DAT_LEGEND_COLORS,
-      );
+        texts: DAT_LEGEND_TEXTS,
+        colors: DAT_LEGEND_COLORS,
+      };
+      lineSparkline = new LineSparkline(graphOptions, stats);
     }
 
-    lineSparkline.drowLineSparkline(container, stats);
+    lineSparkline.drowLineSparkline(graphContainer, stats);
+
+    const handleResize = () => {
+      if (!lineSparklineRef.current) return;
+      const resizedWidth =
+        lineSparklineRef.current.getBoundingClientRect().width;
+      lineSparkline.resizeSparklineWidth(resizedWidth, window.innerWidth);
+    };
 
     window.addEventListener("resize", handleResize);
     return () => {
-      select(container).selectAll("*").remove();
+      select(graphContainer).selectAll("*").remove();
     };
-  }, [windowSize]);
+  }, []);
 
-  return <div ref={lineSparklineRef}></div>;
+  return (
+    <div
+      ref={lineSparklineRef}
+      className="h-75 w-[calc(100vw-20px)] min-[425px]:w-100"
+    ></div>
+  );
 }

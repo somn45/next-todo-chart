@@ -29,7 +29,6 @@ interface GraphOptions {
   dateDomainBase: DataDomainBaseType;
   texts: StateType[];
   colors: string[];
-  isMobile?: boolean;
 }
 
 export class LineGraph extends Graph {
