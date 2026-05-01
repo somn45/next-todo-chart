@@ -1,7 +1,8 @@
+import { StateType } from "@/types/todos/schema";
 import { RefObject, useEffect, useState } from "react";
 
 type useGraceTimeAlertMessageType = (
-  state: "할 일" | "진행 중" | "완료",
+  state: StateType,
   deleteCompletedTodoTimerId: RefObject<NodeJS.Timeout | null>,
   todoCompletedAt: string | null,
 ) => { hasGracePeriod: boolean; alertMessage: string };

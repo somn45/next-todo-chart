@@ -13,6 +13,7 @@ export default function Input({
 }: InputProps) {
   const variants: { [key: string]: string } = {
     default: "input-default",
+    edit: "py-1 pl-2 text-sm outline-0 bg-surface-light text-text-light placeholder:text-text-disabled w-calc[100%-136px] h-full",
     searchBar: "input-default w-full max-w-lg",
   };
   return (

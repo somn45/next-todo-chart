@@ -4,7 +4,9 @@ import { editTodo } from "@/actions/editTodo";
 import Button from "@/components/ui/atoms/Button";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
 import Input from "@/components/ui/atoms/Input";
-import { useActionState } from "react";
+import { MOBILE_MEDIAM_SIZE } from "@/constants/media";
+import { CircleCheck, CircleX } from "lucide-react";
+import { useActionState, useEffect, useState } from "react";
 
 type EditTodoOptimisticType = {
   type: "edit";
@@ -32,6 +34,18 @@ export default function EditTodoForm({
     message: "",
   });
 
+  const [windowSize, setWindowSize] = useState(0);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowSize(window.innerWidth);
+    };
+
+    if (window.innerWidth !== 0) setWindowSize(window.innerWidth);
+
+    window.addEventListener("resize", handleWindowResize);
+  }, []);
+
   const handleSubmit = async (FormData: FormData) => {
     const editedTextField = FormData.get("todo") as string;
     try {
@@ -44,16 +58,33 @@ export default function EditTodoForm({
   };
 
   return (
-    <form role="form" action={handleSubmit} className="flex gap-2">
+    <form
+      role="form"
+      action={handleSubmit}
+      className="flex h-12 items-center gap-2"
+    >
       <ErrorMessage message={state.message} successSignal={"투두 수정 성공"} />
       <Input
         type="text"
         placeholder="투두리스트 수정"
         name="todo"
         ariaLabel="수정될 투두 입력칸"
+        variant="edit"
       />
-      <Button type="submit" variant="submit" value="수정 완료" />
-      <Button type="button" value="취소" onClick={hiddenEditForm} />
+      <Button
+        type="submit"
+        variant="button"
+        value={
+          windowSize <= MOBILE_MEDIAM_SIZE ? <CircleCheck size={16} /> : "수정"
+        }
+      />
+      <Button
+        type="button"
+        value={
+          windowSize <= MOBILE_MEDIAM_SIZE ? <CircleX size={16} /> : "취소"
+        }
+        onClick={hiddenEditForm}
+      />
     </form>
   );
 }

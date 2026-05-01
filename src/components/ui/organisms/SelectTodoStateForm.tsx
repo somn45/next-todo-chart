@@ -13,11 +13,11 @@ type UpdateTodoStateOptimisticType = {
 
 interface TodoStateFormProps {
   todoid: string;
-  currentTodoState: "할 일" | "진행 중" | "완료";
+  currentTodoState: StateType;
   updateStateOptimisticAction: (action: UpdateTodoStateOptimisticType) => void;
 }
 
-const TODO_STATE_TYPES = ["할 일", "진행 중", "완료"];
+const TODO_STATE_TYPES: StateType[] = ["할 일", "진행 중", "완료"];
 
 export default function SelectTodoStateForm({
   todoid,

@@ -10,6 +10,7 @@ import { SerializedTodo, StateType } from "@/types/todos/schema";
 import { EllipsisVertical, SquarePen } from "lucide-react";
 import Button from "@/components/ui/atoms/Button";
 import EditableText from "@/components/ui/organisms/EditableText";
+import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 
 // 캐시 무효화가 되지 않아 완료 상태면서 유예 시간이 지난 투두가 보이는 현상 발생
 
@@ -88,7 +89,7 @@ export default function Todo({
 
   return (
     <li
-      className={`${todoDisplayStyle} ${TodoHighlistColor[todo.state]} flex-col gap-2 rounded-md border-l-4 pl-4`}
+      className={`${todoDisplayStyle} ${TodoHighlistColor[todo.state]} max-w-md flex-col gap-2 rounded-md border-l-4 pl-4`}
     >
       <ErrorMessage message={alertMessage} />
       <EditableText
@@ -98,7 +99,9 @@ export default function Todo({
         optimisticTodoAction={optimisticTodoAction}
       />
       <div className="flex items-center gap-4">
-        <span className="text-caption">{optimisticTodo.createdAt}</span>
+        <span className="text-caption">
+          {formatByISO8601(new Date(optimisticTodo.createdAt))}
+        </span>
         <div className="flex items-center justify-center rounded-md p-1 hover:bg-mauve-400">
           <Button
             type="button"

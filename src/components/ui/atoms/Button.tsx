@@ -2,7 +2,7 @@ interface ButtonProps {
   type: "button" | "submit";
   value: string | React.ReactNode;
   onClick?: () => void;
-  variant?: "default" | "searchBar" | "submit";
+  variant?: "default" | "button" | "searchBar" | "submit";
 }
 
 export default function Button({
@@ -13,7 +13,9 @@ export default function Button({
 }: ButtonProps) {
   const variants: { [key: string]: string } = {
     default:
-      "rounded-md px-2 py-1 flex justify-center items-center hover:underline",
+      "rounded-md px-2 py-1 flex justify-center items-center hover:underline h-8 text-sm font-semibold",
+    button:
+      "rounded-md px-2 py-1 flex justify-center items-center bg-1st-light h-8 text-sm font-semibold",
     searchBar: "submit-default size-12 absolute top-2 right-0",
     submit: "submit-default",
   };
