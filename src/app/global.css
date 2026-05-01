@@ -41,11 +41,11 @@
 }
 
 @utility input-default {
-  @apply border-1st-light focus:border-2nd-light bg-surface-light text-text-light placeholder:text-text-disabled h-12 rounded-md border-2 py-1 pl-2 text-sm outline-0;
+  @apply border-1st-light focus:border-2nd-light bg-surface-light text-text-light placeholder:text-text-disabled h-12 w-full max-w-md rounded-md border-2 py-1 pl-2 text-sm outline-0;
 }
 
 @utility submit-default {
-  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary flex h-12 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-base font-semibold;
+  @apply bg-1st-light hover:bg-1st-darker-light text-text-on-primary flex h-12 w-full max-w-md cursor-pointer items-center justify-center rounded-md px-2 py-1 text-base font-semibold;
 }
 
 @utility text-heading {

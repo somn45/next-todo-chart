@@ -13,7 +13,7 @@ export default function JoinForm() {
       role="form"
       action={formAction}
       aria-label="회원가입 양식"
-      className="container"
+      className="container items-center"
     >
       <Input
         type="text"
@@ -40,7 +40,7 @@ export default function JoinForm() {
         ariaLabel="이메일 입력칸"
       />
       <ErrorMessage message={state.message} dataTestId="validate-message" />
-      <Button type="submit" value="회원가입" />
+      <Button type="submit" variant="submit" value="회원가입" />
     </form>
   );
 }

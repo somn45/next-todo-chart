@@ -1,5 +1,6 @@
 "use client";
 
+import LoginForm from "@/components/ui/organisms/LoginForm";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
@@ -45,7 +46,7 @@ export default function InterceptedLoginModal() {
         ref={modalContentRef}
         onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
-        가로챈 로그인 모달
+        <LoginForm />
       </div>
     </div>
   );
