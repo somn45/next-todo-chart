@@ -1,6 +1,7 @@
 export interface NavLinkItem {
   href: string;
   content: string | React.ReactNode;
+  icon?: React.ReactNode;
 }
 
 export interface TabMenuItem extends NavLinkItem {

@@ -11,7 +11,7 @@ export const SPARKLINE_HEIGHT = 300;
 export const DAT_GRAPH_MARGIN = { top: 80, left: 30, bottom: 20, right: 100 };
 export const DAT_MOBILE_GRAPH_MARGIN = {
   top: 80,
-  left: 60,
+  left: 20,
   bottom: 20,
   right: 20,
 };

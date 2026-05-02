@@ -38,7 +38,7 @@ export default function DashboardTodosPage({
   return (
     <>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
-      <ul className="flex flex-col items-center justify-center gap-5">
+      <ul className="flex flex-col gap-5">
         {optimisiticTodos.map(todo => (
           <TodoWrapper
             key={todo.content._id}

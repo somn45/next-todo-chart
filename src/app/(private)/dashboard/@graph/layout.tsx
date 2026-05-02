@@ -7,7 +7,7 @@ export default function DashboardGraphLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="flex-end flex flex-col">
       <Suspense fallback={<p>...Loading</p>}>
         <Navigation />
       </Suspense>

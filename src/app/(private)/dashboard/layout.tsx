@@ -17,14 +17,14 @@ export default function Dashboard({
   graph: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-10 lg:grid lg:grid-cols-2">
-      <section className="flex flex-col items-stretch gap-5 p-2.5">
+    <section className="flex w-full flex-col gap-20 pt-8 lg:flex-row lg:justify-center lg:gap-60">
+      <section className="flex flex-col items-stretch gap-5 p-2.5 lg:w-112.5">
         {todos}
       </section>
-      <section className="flex flex-col items-stretch gap-5 p-2.5">
+      <section className="flex flex-col items-stretch gap-5 p-2.5 lg:w-112.5">
         {graph}
       </section>
-      <div>{children}</div>
+      {children}
     </section>
   );
 }
