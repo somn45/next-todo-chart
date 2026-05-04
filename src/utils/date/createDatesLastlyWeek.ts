@@ -1,8 +1,8 @@
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import { getCurrentDateSharp } from "./getDateInCurrentDate";
 import { ONE_DAY } from "@/constants/date";
 
-export const getDatesLastlyPeriod = (periodType: DataDomainBaseType) => {
+export const getDatesLastlyPeriod = (periodType: DateDomainBaseType) => {
   if (periodType === "year") return createDatesLastlyYear();
   if (periodType === "month") return createDatesLastlyMonth();
   return createDatesLastlyWeek();

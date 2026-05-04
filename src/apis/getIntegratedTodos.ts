@@ -1,5 +1,5 @@
 import { connectDB } from "@/libs/database";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
 import { RawTodo, SerializedTodo, TodosType } from "@/types/todos/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
@@ -18,7 +18,7 @@ interface IIntegratedTodos {
 
 export const getIntegratedTodos = async (
   userid: string | undefined | null,
-  searchRange: DataDomainBaseType = "week",
+  searchRange: DateDomainBaseType = "week",
 ) => {
   "use cache";
   cacheTag("dashboard");

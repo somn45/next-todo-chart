@@ -4,7 +4,7 @@ import { select } from "d3-selection";
 import { useEffect, useRef } from "react";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { LineGraphMouseEvent } from "@/utils/graph/line/event";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
 import {
   DAT_GRAPH_MARGIN,
@@ -21,7 +21,7 @@ export default function DailyActiveTodoLineGraph({
   dateDomainBase = "week",
 }: {
   stats: TodoStat[];
-  dateDomainBase?: DataDomainBaseType;
+  dateDomainBase?: DateDomainBaseType;
 }) {
   const lineGraphWrapperRef = useRef<HTMLDivElement | null>(null);
   const toolTipRef = useRef<HTMLDivElement | null>(null);

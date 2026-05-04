@@ -1,9 +1,9 @@
 import { MONTH_INTERVAL, WEEK_INTERVAL } from "@/constants/graph";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 
 // 틱의 갯수를 구하는 함수
 export const caculateTickCount = (
-  dateDomainBase: DataDomainBaseType | undefined = "week",
+  dateDomainBase: DateDomainBaseType | undefined = "week",
   stateTypeCount: number,
   dataLength: number,
 ) => {

@@ -7,7 +7,7 @@ import { formatByISO8601 } from "@/utils/date/formatByISO8601";
 import { caculateTickCount } from "../caculateTickCount";
 import { TodoStat } from "@/types/stats/schema";
 import {
-  DataDomainBaseType,
+  DateDomainBaseType,
   DatDataPoint,
   GraphMargin,
   LegendCategoryLayout,
@@ -26,7 +26,7 @@ interface GraphOptions {
   width: number;
   height: number;
   margin: GraphMargin;
-  dateDomainBase: DataDomainBaseType;
+  dateDomainBase: DateDomainBaseType;
   texts: StateType[];
   colors: string[];
 }

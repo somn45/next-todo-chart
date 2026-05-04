@@ -1,14 +1,14 @@
 import { getTodoStats } from "@/apis/getTodoStats";
 import DailyActiveTodoLineGraph from "@/components/domain/Stat/DailyActiveTodoLineGraph";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import getUserIdByHeaders from "@/utils/auth/getUserIdByHeaders";
 
 export default async function DailyActive({
   searchParams,
 }: {
   searchParams: Promise<{
-    tl: DataDomainBaseType;
-    da: DataDomainBaseType;
+    tl: DateDomainBaseType;
+    da: DateDomainBaseType;
   }>;
 }) {
   const userid = await getUserIdByHeaders();

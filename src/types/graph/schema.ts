@@ -1,5 +1,5 @@
 /** 데이터 집계 기준이 되는 도메인 단위 */
-export type DataDomainBaseType = "week" | "month" | "year";
+export type DateDomainBaseType = "week" | "month" | "year";
 
 export interface GraphMargin {
   left: number;

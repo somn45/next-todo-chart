@@ -10,13 +10,13 @@ import {
   DAT_MOBILE_GRAPH_MARGIN,
   SPARKLINE_HEIGHT,
 } from "@/constants/graph";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
 import { MOBILE_LARGE_SIZE } from "@/constants/media";
 
 interface LineGraphSparklineProps {
   stats: TodoStat[];
-  dateDomainBase?: DataDomainBaseType;
+  dateDomainBase?: DateDomainBaseType;
 }
 
 export default function LineGraphSparkline({

@@ -1,12 +1,12 @@
 import { connectDB } from "@/libs/database";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import { TodoStat } from "@/types/stats/schema";
 import { getDatesLastlyPeriod } from "@/utils/date/createDatesLastlyWeek";
 import { redirect } from "next/navigation";
 
 export const getTodoStats = async (
   userid: string | undefined | null,
-  searchRange: DataDomainBaseType = "week",
+  searchRange: DateDomainBaseType = "week",
 ) => {
   if (!userid) {
     return redirect("/login");

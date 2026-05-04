@@ -11,12 +11,12 @@ import {
   TL_MOBILE_GRAPH_MARGIN,
 } from "@/constants/graph";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
-import { DataDomainBaseType } from "@/types/graph/schema";
+import { DateDomainBaseType } from "@/types/graph/schema";
 import { MOBILE_LARGE_SIZE } from "@/constants/media";
 
 interface TimelineSparklineProps {
   todos: Array<TodosType & SerializedTodo>;
-  dateDomainBase?: DataDomainBaseType;
+  dateDomainBase?: DateDomainBaseType;
 }
 
 export default function TimeLineSparkline({

@@ -9,7 +9,7 @@ import caculateBandLength from "@/app/(private)/stats/_utils/caculateBandLength"
 import { SerializedTodo, StateType, TodosType } from "@/types/todos/schema";
 import {
   D3ScaleType,
-  DataDomainBaseType,
+  DateDomainBaseType,
   GraphMargin,
 } from "@/types/graph/schema";
 import { caculateGraphLayout } from "../caculateGraphLayout";
@@ -19,7 +19,7 @@ interface GraphOptions {
   width: number;
   height: number;
   margin: GraphMargin;
-  dateDomainBase: DataDomainBaseType;
+  dateDomainBase: DateDomainBaseType;
   texts: StateType[];
   colors: string[];
 }

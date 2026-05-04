@@ -1,6 +1,6 @@
 import {
   D3ScaleType,
-  DataDomainBaseType,
+  DateDomainBaseType,
   GraphMargin,
 } from "@/types/graph/schema";
 import { select } from "d3-selection";
@@ -11,7 +11,7 @@ interface GraphOptions {
   width: number;
   height: number;
   margin: GraphMargin;
-  dateDomainBase: DataDomainBaseType;
+  dateDomainBase: DateDomainBaseType;
   texts: StateType[];
   colors: string[];
 }

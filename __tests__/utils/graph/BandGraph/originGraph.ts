@@ -8,19 +8,23 @@ import {
 import { within } from "@testing-library/react";
 import { BandGraph } from "@/utils/graph/band/originGraph";
 import { mockTodos } from "../../../../__mocks__/todos";
+import { DateDomainBaseType } from "@/types/graph/schema";
 
 describe("BandGraph Class", () => {
-  const bandGraph = new BandGraph(
-    GRAPH_WIDTH,
-    GRAPH_HEIGHT,
-    TL_GRAPH_MARGIN,
-    "month",
-    TL_LEGEND_TEXTS,
-    TL_LEGEND_COLORS,
-  );
+  const dateDomainBase: DateDomainBaseType = "month";
+  const graphOptions = {
+    width: GRAPH_WIDTH,
+    height: GRAPH_HEIGHT,
+    margin: TL_GRAPH_MARGIN,
+    dateDomainBase,
+    texts: TL_LEGEND_TEXTS,
+    colors: TL_LEGEND_COLORS,
+    isMobile: false,
+  };
+  const bandGraph = new BandGraph(graphOptions, mockTodos);
   it("BandGraph 메서드를 활용해 그래프를 그린다.", () => {
     const mockGraphContainer = document.createElement("div");
-    bandGraph.drowBandGraph(mockGraphContainer, mockTodos);
+    bandGraph.drowBandGraph(mockGraphContainer);
     const svg = within(mockGraphContainer).getByTestId("svg container");
     const g = within(svg).getByTestId("graph area");
 

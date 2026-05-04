@@ -7,7 +7,7 @@ import { caculateTickCount } from "../caculateTickCount";
 import { TodoStat } from "@/types/stats/schema";
 import {
   D3ScaleType,
-  DataDomainBaseType,
+  DateDomainBaseType,
   DatDataPoint,
   GraphMargin,
 } from "@/types/graph/schema";
@@ -24,7 +24,7 @@ interface GraphOptions {
   width: number;
   height: number;
   margin: GraphMargin;
-  dateDomainBase: DataDomainBaseType;
+  dateDomainBase: DateDomainBaseType;
   texts: StateType[];
   colors: string[];
 }
