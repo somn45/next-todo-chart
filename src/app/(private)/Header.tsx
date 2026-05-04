@@ -62,7 +62,7 @@ export default function Header() {
   }, [windowSize]);
 
   return (
-    <header className="md:border-b-surface-light flex h-20 w-full md:border-b-2">
+    <header className="md:border-b-surface-light bg-bg-light fixed bottom-0 z-50 flex h-20 w-full md:top-0 md:border-b-2">
       <Nav NavLinks={mainNavLinks} variant="header" />
     </header>
   );

@@ -33,7 +33,7 @@
 }
 
 @utility wrapper {
-  @apply bg-bg-light flex h-[calc(100vh-80px)] h-auto w-full justify-center pb-10 lg:px-10;
+  @apply bg-bg-light flex h-auto w-full justify-center pb-20 lg:px-10 lg:pt-20;
 }
 
 @utility container {
