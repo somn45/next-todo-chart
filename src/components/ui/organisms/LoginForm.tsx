@@ -1,13 +1,31 @@
 "use client";
 
-import { useActionState } from "react";
+import { RefObject, useActionState, useEffect, useRef } from "react";
 import Button from "../atoms/Button";
 import ErrorMessage from "../atoms/ErrorMessage";
 import Input from "../atoms/Input";
 import { login } from "@/actions/login";
+import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+type LoginRouteStateType = "origin" | "intercepter";
+
+export default function LoginForm({
+  routeState = { current: "origin" },
+}: {
+  routeState: RefObject<LoginRouteStateType>;
+}) {
+  const router = useRouter();
   const [state, formAction] = useActionState(login, { message: "" });
+
+  useEffect(() => {
+    if (state.message === "로그인이 완료되었습니다.") {
+      if (routeState.current === "intercepter") router.back();
+
+      router.push("/");
+      router.refresh();
+    }
+  }, [state]);
+
   return (
     <form
       role="form"

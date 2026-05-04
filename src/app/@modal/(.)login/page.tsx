@@ -7,6 +7,7 @@ import { useRef } from "react";
 export default function InterceptedLoginModal() {
   const router = useRouter();
   const modalContentRef = useRef<HTMLDivElement | null>(null);
+  const routeState = useRef<"intercepter">("intercepter");
   return (
     <div
       style={{
@@ -46,7 +47,7 @@ export default function InterceptedLoginModal() {
         ref={modalContentRef}
         onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
-        <LoginForm />
+        <LoginForm routeState={routeState} />
       </div>
     </div>
   );

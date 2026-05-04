@@ -71,5 +71,6 @@ export const login = async (
       },
     },
   );
-  redirect("/");
+
+  return { message: "로그인이 완료되었습니다." };
 };
