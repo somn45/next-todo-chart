@@ -11,7 +11,6 @@ const config: Config = {
   testEnvironment: "jsdom",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
-    "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js",
   },
   collectCoverageFrom: ["src/**/*.{ts,tsx}"],
   coveragePathIgnorePatterns: [
@@ -20,4 +19,12 @@ const config: Config = {
     "src/types/MongoClient.ts",
   ],
 };
-export default createJestConfig(config);
+
+const jestConfig = async () => ({
+  ...(await createJestConfig(config)()),
+  transformIgnorePatterns: [
+    "/node_modules/(?!(d3|d3-.+|internmap|robust-predicates|delaunator)/)",
+  ],
+});
+
+export default jestConfig;

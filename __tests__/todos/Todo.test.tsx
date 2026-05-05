@@ -53,39 +53,73 @@ describe("<Todo />", () => {
     const mockTodo: SerializedTodo["content"] = selectMockTodo("할 일");
     const { container } = render(<TodoPage todo={mockTodo} />);
     expect(container).toMatchInlineSnapshot(`
-<div>
-  <li
-    style="display: flex; flex-direction: column;"
-  >
-    <p />
-    <span
-      data-testid="todo-textfield"
-    >
-      mock text
-    </span>
-    <span
-      data-testid="todo-state"
-    >
-      현재 상태 할 일
-    </span>
-    <div
-      data-testid="todo-state-form"
-    >
-      update todo state Form
-    </div>
-    <div
-      data-testid="edit-form"
-    >
-      Edit Form
-    </div>
-    <div
-      data-testid="delete-form"
-    >
-      Delete Form
-    </div>
-  </li>
-</div>
-`);
+      <div>
+        <li
+          class="flex border-[#3498DB] max-w-md flex-col gap-2 rounded-md border-l-4 pl-4"
+        >
+          <p
+            class="text-error-light text-sm font-semibold"
+          />
+          <div
+            class="flex h-12 items-center"
+          >
+            <span
+              class="text-regular"
+            >
+              mock text
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-4"
+          >
+            <span
+              class="text-caption"
+            >
+              NaN-NaN-NaN
+            </span>
+            <div
+              class="flex items-center justify-center rounded-md p-1 hover:bg-mauve-400"
+            >
+              <button
+                class="rounded-md px-2 py-1 flex justify-center items-center hover:underline h-8 text-sm font-semibold cursor-pointer"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-square-pen"
+                  fill="none"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                  />
+                  <path
+                    d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              data-testid="delete-form"
+            >
+              Delete Form
+            </div>
+          </div>
+          <div
+            data-testid="todo-state-form"
+          >
+            update todo state Form
+          </div>
+        </li>
+      </div>
+    `);
   });
   it("만약 투두의 상태가 '완료'라면 유예 시간 알림 메세지를 출력하고 유예 시간이 지나면 해당 요소가 표시되지 않는다.", () => {
     const mockTodo: SerializedTodo["content"] = selectMockTodo("완료");
@@ -96,10 +130,12 @@ describe("<Todo />", () => {
     const gracePeriodMessageBox = screen.getByText(gracePeriodMessage);
 
     expect(gracePeriodMessageBox).toMatchInlineSnapshot(`
-<p>
-  이 할 일은 완료 상태입니다. 2025-11-16T00:10:00.000Z 까지 완료 상태 지속 시 영구히 완료 상태가 됩니다.
-</p>
-`);
+      <p
+        class="text-error-light text-sm font-semibold"
+      >
+        이 할 일은 완료 상태입니다. 2025-11-16T00:10:00.000Z 까지 완료 상태 지속 시 영구히 완료 상태가 됩니다.
+      </p>
+    `);
 
     act(() => {
       jest.advanceTimersByTime(1000 * 60 * 11);

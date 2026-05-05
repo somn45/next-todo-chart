@@ -13,37 +13,35 @@ describe("Dashboard Layout 컴포넌트", () => {
     );
 
     expect(container).toMatchInlineSnapshot(`
-<div>
-  <section
-    style="display: flex;"
-  >
-    <section
-      style="width: 50%; margin-left: 100px; align-self: stretch; display: flex; flex-direction: column;"
-    >
-      <div
-        data-testid="todos-slot"
-      >
-        Todos 슬롯
+      <div>
+        <section
+          class="flex w-full flex-col gap-20 pt-8 lg:flex-row lg:justify-center lg:gap-60"
+        >
+          <section
+            class="flex flex-col items-stretch gap-5 p-2.5 lg:w-112.5"
+          >
+            <div
+              data-testid="todos-slot"
+            >
+              Todos 슬롯
+            </div>
+          </section>
+          <section
+            class="flex flex-col items-stretch gap-5 p-2.5 lg:w-112.5"
+          >
+            <div
+              data-testid="graph-slot"
+            >
+              Graph 슬롯
+            </div>
+          </section>
+          <div
+            data-testid="dashboard-page"
+          >
+            Dashboard 페이지
+          </div>
+        </section>
       </div>
-    </section>
-    <section
-      style="width: 50%; align-self: stretch; display: flex; flex-direction: column;"
-    >
-      <div
-        data-testid="graph-slot"
-      >
-        Graph 슬롯
-      </div>
-    </section>
-    <div>
-      <div
-        data-testid="dashboard-page"
-      >
-        Dashboard 페이지
-      </div>
-    </div>
-  </section>
-</div>
-`);
+    `);
   });
 });

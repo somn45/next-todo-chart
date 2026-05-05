@@ -17,29 +17,29 @@ describe("Stats Layout", () => {
     );
 
     expect(container).toMatchInlineSnapshot(`
-<div>
-  <section
-    style="display: flex; gap: 50px;"
-  >
-    <div
-      data-testid="daily-active-slot"
-    >
-      활성화된 일일 투두 합계 슬롯
-    </div>
-    <div
-      data-testid="timeline-slot"
-    >
-      타임라인 슬롯
-    </div>
-  </section>
-  <section>
-    <div
-      data-testid="stats-page"
-    >
-      통계 페이지
-    </div>
-  </section>
-</div>
-`);
+      <div>
+        <section
+          class="flex flex-col gap-16 overflow-y-auto p-4 2xl:flex-row"
+        >
+          <div
+            data-testid="daily-active-slot"
+          >
+            활성화된 일일 투두 합계 슬롯
+          </div>
+          <div
+            data-testid="timeline-slot"
+          >
+            타임라인 슬롯
+          </div>
+        </section>
+        <section>
+          <div
+            data-testid="stats-page"
+          >
+            통계 페이지
+          </div>
+        </section>
+      </div>
+    `);
   });
 });
