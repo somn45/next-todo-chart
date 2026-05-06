@@ -12,8 +12,14 @@ describe("<TodoStateForm />", () => {
   it("상태 버튼 클릭 시 상태 속성이 포함된 formData와 함께 서버 액션이 호출된다.", () => {
     (updateTodoState as jest.Mock).mockResolvedValue({ message: "" });
 
+    const updateStateAction = jest.fn();
+
     render(
-      <SelectTodoStateForm todoid={mockTodo._id} currentTodoState="할 일" />,
+      <SelectTodoStateForm
+        todoid={mockTodo._id}
+        currentTodoState="할 일"
+        updateStateOptimisticAction={updateStateAction}
+      />,
     );
 
     const formWithDoingState = screen.getByRole("form", {

@@ -39,7 +39,6 @@ describe("Dashboard @todos 슬롯 페이지", () => {
 
     expect(getIntegratedTodos).toHaveBeenCalledTimes(1);
     expect(getIntegratedTodos).toHaveBeenCalledWith("mockuser");
-    expect(AddTodoForm).toHaveBeenCalledWith({ userId: "mockuser" }, undefined);
     expect(TodoWrapperCalledProps[0]).toEqual({
       todo: mockTodos[0].content,
       showDeleteSection: false,

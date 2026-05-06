@@ -228,6 +228,7 @@ exports[`LineGraph Class lineGraph 메서드를 활용해 그래프를 그린다
       </g>
     </g>
     <path
+      class="line"
       d="M135,130Z"
       data-testid="line"
       fill="none"
@@ -235,6 +236,7 @@ exports[`LineGraph Class lineGraph 메서드를 활용해 그래프를 그린다
       stroke-width="2.5"
     />
     <path
+      class="line"
       d="M135,170Z"
       data-testid="line"
       fill="none"
@@ -242,6 +244,7 @@ exports[`LineGraph Class lineGraph 메서드를 활용해 그래프를 그린다
       stroke-width="2.5"
     />
     <path
+      class="line"
       d="M135,150Z"
       data-testid="line"
       fill="none"
@@ -249,6 +252,7 @@ exports[`LineGraph Class lineGraph 메서드를 활용해 그래프를 그린다
       stroke-width="2.5"
     />
     <path
+      class="line"
       d="M135,60Z"
       data-testid="line"
       fill="none"
@@ -258,10 +262,11 @@ exports[`LineGraph Class lineGraph 메서드를 활용해 그래프를 그린다
   </g>
   <text
     aria-label="graph title"
+    class="title"
     font-size="20px"
     font-weight="bold"
     text-anchor="middle"
-    x="235"
+    x="165"
     y="30"
   >
     최근 1주간 등록된 투두 합계
@@ -269,6 +274,7 @@ exports[`LineGraph Class lineGraph 메서드를 활용해 그래프를 그린다
   <g
     class="legend"
     data-testid="legend list"
+    display="block"
     transform="translate(340, 0)"
   >
     <rect

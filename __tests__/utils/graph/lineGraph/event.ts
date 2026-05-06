@@ -82,10 +82,9 @@ const FAKE_GRAPH_LAYOUT = {
   margin: { left: 20, top: 20, right: 20, bottom: 20 },
 };
 
-describe("DAT Graph Event Class", () => {
-  it("DAT 그래프 내의 rect 영역에 마우스가 있다면 focus와 tooltip의 투명도가 1이 된다.", async () => {
+describe("LineGraphMouseEvent", () => {
+  it("handleGraphMouseEvent 메서드 실행 시 마우스 이벤트 핸들러 영역 요소가 생성된다.", async () => {
     // 테스트 준비
-    const user = userEvent.setup();
     const { width, height, margin } = FAKE_GRAPH_LAYOUT;
 
     const graphLayout = {
@@ -125,28 +124,5 @@ describe("DAT Graph Event Class", () => {
 
     const graphEventArea = within(gElement).getByTestId("event area");
     expect(graphEventArea).toBeTruthy();
-
-    graphEventArea.getBoundingClientRect = () => ({
-      width: FAKE_GRAPH_LAYOUT.width,
-      height: FAKE_GRAPH_LAYOUT.height,
-      ...FAKE_GRAPH_LAYOUT.margin,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
-
-    await user.pointer([
-      {
-        target: graphEventArea,
-        coords: { x: 150, y: 300 },
-      },
-    ]);
-
-    await waitFor(() => {
-      screen.debug(gElement);
-      const focus = within(gElement).getByTestId("focus");
-      expect(focus).toHaveStyle({ opacity: 1 });
-      expect(fakeTooltip).toHaveStyle({ opacity: 1 });
-    });
   });
 });

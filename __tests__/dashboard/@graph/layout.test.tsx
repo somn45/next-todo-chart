@@ -9,11 +9,11 @@ jest.mock("@/hooks/useQueryString", () => ({
 describe("Dashboard @graph Layout 컴포넌트", () => {
   const testCases = [
     {
-      text: "라인 그래프",
+      text: "라인 스파크라인 표시",
       linkHref: "/dashboard/line-graph",
     },
     {
-      text: "타임라인",
+      text: "밴드 스파크라인 표시",
       linkHref: "/dashboard/timeline",
     },
   ];

@@ -2,12 +2,11 @@
 
 import { useOptimistic, useRef, useState } from "react";
 import ErrorMessage from "@/components/ui/atoms/ErrorMessage";
-import EditTodoForm from "@/components/ui/organisms/EditTodoForm";
 import DeleteTodoform from "@/components/ui/organisms/DeleteTodoForm";
 import SelectTodoStateForm from "@/components/ui/organisms/SelectTodoStateForm";
 import useGraceTimeAlertMessage from "@/hooks/useGraceTimeAlertMessage";
 import { SerializedTodo, StateType } from "@/types/todos/schema";
-import { EllipsisVertical, SquarePen } from "lucide-react";
+import { SquarePen } from "lucide-react";
 import Button from "@/components/ui/atoms/Button";
 import EditableText from "@/components/ui/organisms/EditableText";
 import { formatByISO8601 } from "@/utils/date/formatByISO8601";
@@ -76,9 +75,6 @@ export default function Todo({
     optimisticTodo.completedAt,
   );
 
-  const todoDisplayStyle =
-    hasGracePeriod || todo.state !== "완료" ? "flex" : "none";
-
   const TodoHighlistColor: { [key: string]: string } = {
     "할 일": "border-[#3498DB]",
     "진행 중": "border-[#FFA500]",
@@ -87,9 +83,12 @@ export default function Todo({
 
   const [displayedEditForm, setDisplayedEditForm] = useState(false);
 
+  console.log(showDeleteSection);
+
+  if (!hasGracePeriod && todo.state === "완료") return null;
   return (
     <li
-      className={`${todoDisplayStyle} ${TodoHighlistColor[todo.state]} max-w-md flex-col gap-2 rounded-md border-l-4 pl-4`}
+      className={`${TodoHighlistColor[todo.state]} flex max-w-md flex-col gap-2 rounded-md border-l-4 pl-4`}
     >
       <ErrorMessage message={alertMessage} />
       <EditableText

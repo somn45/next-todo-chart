@@ -10,10 +10,12 @@ const navLinkItems: NavLinkItem[] = [
   {
     href: "/dashboard/line-graph",
     content: <ChartSpline />,
+    label: "라인 스파크라인 표시",
   },
   {
     href: "/dashboard/timeline",
     content: <ChartGantt />,
+    label: "밴드 스파크라인 표시",
   },
 ];
 

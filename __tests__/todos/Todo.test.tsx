@@ -55,7 +55,7 @@ describe("<Todo />", () => {
     expect(container).toMatchInlineSnapshot(`
       <div>
         <li
-          class="flex border-[#3498DB] max-w-md flex-col gap-2 rounded-md border-l-4 pl-4"
+          class="border-[#3498DB] flex max-w-md flex-col gap-2 rounded-md border-l-4 pl-4"
         >
           <p
             class="text-error-light text-sm font-semibold"
@@ -142,6 +142,8 @@ describe("<Todo />", () => {
     });
 
     const listItemAfterTenMinutes = screen.queryByRole("listitem");
+
+    screen.debug();
 
     expect(listItemAfterTenMinutes).not.toBeInTheDocument();
   });

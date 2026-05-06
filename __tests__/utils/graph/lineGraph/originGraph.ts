@@ -8,17 +8,22 @@ import {
 import { within } from "@testing-library/react";
 import { LineGraph } from "@/utils/graph/line/originGraph";
 import { mockTodoStats } from "../../../../__mocks__/stats";
+import { DateDomainBaseType } from "@/types/graph/schema";
 
 describe("LineGraph Class", () => {
-  const lineGraph = new LineGraph(
-    GRAPH_WIDTH,
-    GRAPH_HEIGHT,
-    DAT_GRAPH_MARGIN,
-    "month",
-    DAT_LEGEND_TEXTS,
-    DAT_LEGEND_COLORS,
-  );
   it("lineGraph 메서드를 활용해 그래프를 그린다.", () => {
+    const dateDomainBase: DateDomainBaseType = "month";
+    const graphOptions = {
+      width: GRAPH_WIDTH,
+      height: GRAPH_HEIGHT,
+      margin: DAT_GRAPH_MARGIN,
+      dateDomainBase,
+      texts: DAT_LEGEND_TEXTS,
+      colors: DAT_LEGEND_COLORS,
+      isMobile: false,
+    };
+    const lineGraph = new LineGraph(graphOptions, mockTodoStats);
+
     const mockGraphContainer = document.createElement("div");
     lineGraph.drowLineGraph(mockGraphContainer, mockTodoStats);
     const svg = within(mockGraphContainer).getByTestId("svg container");

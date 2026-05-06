@@ -16,7 +16,7 @@ export default function TabMenu({ tabMenuItems }: TabMenuProps) {
   return (
     <nav>
       <ul className="flex list-none gap-5 py-2">
-        {tabMenuItems.map(({ href, content, isActive }) => (
+        {tabMenuItems.map(({ href, content, label, isActive }) => (
           <li
             key={href}
             className={
@@ -25,7 +25,7 @@ export default function TabMenu({ tabMenuItems }: TabMenuProps) {
                 : "bg-bg-disabled hover:bg-1st-light text-text-disabled hover:text-text-dark flex w-16 items-center justify-center rounded-md px-4 py-1 text-center font-normal hover:font-semibold"
             }
           >
-            <NavLink href={href} content={content} />
+            <NavLink href={href} content={content} label={label} />
           </li>
         ))}
       </ul>
