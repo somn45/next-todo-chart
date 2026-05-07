@@ -12,7 +12,7 @@ type LoginRouteStateType = "origin" | "intercepter";
 export default function LoginForm({
   routeState = { current: "origin" },
 }: {
-  routeState: RefObject<LoginRouteStateType>;
+  routeState?: RefObject<LoginRouteStateType>;
 }) {
   const router = useRouter();
   const [state, formAction] = useActionState(login, { message: "" });

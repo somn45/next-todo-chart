@@ -1,4 +1,14 @@
 import "@/app/global.css";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | NextTodoChart",
+    default: "NextTodoChart",
+  },
+  description:
+    "D3.js를 사용하여 투두리스트를 계획하고 차트로 현황을 추적합니다.",
+};
 
 export default function RootLayout({
   children,
