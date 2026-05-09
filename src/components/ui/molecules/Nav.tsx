@@ -3,7 +3,7 @@ import NavLink from "../atoms/NavLink";
 
 interface NavProps {
   NavLinks: NavLinkItem[];
-  variant?: "default" | "header";
+  variant?: "default" | "header" | "typography";
 }
 
 // 단순 다른 경로로 이동
@@ -11,16 +11,20 @@ export default function Nav({ NavLinks, variant = "default" }: NavProps) {
   const navVariants: { [key: string]: string } = {
     default: "",
     header: "w-full h-full",
+    typegraphy: "",
   };
 
   const listVariants: { [key: string]: string } = {
     default: "px-8 py-4",
     header: "w-full h-full px-4",
+    typography: "",
   };
 
   const listitemVariants: { [key: string]: string } = {
     default: "",
     header: "w-full h-full flex justify-center items-center",
+    typography:
+      "bg-1st-light rounded-md text-text-on-primary px-8 py-3 hover:bg-2nd-light transition",
   };
 
   return (
