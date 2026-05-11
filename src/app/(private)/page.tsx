@@ -3,7 +3,6 @@ import Image from "next/image";
 import thumbnail from "../../../public/NextTodoChart_thumbnail.jpg";
 import Nav from "@/components/ui/molecules/Nav";
 import { NavLinkItem } from "@/types/ui";
-import { StyleHTMLAttributes } from "react";
 
 export const metadata: Metadata = {
   title: "홈",
