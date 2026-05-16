@@ -37,7 +37,7 @@ export const join = async (
 
   const hashedPassword = await bcrypt.hash(joinFormData.password, 5);
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
   const users = await db.collection("users").find().toArray();
   if (Array.isArray(users) && users.length === 0) {
     db.createCollection("users");

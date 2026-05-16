@@ -33,7 +33,7 @@ export const login = async (
     return { message: validateErrorMessage };
   }
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
   const loggedUser = await db
     .collection<User>("users")
     .findOne({ userid: loginFormData.userid });

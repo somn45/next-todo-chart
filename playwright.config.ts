@@ -12,7 +12,11 @@ import path from "path";
  * See https://playwright.dev/docs/test-configuration.
  */
 
-dotenv.config({ path: path.resolve(__dirname, ".env.development.local") });
+const testEnv = dotenv.config({
+  path: path.resolve(__dirname, ".env.test"),
+}).parsed;
+
+console.log(testEnv);
 
 export default defineConfig({
   testDir: "./e2e",
@@ -62,9 +66,12 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: "cross-env NODE_ENV=test npm run dev",
+    env: {
+      ...testEnv,
+    },
+    url: "http://localhost:3000",
+    reuseExistingServer: !process.env.CI,
+  },
 });

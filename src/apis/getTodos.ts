@@ -11,7 +11,7 @@ export const getTodos = async (userid: string | undefined | null) => {
     return redirect("/login");
   }
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
 
   const gracePeriod = new Date(Date.now());
 

@@ -12,7 +12,7 @@ export const getTodoStats = async (
     return redirect("/login");
   }
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
 
   const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);
 

@@ -18,7 +18,7 @@ export const getAllTodos = async (
     return redirect("/login");
   }
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
 
   // 시작일과 종료일이 이번주 일자 안에 포함되어야 하나?
   // 예시 : 12/05일 금요일자의 이번 주 타임라인(11/30(일) ~ 12/06)

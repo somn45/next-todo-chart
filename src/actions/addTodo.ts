@@ -19,7 +19,7 @@ export const addTodo = async (
     return { message: "할 일에 내용이 작성되어 있지 않습니다." };
 
   try {
-    const db = (await connectDB).db("next-todo-chart-cluster");
+    const db = (await connectDB).db();
     const todo = await db
       .collection<Omit<RawTodo["content"], "_id">>("todo")
       .insertOne({

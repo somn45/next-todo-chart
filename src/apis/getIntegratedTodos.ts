@@ -27,7 +27,7 @@ export const getIntegratedTodos = async (
     redirect("/login");
   }
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
 
   const gracePeriod = new Date(Date.now());
   const startOfPeriod = getStartOfPeriod(searchRange);

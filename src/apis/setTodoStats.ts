@@ -8,7 +8,7 @@ import { SerializedTodo, TodosType } from "@/types/todos/schema";
 import { TodoStat } from "@/types/stats/schema";
 
 export const setTodoStats = async () => {
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
 
   // 11/27일이 되었다면
   // completedAt이 11/26이라면 O

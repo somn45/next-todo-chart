@@ -16,7 +16,7 @@ export async function GET(
 
   if (!userid) return NextResponse.json({ refreshToken: undefined });
 
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
   const user = await db.collection<WithId<User>>("users").findOne({ userid });
   return NextResponse.json({ refreshToken: user?.refreshToken });
 }
@@ -31,7 +31,7 @@ export async function DELETE(request: NextRequest) {
       },
       { status: 404 },
     );
-  const db = (await connectDB).db("next-todo-chart-cluster");
+  const db = (await connectDB).db();
   const deletedRefreshToken = await db
     .collection("user")
     .updateOne({ userid }, { $unset: { refreshToken: "" } });
