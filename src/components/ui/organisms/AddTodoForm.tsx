@@ -53,7 +53,12 @@ export default function AddTodoForm({
         ariaLabel="새 투두리스트 입력칸"
         variant="searchBar"
       />
-      <Button type="submit" value={<Search />} variant="searchBar" />
+      <Button
+        type="submit"
+        value={<Search />}
+        ariaLabel="새 투두 추가"
+        variant="searchBar"
+      />
     </form>
   );
 }

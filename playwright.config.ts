@@ -67,9 +67,10 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "cross-env NODE_ENV=test npm run dev",
+    command: "cross-env APP_ENV=test npm run start",
     env: {
       ...testEnv,
+      APP_ENV: "test",
     },
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,

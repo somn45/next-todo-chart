@@ -26,6 +26,7 @@ export default function EditTodoForm({
   hiddenEditForm,
   editTodoOptimsiticAction,
 }: EditFormProps) {
+  console.log(todoid, userid);
   const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
     todoid,
     userid,
@@ -52,6 +53,7 @@ export default function EditTodoForm({
       editTodoOptimsiticAction({ type: "edit", textField: editedTextField });
 
       editTodoAction(FormData);
+      hiddenEditForm();
     } catch (error) {
       console.error(error);
     }
@@ -61,6 +63,7 @@ export default function EditTodoForm({
     <form
       role="form"
       action={handleSubmit}
+      aria-label="투두 수정 폼"
       className="flex h-12 items-center gap-2"
     >
       <ErrorMessage message={state.message} successSignal={"투두 수정 성공"} />

@@ -2,6 +2,7 @@ interface ButtonProps {
   type: "button" | "submit";
   value: string | React.ReactNode;
   onClick?: () => void;
+  ariaLabel?: string;
   variant?: "default" | "button" | "searchBar" | "submit";
 }
 
@@ -9,6 +10,7 @@ export default function Button({
   type,
   value,
   onClick,
+  ariaLabel,
   variant = "default",
 }: ButtonProps) {
   const variants: { [key: string]: string } = {
@@ -24,13 +26,14 @@ export default function Button({
       <button
         type="button"
         onClick={onClick}
+        aria-label={ariaLabel}
         className={`${variants[variant]} cursor-pointer`}
       >
         {value}
       </button>
     );
   return (
-    <button type={type} className={variants[variant]}>
+    <button type={type} aria-label={ariaLabel} className={variants[variant]}>
       {value}
     </button>
   );

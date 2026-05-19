@@ -43,6 +43,8 @@ export default function Todo({
 }) {
   const deleteCompletedTodoTimerId = useRef<NodeJS.Timeout | null>(null);
 
+  console.log(todo);
+
   const [optimisticTodo, optimisticTodoAction] = useOptimistic(
     todo,
     (currentTodo, action: TodoOptimisitcActionType) => {
@@ -83,8 +85,6 @@ export default function Todo({
 
   const [displayedEditForm, setDisplayedEditForm] = useState(false);
 
-  console.log(showDeleteSection);
-
   if (!hasGracePeriod && todo.state === "완료") return null;
   return (
     <li
@@ -106,6 +106,7 @@ export default function Todo({
             type="button"
             value={<SquarePen size={16} />}
             onClick={() => setDisplayedEditForm(true)}
+            ariaLabel="투두 수정"
           />
         </div>
         <DeleteTodoform

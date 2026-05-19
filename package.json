@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:test": "cross-env NODE_ENV=test APP_ENV=test npm run dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

@@ -1,5 +1,6 @@
 "use client";
 
+import { ObjectId } from "bson";
 import TodoWrapper from "@/components/domain/Todo/TodoWrapper";
 import AddTodoForm from "@/components/ui/organisms/AddTodoForm";
 import { SerializedTodo, TodosType } from "@/types/todos/schema";
@@ -14,11 +15,14 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
   const [optimisiticTodos, addOptimisticTodo] = useOptimistic(
     todos,
     (currentTodos, textField: string) => {
+      const fakeTodosId = new ObjectId().toString();
+      const fakeTodoId = new ObjectId().toString();
+      console.log(fakeTodosId, fakeTodoId);
       const newTodo: TodosType & SerializedTodo = {
-        _id: "1",
+        _id: fakeTodosId,
         author: userId,
         content: {
-          _id: "1",
+          _id: fakeTodoId,
           userid: userId,
           textField,
           state: "할 일",
@@ -36,7 +40,10 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
     <section className="container">
       <h2 className="text-heading">TodoList</h2>
       <AddTodoForm userId={userId} addTodoAction={addOptimisticTodo} />
-      <ul className="flex flex-col gap-x-20 gap-y-8 lg:grid lg:grid-cols-2 2xl:grid-cols-3">
+      <ul
+        aria-label="투두 목록"
+        className="flex flex-col gap-x-20 gap-y-8 lg:grid lg:grid-cols-2 2xl:grid-cols-3"
+      >
         {optimisiticTodos.map(todo => (
           <TodoWrapper key={todo.content._id} todo={todo.content} />
         ))}
