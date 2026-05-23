@@ -48,6 +48,8 @@ export default function StateOption({ stateType, isActive }: StateOptionProps) {
       <button
         type="submit"
         className={` ${stateOptionClassname} ${hoveredStateOptionColor[stateType]} cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold`}
+        data-state={stateType}
+        data-status={isActive ? "active" : "deactive"}
       >
         {isActive ? stateType : iconByState[stateType]}
       </button>
@@ -57,6 +59,8 @@ export default function StateOption({ stateType, isActive }: StateOptionProps) {
     <button
       type="submit"
       className={` ${stateOptionClassname} ${hoveredStateOptionColor[stateType]} w-20 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold`}
+      data-state={stateType}
+      data-status={isActive ? "active" : "deactive"}
     >
       {stateType}
     </button>

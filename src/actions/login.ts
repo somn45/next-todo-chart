@@ -28,49 +28,57 @@ export const login = async (
     userid: formdata.get("userid"),
     password: formdata.get("password"),
   } as LoginFormData;
+  console.log("액션 진행");
+  console.log("user id", formdata.get("userid"));
   const validateErrorMessage = validateUser(loginFormData);
   if (validateErrorMessage) {
     return { message: validateErrorMessage };
   }
+  try {
+    const db = (await connectDB).db();
+    console.log(db);
+    const loggedUser = await db
+      .collection<User>("users")
+      .findOne({ userid: loginFormData.userid });
 
-  const db = (await connectDB).db();
-  const loggedUser = await db
-    .collection<User>("users")
-    .findOne({ userid: loginFormData.userid });
+    console.log("로그인 유저 확인");
+    const isMatchPassword = await bcrypt.compare(
+      loginFormData.password,
+      loggedUser?.password || "",
+    );
+    if (!loggedUser || !isMatchPassword) {
+      return { message: "아이디 또는 비밀번호가 일치하지 않습니다." };
+    }
 
-  const isMatchPassword = await bcrypt.compare(
-    loginFormData.password,
-    loggedUser?.password || "",
-  );
-  if (!loggedUser || !isMatchPassword) {
-    return { message: "아이디 또는 비밀번호가 일치하지 않습니다." };
-  }
+    // 추후 시크릿 키가 없을 때 에러 던지기 추가
+    const { accessToken, refreshToken } = await (
+      await fetch("http://localhost:3000/api/token", {
+        method: "POST",
+        body: JSON.stringify(loggedUser.userid),
+      })
+    ).json();
+    const cookieStore = await cookies();
+    cookieStore.set("lc_at", accessToken, {
+      maxAge: ACCESS_TOKEN_EXPIRES_TIME,
+      httpOnly: true,
+    });
+    cookieStore.set("lc_rt", refreshToken, {
+      maxAge: REFRESH_TOKEN_EXPIRES_TIME,
+      httpOnly: true,
+    });
 
-  // 추후 시크릿 키가 없을 때 에러 던지기 추가
-  const { accessToken, refreshToken } = await (
-    await fetch("http://localhost:3000/api/token", {
-      method: "POST",
-      body: JSON.stringify(loggedUser.userid),
-    })
-  ).json();
-  const cookieStore = await cookies();
-  cookieStore.set("lc_at", accessToken, {
-    maxAge: ACCESS_TOKEN_EXPIRES_TIME,
-    httpOnly: true,
-  });
-  cookieStore.set("lc_rt", refreshToken, {
-    maxAge: REFRESH_TOKEN_EXPIRES_TIME,
-    httpOnly: true,
-  });
-
-  db.collection("users").findOneAndUpdate(
-    { userid: loggedUser.userid },
-    {
-      $set: {
-        refreshToken,
+    db.collection("users").findOneAndUpdate(
+      { userid: loggedUser.userid },
+      {
+        $set: {
+          refreshToken,
+        },
       },
-    },
-  );
+    );
 
-  return { message: "로그인이 완료되었습니다." };
+    return { message: "로그인이 완료되었습니다." };
+  } catch (error) {
+    if (error instanceof Error) return { message: error.message };
+    return { message: "" };
+  }
 };

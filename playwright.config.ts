@@ -1,22 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
- */
-import dotenv from "dotenv";
-import path from "path";
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 
-const testEnv = dotenv.config({
-  path: path.resolve(__dirname, ".env.test"),
-}).parsed;
-
-console.log(testEnv);
+dotenv.config({ path: ".env.test", override: true });
 
 export default defineConfig({
   testDir: "./e2e",
@@ -33,7 +27,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    baseURL: "http://localhost:3000",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -49,6 +43,7 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         // Use prepared auth state.
+        viewport: { width: 1920, height: 1080 },
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
@@ -59,6 +54,7 @@ export default defineConfig({
       use: {
         ...devices["Desktop Firefox"],
         // Use prepared auth state.
+        viewport: { width: 1920, height: 1080 },
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
@@ -67,9 +63,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "cross-env APP_ENV=test npm run start",
+    command: "npm run build && cross-env APP_ENV=test npm run start",
     env: {
-      ...testEnv,
+      ...process.env,
       APP_ENV: "test",
     },
     url: "http://localhost:3000",

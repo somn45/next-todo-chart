@@ -1,10 +1,11 @@
+import { StateType } from "@/types/todos/schema";
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ request }) => {
   await request.delete("http://localhost:3000/api/test/todos");
 });
 
-test("투두 생성 => 수정 => 삭제", async ({ page }) => {
+test("투두 생성 => 수정 => 상태 변경 => 삭제", async ({ page }) => {
   const newTodo = crypto.randomUUID();
   const editedTodo = crypto.randomUUID();
 
@@ -33,6 +34,28 @@ test("투두 생성 => 수정 => 삭제", async ({ page }) => {
 
     await expect(todoList.getByTestId(newTodo)).not.toBeVisible();
     await expect(todoList.getByText(editedTodo)).toBeVisible();
+  });
+
+  await test.step("할 일 상태 변경", async () => {
+    const todoItem = page.getByRole("listitem").filter({ hasText: editedTodo });
+
+    const todoStates: Array<StateType> = ["할 일", "진행 중", "완료"];
+    const updateStateTarget = "진행 중";
+    const stateTargetButton = todoItem.getByRole("button", {
+      name: updateStateTarget,
+    });
+    await stateTargetButton.click();
+
+    for (const state of todoStates) {
+      const stateButton = todoItem.getByRole("button", {
+        name: state,
+      });
+      if (updateStateTarget === state) {
+        expect(stateButton).toHaveClass(/bg-\[#FFA500\]/);
+      } else {
+        expect(stateButton).toHaveClass(/bg-bg-disabled/);
+      }
+    }
   });
 
   await test.step("할 일 삭제", async () => {
