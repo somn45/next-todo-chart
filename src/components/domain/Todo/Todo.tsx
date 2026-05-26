@@ -43,8 +43,6 @@ export default function Todo({
 }) {
   const deleteCompletedTodoTimerId = useRef<NodeJS.Timeout | null>(null);
 
-  console.log(todo);
-
   const [optimisticTodo, optimisticTodoAction] = useOptimistic(
     todo,
     (currentTodo, action: TodoOptimisitcActionType) => {
@@ -85,7 +83,7 @@ export default function Todo({
 
   const [displayedEditForm, setDisplayedEditForm] = useState(false);
 
-  if (!hasGracePeriod && todo.state === "완료") return null;
+  if (!hasGracePeriod && optimisticTodo.state === "완료") return null;
   return (
     <li
       className={`${TodoHighlistColor[todo.state]} flex max-w-md flex-col gap-2 rounded-md border-l-4 pl-4`}

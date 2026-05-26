@@ -26,7 +26,6 @@ export default function EditTodoForm({
   hiddenEditForm,
   editTodoOptimsiticAction,
 }: EditFormProps) {
-  console.log(todoid, userid);
   const editTodoWithTodoIdAndUserId = editTodo.bind(null, {
     todoid,
     userid,
@@ -43,17 +42,18 @@ export default function EditTodoForm({
     };
 
     if (window.innerWidth !== 0) setWindowSize(window.innerWidth);
+    if (state.message === "투두 수정 성공") {
+      hiddenEditForm();
+    }
 
     window.addEventListener("resize", handleWindowResize);
-  }, []);
+  }, [state]);
 
   const handleSubmit = async (FormData: FormData) => {
     const editedTextField = FormData.get("todo") as string;
     try {
       editTodoOptimsiticAction({ type: "edit", textField: editedTextField });
-
       editTodoAction(FormData);
-      hiddenEditForm();
     } catch (error) {
       console.error(error);
     }

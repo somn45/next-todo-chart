@@ -25,7 +25,6 @@ export const editTodo = async (
     }
 
     const db = (await connectDB).db();
-    console.log("TODO ID", todoid);
     const todoDoc = await db
       .collection<WithId<RawTodo["content"]>>("todo")
       .findOne({ _id: new ObjectId(todoid) });
