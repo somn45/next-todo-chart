@@ -25,20 +25,19 @@ export default function SelectTodoStateForm({
   updateStateOptimisticAction,
 }: TodoStateFormProps) {
   const updateTodoStateWithTodoId = updateTodoState.bind(null, todoid);
-  const [actionState, formAction] = useActionState(updateTodoStateWithTodoId, {
-    message: "",
-  });
+  const [actionState, formAction] = useActionState(
+    async (prevState: { message: string }, formData: FormData) => {
+      const updatedState = formData.get("state") as StateType;
 
-  const handleSubmit = async (formData: FormData) => {
-    const updatedState = formData.get("state") as StateType;
-    try {
       updateStateOptimisticAction({ type: "state", updatedState });
 
-      formAction(formData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      const result = await updateTodoStateWithTodoId(prevState, formData);
+      return result;
+    },
+    {
+      message: "",
+    },
+  );
 
   return (
     <>
@@ -48,7 +47,7 @@ export default function SelectTodoStateForm({
           <li key={todoStateType}>
             <SelectField
               formAttr={{
-                action: handleSubmit,
+                action: formAction,
                 ariaLabel: `${todoStateType}이 포함된 양식`,
                 isHidden: todoStateType === currentTodoState,
               }}

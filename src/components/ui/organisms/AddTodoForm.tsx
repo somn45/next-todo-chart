@@ -1,7 +1,7 @@
 "use client";
 
 import { addTodo } from "@/actions/addTodo";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState } from "react";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import { Search } from "lucide-react";
@@ -16,36 +16,27 @@ export default function AddTodoForm({
   addTodoAction,
 }: AddTodoFormProps) {
   const addTodoWithUserId = addTodo.bind(null, userId);
-  const [state, formAction] = useActionState(addTodoWithUserId, {
-    message: "",
-  });
-  const [error, setError] = useState("");
+  const [state, formAction] = useActionState(
+    async (prevState: { message: string }, formData: FormData) => {
+      const todoFormData = formData.get("newTodo") as string;
 
-  useEffect(() => {
-    setError(state.message);
-  }, [state]);
-
-  const handleSubmit = async (formData: FormData) => {
-    const todoFormData = formData.get("newTodo") as string;
-    try {
       addTodoAction(todoFormData);
 
-      formAction(formData);
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
-      console.error(error);
-    }
-  };
+      const result = await addTodoWithUserId(prevState, formData);
+      return result;
+    },
+    {
+      message: "",
+    },
+  );
 
   return (
     <form
       role="form"
-      action={handleSubmit}
+      action={formAction}
       className="relative h-16 max-w-lg py-2"
     >
-      <span>{error}</span>
+      <span>{state.message}</span>
       <Input
         type="text"
         placeholder="새 투두리스트 추가"

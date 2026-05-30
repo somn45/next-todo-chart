@@ -30,9 +30,19 @@ export default function EditTodoForm({
     todoid,
     userid,
   });
-  const [state, editTodoAction] = useActionState(editTodoWithTodoIdAndUserId, {
-    message: "",
-  });
+  const [state, editTodoAction] = useActionState(
+    async (prevState: { message: string }, formData: FormData) => {
+      const editedTextField = formData.get("todo") as string;
+
+      editTodoOptimsiticAction({ type: "edit", textField: editedTextField });
+
+      const result = await editTodoWithTodoIdAndUserId(prevState, formData);
+      return result;
+    },
+    {
+      message: "",
+    },
+  );
 
   const [windowSize, setWindowSize] = useState(0);
 
@@ -49,20 +59,10 @@ export default function EditTodoForm({
     window.addEventListener("resize", handleWindowResize);
   }, [state]);
 
-  const handleSubmit = async (FormData: FormData) => {
-    const editedTextField = FormData.get("todo") as string;
-    try {
-      editTodoOptimsiticAction({ type: "edit", textField: editedTextField });
-      editTodoAction(FormData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <form
       role="form"
-      action={handleSubmit}
+      action={editTodoAction}
       aria-label="투두 수정 폼"
       className="flex h-12 items-center gap-2"
     >

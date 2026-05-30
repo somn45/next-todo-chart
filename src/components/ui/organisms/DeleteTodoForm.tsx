@@ -23,23 +23,21 @@ export default function DeleteTodoform({
   deleteTodoOptimisticAction: (action: DeleteTodoOptimisticType) => void;
 }) {
   const deleteTodoWithUserId = deleteTodo.bind(null, userid);
-  const [state, formAction] = useActionState(deleteTodoWithUserId, {
-    message: "",
-  });
-  if (!showDeleteSection) return null;
-
-  const handleSubmit = (formData: FormData) => {
-    try {
+  const [state, formAction] = useActionState(
+    async (prevState: { message: string }, formData: FormData) => {
       deleteTodoOptimisticAction({ type: "delete" });
 
-      formAction(formData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      const result = await deleteTodoWithUserId(prevState, formData);
+      return result;
+    },
+    {
+      message: "",
+    },
+  );
+  if (!showDeleteSection) return null;
 
   return (
-    <form role="form" action={handleSubmit}>
+    <form role="form" action={formAction}>
       <ErrorMessage message={state.message} />
       <Input
         type="text"

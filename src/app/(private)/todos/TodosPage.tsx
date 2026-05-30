@@ -17,7 +17,6 @@ export default function TodosPage({ userId, todos }: TodosPageProps) {
     (currentTodos, textField: string) => {
       const fakeTodosId = new ObjectId().toString();
       const fakeTodoId = new ObjectId().toString();
-      console.log(fakeTodosId, fakeTodoId);
       const newTodo: TodosType & SerializedTodo = {
         _id: fakeTodosId,
         author: userId,
