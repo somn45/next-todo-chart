@@ -180,7 +180,7 @@ export class LineGraphMouseEvent {
 
     this.graphArea
       .append("rect")
-      .attr("data-testid", "event area")
+      .attr("data-testid", "event-area")
       .attr("fill", "none")
       .style("pointer-events", "all")
       .attr("width", innerWidth)

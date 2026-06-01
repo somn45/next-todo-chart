@@ -21,4 +21,21 @@ test("DAT 테스트", async ({ page }) => {
     const lines = await graph.locator(".line").all();
     expect(lines).toHaveLength(4);
   });
+
+  await test.step("DAT 마우스 이벤트", async () => {
+    const eventArea = graph.getByTestId("event-area");
+    await expect(eventArea).toBeVisible();
+
+    const focus = graph.getByTestId("focus");
+    const tooltip = graph.getByTestId("tooltip");
+    await expect(focus).toHaveCSS("opacity", "0");
+    await expect(tooltip).toHaveCSS("opacity", "0");
+
+    await eventArea.hover({
+      position: { x: 100, y: 100 },
+    });
+
+    await expect(focus).toHaveCSS("opacity", "1");
+    await expect(tooltip).toHaveCSS("opacity", "1");
+  });
 });
