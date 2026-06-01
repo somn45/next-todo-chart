@@ -150,7 +150,7 @@ export default function DailyActiveTodoLineGraph({
   return (
     <>
       <LegendList legendTexts={DAT_LEGEND_TEXTS} categoryType="rect" />
-      <div className="relative">
+      <div data-testid="daily-active-graph" className="relative">
         <div
           ref={toolTipRef}
           data-testid="tooltip"

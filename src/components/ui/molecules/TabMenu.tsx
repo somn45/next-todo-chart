@@ -5,6 +5,7 @@ import NavLink from "../atoms/NavLink";
 
 interface TabMenuProps {
   tabMenuItems: TabMenuItem[];
+  ariaLabel?: string;
 }
 
 /**
@@ -12,10 +13,10 @@ interface TabMenuProps {
  * 현재 활성화된 탭메뉴는 스타일 강조 표시가 추가된다.
  *
  */
-export default function TabMenu({ tabMenuItems }: TabMenuProps) {
+export default function TabMenu({ tabMenuItems, ariaLabel }: TabMenuProps) {
   return (
     <nav>
-      <ul className="flex list-none gap-5 py-2">
+      <ul aria-label={ariaLabel} className="flex list-none gap-5 py-2">
         {tabMenuItems.map(({ href, content, label, isActive }) => (
           <li
             key={href}

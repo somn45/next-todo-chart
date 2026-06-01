@@ -12,6 +12,11 @@ export const getTodoStats = async (
     return redirect("/login");
   }
 
+  if (process.env.APP_ENV === "test") {
+    const { mockPast7DaysTodoStats } = await import("../../__mocks__/stats");
+    return mockPast7DaysTodoStats;
+  }
+
   const db = (await connectDB).db();
 
   const dateListLastlyPeriod = getDatesLastlyPeriod(searchRange);

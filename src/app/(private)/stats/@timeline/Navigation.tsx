@@ -27,5 +27,10 @@ export default function StatsTabMenu() {
     },
   ];
 
-  return <TabMenu tabMenuItems={getTabMenuItems(navLinkItems, url)} />;
+  return (
+    <TabMenu
+      ariaLabel="Timeline 그래프 네비게이션"
+      tabMenuItems={getTabMenuItems(navLinkItems, url)}
+    />
+  );
 }

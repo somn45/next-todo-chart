@@ -17,6 +17,8 @@ export default async function DailyActive({
 
   const todoStats = await getTodoStats(userid, da || "week");
 
+  console.log(todoStats);
+
   // [date, state, count]
   return <DailyActiveTodoLineGraph stats={todoStats} dateDomainBase={da} />;
 }
