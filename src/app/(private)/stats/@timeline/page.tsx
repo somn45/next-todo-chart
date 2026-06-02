@@ -17,5 +17,7 @@ export default async function Timeline({
 
   const todos = await getAllTodos(userid, tl || "week");
 
+  console.log(todos);
+
   return <TodoTimeline todos={todos} dateDomainBase={tl} />;
 }

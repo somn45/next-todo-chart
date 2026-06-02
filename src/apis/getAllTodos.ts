@@ -18,6 +18,11 @@ export const getAllTodos = async (
     return redirect("/login");
   }
 
+  if (process.env.APP_ENV === "test") {
+    const { mockTimelineTodos } = await import("../../__mocks__/todos");
+    return mockTimelineTodos;
+  }
+
   const db = (await connectDB).db();
 
   // 시작일과 종료일이 이번주 일자 안에 포함되어야 하나?

@@ -88,6 +88,7 @@ export default function TodoTimeline({
       <LegendList legendTexts={TL_LEGEND_TEXTS} categoryType="circle" />
       <div
         ref={bandGraphWrapperRef}
+        data-testid="timeline-graph"
         className="h-100 w-[calc(100vw-20px)] md:w-175"
       ></div>
     </>
