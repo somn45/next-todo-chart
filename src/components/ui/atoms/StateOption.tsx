@@ -4,7 +4,7 @@ import { Check, Ellipsis, Notebook } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface StateOptionProps {
-  stateType: StateType;
+  stateType: StateType | "저장 중";
   isActive: boolean;
 }
 

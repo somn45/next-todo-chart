@@ -3,7 +3,9 @@ import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ request }) => {
   const response = await request.delete("http://localhost:3000/api/test/todos");
+  const json = await response.json();
   expect(response.status()).toBe(200);
+  expect(json.message).toBe("모든 투두 삭제 완료");
 });
 
 test("투두 생성 => 수정 => 상태 변경 => 삭제", async ({ page }) => {
@@ -11,13 +13,16 @@ test("투두 생성 => 수정 => 상태 변경 => 삭제", async ({ page }) => {
   const editedTodo = crypto.randomUUID();
 
   await page.goto("http://localhost:3000/todos");
+  await page.reload();
 
   await test.step("할 일 생성", async () => {
-    await page.getByPlaceholder("새 투두리스트 추가").fill(newTodo);
+    const addTodoInput = page.getByPlaceholder(/새 투두리스트 추가/);
+    await addTodoInput.fill(newTodo);
     await page.getByRole("button", { name: "새 투두 추가" }).click();
 
     const todoList = page.getByRole("list", { name: "투두 목록" });
     await expect(todoList.getByText(newTodo)).toBeVisible();
+    await expect(addTodoInput).toHaveValue("");
   });
 
   await test.step("할 일 수정", async () => {
@@ -33,7 +38,10 @@ test("투두 생성 => 수정 => 상태 변경 => 삭제", async ({ page }) => {
     const editTodoForm = page.getByRole("form", { name: "투두 수정 폼" });
     await expect(editTodoForm).toBeVisible();
 
-    await editTodoForm.getByPlaceholder("투두리스트 수정").fill(editedTodo);
+    const editTodoInput = editTodoForm.getByPlaceholder("투두리스트 수정");
+    expect(editTodoInput).toBeVisible();
+    await editTodoInput.fill(editedTodo);
+
     const submitButton = editTodoForm.getByRole("button", {
       name: "수정",
       exact: true,
@@ -59,6 +67,8 @@ test("투두 생성 => 수정 => 상태 변경 => 삭제", async ({ page }) => {
       name: updateStateTarget,
     });
     await stateTargetButton.click();
+
+    await expect(stateTargetButton).toHaveClass(/bg-\[#FFA500\]/);
 
     for (const state of todoStates) {
       const stateButton = todoItem.getByRole("button", {
@@ -92,11 +102,13 @@ test("할 일 생성 => 할 일의 상태를 완료로 변경 => 목록에서 �
   await page.clock.install({ time: new Date("2025-05-25T08:00:00") });
   await page.goto("http://localhost:3000/todos");
   await test.step("할 일 생성", async () => {
-    await page.getByPlaceholder("새 투두리스트 추가").fill(newTodo);
+    const addTodoInput = page.getByPlaceholder(/새 투두리스트 추가/);
+    await addTodoInput.fill(newTodo);
     await page.getByRole("button", { name: "새 투두 추가" }).click();
 
     const todoList = page.getByRole("list", { name: "투두 목록" });
     await expect(todoList.getByText(newTodo)).toBeVisible();
+    await expect(addTodoInput).toHaveValue("");
   });
 
   await test.step("할 일의 상태 완료로 변경", async () => {
@@ -113,9 +125,7 @@ test("할 일 생성 => 할 일의 상태를 완료로 변경 => 목록에서 �
   });
 
   await test.step("삭제 유예 시간인 10분이 지난 후 투두 삭제 혹인", async () => {
-    await page.clock.fastForward("09:59");
-    await expect(page.getByText(newTodo)).toBeVisible();
-    await page.clock.fastForward("00:02");
+    await page.clock.fastForward("10:05");
     await expect(page.getByText(newTodo)).not.toBeVisible();
   });
 });

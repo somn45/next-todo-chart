@@ -13,13 +13,12 @@ interface SelectFieldProps {
   buttonAttr: {
     value: string;
   };
-  state: StateType;
+  state: StateType | "저장 중";
 }
 
 export default function SelectField({
   formAttr,
   inputAttr,
-  buttonAttr,
   state,
 }: SelectFieldProps) {
   return (

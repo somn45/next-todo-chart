@@ -25,7 +25,7 @@ export default function SelectTodoStateForm({
   updateStateOptimisticAction,
 }: TodoStateFormProps) {
   const updateTodoStateWithTodoId = updateTodoState.bind(null, todoid);
-  const [actionState, formAction] = useActionState(
+  const [actionState, formAction, isPending] = useActionState(
     async (prevState: { message: string }, formData: FormData) => {
       const updatedState = formData.get("state") as StateType;
 
@@ -58,7 +58,11 @@ export default function SelectTodoStateForm({
                 ariaLabel: `${todoStateType} 투두 상태`,
               }}
               buttonAttr={{ value: todoStateType }}
-              state={todoStateType as StateType}
+              state={
+                isPending && currentTodoState === todoStateType
+                  ? "저장 중"
+                  : todoStateType
+              }
             />
           </li>
         ))}
