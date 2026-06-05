@@ -20,8 +20,6 @@ export async function POST(
     expiresIn: "7 days",
   });
 
-  console.log(accessToken, refreshToken);
-
   return NextResponse.json({
     accessToken,
     refreshToken,

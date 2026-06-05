@@ -28,20 +28,16 @@ export const login = async (
     userid: formdata.get("userid"),
     password: formdata.get("password"),
   } as LoginFormData;
-  console.log("액션 진행");
-  console.log("user id", formdata.get("userid"));
   const validateErrorMessage = validateUser(loginFormData);
   if (validateErrorMessage) {
     return { message: validateErrorMessage };
   }
   try {
     const db = (await connectDB).db();
-    console.log(db);
     const loggedUser = await db
       .collection<User>("users")
       .findOne({ userid: loginFormData.userid });
 
-    console.log("로그인 유저 확인");
     const isMatchPassword = await bcrypt.compare(
       loginFormData.password,
       loggedUser?.password || "",

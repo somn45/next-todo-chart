@@ -13,7 +13,6 @@ export const updateTodoState = async (
   formData: FormData,
 ) => {
   const state = formData.get("state");
-
   try {
     if (!todoid || typeof todoid !== "string" || !ObjectId.isValid(todoid)) {
       throw new Error(`Invalid ObjectId Type ${todoid}`);
@@ -29,7 +28,7 @@ export const updateTodoState = async (
     }
     if (todoDoc.state === state)
       return { message: "할 일의 상태가 이전과 다르지 않습니다." };
-    db.collection("todo").updateOne(
+    await db.collection("todo").updateOne(
       { _id: new ObjectId(todoid) },
       {
         $set: {
@@ -40,7 +39,7 @@ export const updateTodoState = async (
     );
 
     if (state === "완료") {
-      db.collection("todo").updateOne(
+      await db.collection("todo").updateOne(
         { _id: new ObjectId(todoid) },
         {
           $set: {
@@ -49,7 +48,7 @@ export const updateTodoState = async (
         },
       );
     } else {
-      db.collection("todo").updateOne(
+      await db.collection("todo").updateOne(
         { _id: new ObjectId(todoid) },
         {
           $set: {
@@ -71,6 +70,6 @@ export const updateTodoState = async (
       };
     }
     console.error(error);
-    return { message: "" };
+    return { message: "미상의 에러 발생" };
   }
 };

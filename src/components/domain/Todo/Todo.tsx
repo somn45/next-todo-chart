@@ -65,6 +65,8 @@ export default function Todo({
             completedAt,
           };
           return updatedStateTodo;
+        default:
+          return currentTodo;
       }
     },
   );
