@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     // 빌드 시 타입 오류가 있어도 무시하고 진행합니다.
     ignoreBuildErrors: true,
   },
+  output: process.env.APP_ENV === "docker" ? "standalone" : undefined,
 };
 
 const bandleAnalyzer = withBundleAnalyzer({

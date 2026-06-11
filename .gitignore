@@ -10,6 +10,9 @@
 !.yarn/releases
 !.yarn/versions
 
+# 만아가 Yarn Berry의 Zero-Install 기능을 쓰지 않는다면 아래 줄도 추가
+.yarn/cache
+
 # testing
 /coverage
 

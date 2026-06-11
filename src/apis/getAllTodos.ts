@@ -19,7 +19,7 @@ export const getAllTodos = async (
   }
 
   if (process.env.APP_ENV === "test") {
-    const { mockTimelineTodos } = await import("../../__mocks__/todos");
+    const { mockTimelineTodos } = await import("@/constants/fakeData/fakeData");
     return mockTimelineTodos;
   }
 

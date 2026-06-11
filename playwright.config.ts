@@ -64,7 +64,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run build && cross-env APP_ENV=test npm run start",
+    command: "yarn build && cross-env APP_ENV=test yarn start",
     env: {
       ...process.env,
       APP_ENV: "test",

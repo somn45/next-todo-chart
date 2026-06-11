@@ -33,7 +33,7 @@ describe("/api/token/verify Route Handler 엣지 케이스 테스트", () => {
       json: jest.fn().mockResolvedValue("mockAccessToken"),
     } as unknown as NextRequest;
 
-    delete process.env.NEXT_PUBLIC_JWT_SECRET;
+    delete process.env.JWT_SECRET;
 
     await expect(POST(mockNextRequest)).rejects.toThrow("No secret key");
   });

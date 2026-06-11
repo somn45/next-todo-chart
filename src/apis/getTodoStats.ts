@@ -13,7 +13,7 @@ export const getTodoStats = async (
   }
 
   if (process.env.APP_ENV === "test") {
-    const { mockPast7DaysTodoStats } = await import("../../__mocks__/stats");
+    const { mockPast7DaysTodoStats } = await import("@/constants/fakeData/fakeData");
     return mockPast7DaysTodoStats;
   }
 

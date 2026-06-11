@@ -39,7 +39,7 @@ describe("/api/token Route Handler 엣지 케이스 테스트", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it("환경 변수 NEXT_PUBLIC_JWT_SECRET이 없으면 에러를 던진다.", async () => {
+  it("환경 변수 JWT_SECRET이 없으면 에러를 던진다.", async () => {
     (jwt.sign as jest.Mock)
       .mockReturnValue("header.accesstoken.signature")
       .mockReturnValue("header.refreshtoken.signature");
@@ -48,7 +48,7 @@ describe("/api/token Route Handler 엣지 케이스 테스트", () => {
       json: jest.fn().mockResolvedValue("mockuser"),
     } as unknown as NextRequest;
 
-    delete process.env.NEXT_PUBLIC_JWT_SECRET;
+    delete process.env.JWT_SECRET;
 
     await expect(POST(mockNextRequest)).rejects.toThrow("No secret key");
   });

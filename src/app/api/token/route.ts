@@ -6,7 +6,7 @@ export async function POST(
 ): Promise<NextResponse<{ accessToken: string; refreshToken: string }>> {
   const userid: string = await request.json();
 
-  const jwtSecretKey = process.env.NEXT_PUBLIC_JWT_SECRET;
+  const jwtSecretKey = process.env.JWT_SECRET;
   if (!jwtSecretKey) {
     throw new Error("No secret key");
   }
