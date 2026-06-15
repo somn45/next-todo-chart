@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { decodeJwtTokenPayload } from "./utils/decodeJwtTokenPayload";
 import { JwtPayload } from "jsonwebtoken";
+import { DOMAIN_URL } from "./constants/etc/etc";
 
 interface Jwt extends JwtPayload {
   id: string; // userid
@@ -16,6 +17,7 @@ interface Jwt extends JwtPayload {
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.pathname;
   const response = NextResponse.next();
+
 
   if (url === "/login" || url === "/join") {
     return response;
@@ -41,7 +43,7 @@ export async function middleware(request: NextRequest) {
 
     // refreshToken도 만료되었다면 로그아웃 및 페이지로 리다이렉트
     if (isExpiredRefreshToken) {
-      await fetch(`http://localhost:3000/api/token/refresh`, {
+      await fetch(`${DOMAIN_URL}/api/token/refresh`, {
         method: "DELETE",
         body: JSON.stringify(userid),
       });
@@ -51,7 +53,7 @@ export async function middleware(request: NextRequest) {
 
     // refreshToken이 있다면 accessToken 재발급
     const { accessToken: newAccessToken } = (await (
-      await fetch("http://localhost:3000/api/token", {
+      await fetch(`${DOMAIN_URL}/api/token`, {
         method: "POST",
         body: JSON.stringify(userid),
       })
@@ -66,7 +68,7 @@ export async function middleware(request: NextRequest) {
     });
   } else {
     const { isVerify } = (await (
-      await fetch("http://localhost:3000/api/token/verify", {
+      await fetch(`${DOMAIN_URL}/api/token/verify`, {
         method: "POST",
         body: JSON.stringify(accessToken.value),
       })

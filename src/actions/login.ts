@@ -9,6 +9,7 @@ import {
   ACCESS_TOKEN_EXPIRES_TIME,
   REFRESH_TOKEN_EXPIRES_TIME,
 } from "@/constants/date";
+import { DOMAIN_URL } from "@/constants/etc/etc";
 
 interface LoginFormData {
   userid: string;
@@ -48,7 +49,7 @@ export const login = async (
 
     // 추후 시크릿 키가 없을 때 에러 던지기 추가
     const { accessToken, refreshToken } = await (
-      await fetch("http://localhost:3000/api/token", {
+      await fetch(`${DOMAIN_URL}/api/token`, {
         method: "POST",
         body: JSON.stringify(loggedUser.userid),
       })
